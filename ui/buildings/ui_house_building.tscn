@@ -1,0 +1,122 @@
+[gd_scene load_steps=3 format=3 uid="uid://d2wyc1vg7pfrl"]
+
+[ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_b3ppi"]
+[ext_resource type="Script" path="res://ui/buildings/ui_house_building.gd" id="1_y04ro"]
+
+[node name="UIHouseBuilding" type="PanelContainer"]
+custom_minimum_size = Vector2(256, 256)
+offset_right = 40.0
+offset_bottom = 40.0
+theme = ExtResource("1_b3ppi")
+script = ExtResource("1_y04ro")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="BuildingTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(2.08165e-12, 32)
+layout_mode = 2
+text = "Housing"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ColonyTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "For --"
+horizontal_alignment = 1
+
+[node name="BuildingLevel" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Level: 0"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BuildingDemolish" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Demolish"
+
+[node name="BuildingUpgrade" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Upgrade"
+
+[node name="BuildingRefund" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Halt Construction"
+
+[node name="Information" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Information"]
+layout_mode = 2
+text = "Population Capacity"
+horizontal_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/Information"]
+layout_mode = 2
+size_flags_vertical = 6
+columns = 2
+
+[node name="ThisBuilding" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "This House:"
+horizontal_alignment = 2
+
+[node name="ThisBuildingValue" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "--"
+horizontal_alignment = 1
+
+[node name="AllBuildings" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "All Houses:"
+horizontal_alignment = 2
+
+[node name="AllBuildingsValue" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "--"
+horizontal_alignment = 1
+
+[node name="TotalPopulation" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Total Pop.:"
+horizontal_alignment = 2
+
+[node name="TotalPopulationValue" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "--"
+horizontal_alignment = 1
+
+[node name="RecruitSettler" type="CheckBox" parent="MarginContainer/VBoxContainer/Information"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Recruit Settler"

@@ -1,0 +1,178 @@
+[gd_scene load_steps=3 format=3 uid="uid://cav6wsvd1i8cw"]
+
+[ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_kha2r"]
+[ext_resource type="Script" path="res://ui/ui_population_detail.gd" id="1_t7y3t"]
+
+[node name="UIPopulationDetail" type="PanelContainer"]
+custom_minimum_size = Vector2(320, 280)
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_vertical = 0
+theme = ExtResource("1_kha2r")
+script = ExtResource("1_t7y3t")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="UITitle" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 36)
+layout_mode = 2
+text = "Population Details
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ColonyTitle" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "--"
+horizontal_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+columns = 3
+
+[node name="BasePopulation" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Base Population"
+horizontal_alignment = 1
+
+[node name="BasePopulationValue" type="Label" parent="VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+text = "--"
+horizontal_alignment = 1
+
+[node name="ImmigrationValue" type="Label" parent="VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+text = "--"
+horizontal_alignment = 1
+
+[node name="UnitPopulation" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Unit Population"
+horizontal_alignment = 1
+
+[node name="UnitPopulationValue" type="Label" parent="VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+text = "--"
+horizontal_alignment = 1
+
+[node name="UnitPopulationNextValue" type="Label" parent="VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+text = "--
+"
+horizontal_alignment = 1
+
+[node name="TotalPopulation" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Total Population"
+horizontal_alignment = 1
+
+[node name="TotalPopulationValue" type="Label" parent="VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+text = "--"
+horizontal_alignment = 1
+
+[node name="TotalPopulationNextValue" type="Label" parent="VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="MaxPopulation" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Max Population"
+horizontal_alignment = 1
+
+[node name="MaxPopulationValue" type="Label" parent="VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+text = "--"
+horizontal_alignment = 1
+
+[node name="MaxPopulationNextValue" type="Label" parent="VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+text = "--"
+horizontal_alignment = 1
+
+[node name="LaborDemand" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Labor Demand"
+horizontal_alignment = 2
+
+[node name="LaborDemandValue" type="Label" parent="VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+text = "--"
+horizontal_alignment = 1
+
+[node name="LaborDemandNextValue" type="Label" parent="VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+text = "--"
+horizontal_alignment = 1
+
+[node name="FreeLabor" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Free Labor
+"
+horizontal_alignment = 2
+
+[node name="FreeLaborValue" type="Label" parent="VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+text = "--"
+horizontal_alignment = 1
+
+[node name="FreeLaborNextValue" type="Label" parent="VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="CropsNeeded" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Crops Needed"
+horizontal_alignment = 1
+
+[node name="CropsNeededValue" type="Label" parent="VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+text = "--"
+horizontal_alignment = 1
+
+[node name="CropsNeededNextValue" type="Label" parent="VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(48, 2.08165e-12)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="ColonyMessage" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(2.08165e-12, 48)
+layout_mode = 2
+text = "Colony at max population"
+horizontal_alignment = 1
+vertical_alignment = 1

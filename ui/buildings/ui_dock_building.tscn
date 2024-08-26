@@ -1,0 +1,82 @@
+[gd_scene load_steps=3 format=3 uid="uid://svii5u010vvm"]
+
+[ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_0b1u1"]
+[ext_resource type="Script" path="res://ui/buildings/ui_dock_building.gd" id="1_nlrva"]
+
+[node name="UIDockBuilding" type="PanelContainer"]
+custom_minimum_size = Vector2(256, 192)
+offset_right = 256.0
+offset_bottom = 200.0
+size_flags_vertical = 2
+theme = ExtResource("1_0b1u1")
+script = ExtResource("1_nlrva")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="BuildingTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(2.08165e-12, 32)
+layout_mode = 2
+text = "Dock / Trading Post"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ColonyTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Colony: --"
+horizontal_alignment = 1
+
+[node name="BuildingLevel" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Level: 0"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BuildingDemolish" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Demolish"
+
+[node name="BuildingUpgrade" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Upgrade"
+
+[node name="BuildingRefund" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Halt Construction"
+
+[node name="Information" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ShipCountValue" type="Label" parent="MarginContainer/VBoxContainer/Information"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Total Ships: 0 / 0"
+horizontal_alignment = 1
+
+[node name="ConstructShip" type="CheckBox" parent="MarginContainer/VBoxContainer/Information"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 10
+text = "Construct Ship"

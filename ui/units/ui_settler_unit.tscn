@@ -1,0 +1,64 @@
+[gd_scene load_steps=2 format=3 uid="uid://j2r1akd4dii7"]
+
+[ext_resource type="Script" path="res://ui/units/ui_settler_unit.gd" id="1_kjwbd"]
+
+[node name="UISettlerUnit" type="PanelContainer"]
+custom_minimum_size = Vector2(256, 224)
+size_flags_vertical = 0
+script = ExtResource("1_kjwbd")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="UnitTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(2.08165e-12, 32)
+layout_mode = 2
+text = "Settler"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UnitLevel" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Level: 0"
+horizontal_alignment = 1
+
+[node name="MovesRemaining" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Moves Remaining"
+horizontal_alignment = 1
+
+[node name="MovementValue" type="ProgressBar" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="FoundColony" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Found Colony"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="UnitDisband" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Disband"
+
+[node name="UnitPersistent" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Persistent"

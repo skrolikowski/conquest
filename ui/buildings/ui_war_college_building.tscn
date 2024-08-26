@@ -1,0 +1,459 @@
+[gd_scene load_steps=3 format=3 uid="uid://j3he4ebp21wr"]
+
+[ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_hqhjh"]
+[ext_resource type="Script" path="res://ui/buildings/ui_war_college_building.gd" id="2_omwfo"]
+
+[node name="UIWarCollegeBuilding" type="PanelContainer"]
+custom_minimum_size = Vector2(512, 416)
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_vertical = 0
+theme = ExtResource("1_hqhjh")
+script = ExtResource("2_omwfo")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="BuildingTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(2.08165e-12, 32)
+layout_mode = 2
+text = "War College"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ColonyTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Colony: --"
+horizontal_alignment = 1
+
+[node name="BuildingRefund" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Halt Construction"
+
+[node name="Information" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MilitaryResearch" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Information"]
+layout_mode = 2
+
+[node name="OffensiveHSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="OffensiveResarchHeading" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch"]
+layout_mode = 2
+
+[node name="Offensive" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveResarchHeading"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Offensive"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CurrentLevel" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveResarchHeading"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Current"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ExpProgress" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveResarchHeading"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Progress"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GoldExpenses" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveResarchHeading"]
+custom_minimum_size = Vector2(208, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Gold Expenses"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OffensiveInfantryResearch" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch"]
+layout_mode = 2
+
+[node name="OffensiveInfantry" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveInfantryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Infantry"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OffensiveInfantryLevel" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveInfantryResearch"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OffensiveInfantryExp" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveInfantryResearch"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0/1000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OffensiveInfantryGold" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveInfantryResearch"]
+custom_minimum_size = Vector2(208, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OffensiveInfantryGoldValue" type="SpinBox" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveInfantryResearch/OffensiveInfantryGold"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 2000.0
+alignment = 2
+
+[node name="OffensiveInfantryGoldStatus" type="OptionButton" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveInfantryResearch/OffensiveInfantryGold"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "Suspended"
+popup/item_0/id = 0
+popup/item_1/text = "One Time"
+popup/item_1/id = 1
+popup/item_2/text = "Per Turn"
+popup/item_2/id = 2
+
+[node name="OffensiveCalvaryResearch" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch"]
+layout_mode = 2
+
+[node name="OffensiveCalvary" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveCalvaryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Calvary"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OffensiveCalvaryLevel" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveCalvaryResearch"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OffensiveCalvaryExp" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveCalvaryResearch"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0/1000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OffensiveCalvaryGold" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveCalvaryResearch"]
+custom_minimum_size = Vector2(208, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 5
+
+[node name="OffensiveCalvaryGoldValue" type="SpinBox" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveCalvaryResearch/OffensiveCalvaryGold"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 2000.0
+alignment = 2
+
+[node name="OffensiveCalvaryGoldStatus" type="OptionButton" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveCalvaryResearch/OffensiveCalvaryGold"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "Suspended"
+popup/item_0/id = 0
+popup/item_1/text = "One Time"
+popup/item_1/id = 1
+popup/item_2/text = "Per Turn"
+popup/item_2/id = 2
+
+[node name="OffensiveArtillaryResearch" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch"]
+layout_mode = 2
+
+[node name="OffensiveArtillary" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveArtillaryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Artillary"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OffensiveArtillaryLevel" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveArtillaryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OffensiveArtillaryExp" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveArtillaryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0/1000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OffensiveArtillaryGold" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveArtillaryResearch"]
+custom_minimum_size = Vector2(208, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 5
+
+[node name="OffensiveArtillaryGoldValue" type="SpinBox" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveArtillaryResearch/OffensiveArtillaryGold"]
+layout_mode = 2
+max_value = 2000.0
+alignment = 2
+
+[node name="OffensiveArtillaryGoldStatus" type="OptionButton" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/OffensiveArtillaryResearch/OffensiveArtillaryGold"]
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "Suspended"
+popup/item_0/id = 0
+popup/item_1/text = "One Time"
+popup/item_1/id = 1
+popup/item_2/text = "Per Turn"
+popup/item_2/id = 2
+
+[node name="DefensiveHSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="DefensiveResarchHeading" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch"]
+layout_mode = 2
+
+[node name="Defensive" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveResarchHeading"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Defensive"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CurrentLevel" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveResarchHeading"]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ExpProgress" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveResarchHeading"]
+layout_mode = 2
+size_flags_horizontal = 6
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GoldExpenses" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveResarchHeading"]
+custom_minimum_size = Vector2(208, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DefensiveInfantryResearch" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch"]
+layout_mode = 2
+
+[node name="DefensiveInfantry" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveInfantryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Infantry"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DefensiveInfantryLevel" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveInfantryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DefensiveInfantryExp" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveInfantryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0/1000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DefensiveInfantryGold" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveInfantryResearch"]
+custom_minimum_size = Vector2(208, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DefensiveInfantryGoldValue" type="SpinBox" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveInfantryResearch/DefensiveInfantryGold"]
+layout_mode = 2
+max_value = 2000.0
+alignment = 2
+
+[node name="DefensiveInfantryGoldStatus" type="OptionButton" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveInfantryResearch/DefensiveInfantryGold"]
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "Suspended"
+popup/item_0/id = 0
+popup/item_1/text = "One Time"
+popup/item_1/id = 1
+popup/item_2/text = "Per Turn"
+popup/item_2/id = 2
+
+[node name="DefensiveCalvaryResearch" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch"]
+layout_mode = 2
+
+[node name="DefensiveCalvary" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveCalvaryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Calvary"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DefensiveCalvaryLevel" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveCalvaryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DefensiveCalvaryExp" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveCalvaryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0/1000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DefensiveCalvaryGold" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveCalvaryResearch"]
+custom_minimum_size = Vector2(208, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 5
+
+[node name="DefensiveCalvaryGoldValue" type="SpinBox" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveCalvaryResearch/DefensiveCalvaryGold"]
+layout_mode = 2
+max_value = 2000.0
+alignment = 2
+
+[node name="DefensiveCalvaryGoldStatus" type="OptionButton" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveCalvaryResearch/DefensiveCalvaryGold"]
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "Suspended"
+popup/item_0/id = 0
+popup/item_1/text = "One Time"
+popup/item_1/id = 1
+popup/item_2/text = "Per Turn"
+popup/item_2/id = 2
+
+[node name="DefensiveArtillaryResearch" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch"]
+layout_mode = 2
+
+[node name="DefensiveArtillary" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveArtillaryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Artillary"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DefensiveArtillaryLevel" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveArtillaryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DefensiveArtillaryExp" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveArtillaryResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0/1000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DefensiveArtillaryGold" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveArtillaryResearch"]
+custom_minimum_size = Vector2(208, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 5
+
+[node name="DefensiveArtillaryGoldValue" type="SpinBox" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveArtillaryResearch/DefensiveArtillaryGold"]
+layout_mode = 2
+max_value = 2000.0
+alignment = 2
+
+[node name="DefensiveArtillaryGoldStatus" type="OptionButton" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/DefensiveArtillaryResearch/DefensiveArtillaryGold"]
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "Suspended"
+popup/item_0/id = 0
+popup/item_1/text = "One Time"
+popup/item_1/id = 1
+popup/item_2/text = "Per Turn"
+popup/item_2/id = 2
+
+[node name="LeaderHSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LeaderResearch" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch"]
+layout_mode = 2
+
+[node name="Leader" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/LeaderResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Leader"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LeaderLevel" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/LeaderResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LeaderExp" type="Label" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/LeaderResearch"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0/1000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LeaderGold" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/LeaderResearch"]
+custom_minimum_size = Vector2(208, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 5
+
+[node name="LeaderGoldValue" type="SpinBox" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/LeaderResearch/LeaderGold"]
+layout_mode = 2
+max_value = 2000.0
+alignment = 2
+
+[node name="LeaderGoldStatus" type="OptionButton" parent="MarginContainer/VBoxContainer/Information/MilitaryResearch/LeaderResearch/LeaderGold"]
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "Suspended"
+popup/item_0/id = 0
+popup/item_1/text = "One Time"
+popup/item_1/id = 1
+popup/item_2/text = "Per Turn"
+popup/item_2/id = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="BuildingDemolish" type="CheckBox" parent="MarginContainer/VBoxContainer/Information/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Demolish"
+
+[node name="AcceptChanges" type="Button" parent="MarginContainer/VBoxContainer/Information/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Accept Changes"

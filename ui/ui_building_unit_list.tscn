@@ -1,0 +1,46 @@
+[gd_scene load_steps=3 format=3 uid="uid://cr72g8u847qti"]
+
+[ext_resource type="Script" path="res://ui/ui_building_unit_list.gd" id="1_74rql"]
+[ext_resource type="Script" path="res://ui/ui_carrier_unit_list_tree.gd" id="2_fvis4"]
+
+[node name="UIBuildingUnitList" type="PanelContainer"]
+custom_minimum_size = Vector2(256, 320)
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_vertical = 0
+script = ExtResource("1_74rql")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="UITitle" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 32)
+layout_mode = 2
+text = "Colony Contents"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "~ Building Name ~"
+horizontal_alignment = 1
+
+[node name="UnitList" type="Tree" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+drop_mode_flags = 3
+script = ExtResource("2_fvis4")
+
+[node name="DetachSelected" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Detach Selected"

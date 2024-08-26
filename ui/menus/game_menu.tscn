@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://bc41tcvb43v6k"]
+
+[node name="GameMenu" type="PanelContainer"]
+visible = false
+size_flags_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="GameTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 32)
+layout_mode = 2
+text = "CONQUEST"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SaveAndExit" type="Button" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(128, 2.08165e-12)
+layout_mode = 2
+text = "Save & Exit"
+
+[node name="SaveGame" type="Button" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(128, 2.08165e-12)
+layout_mode = 2
+text = "Save Game"

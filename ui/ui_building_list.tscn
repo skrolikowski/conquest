@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://hb101eay4b6k"]
+
+[ext_resource type="Script" path="res://ui/ui_building_list.gd" id="1_dttyq"]
+[ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_fa11m"]
+
+[node name="UIBuildingList" type="PanelContainer"]
+custom_minimum_size = Vector2(240, 320)
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_vertical = 0
+theme = ExtResource("1_fa11m")
+script = ExtResource("1_dttyq")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="UITitle" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 32)
+layout_mode = 2
+text = "Building List"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ColonyTitle" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Colony: --"
+horizontal_alignment = 1
+
+[node name="BuildingList" type="Tree" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3

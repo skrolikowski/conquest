@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://pav1ubjmbs15"]
+
+[ext_resource type="Script" path="res://scenes/units/leader_unit.gd" id="1_j30gk"]
+[ext_resource type="Texture2D" uid="uid://ddjejss1111o8" path="res://icon.svg" id="2_qmedo"]
+[ext_resource type="PackedScene" uid="uid://bardxsiggrtyx" path="res://scenes/units/carrier.tscn" id="3_vbg80"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wluqh"]
+radius = 8.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vkkla"]
+size = Vector2(10, 10)
+
+[node name="LeaderUnit" type="Area2D" groups=["units"]]
+collision_mask = 2
+script = ExtResource("1_j30gk")
+
+[node name="Carrier" parent="." node_paths=PackedStringArray("unit") instance=ExtResource("3_vbg80")]
+unit = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Carrier"]
+shape = SubResource("CircleShape2D_wluqh")
+debug_color = Color(0, 0.6, 0.14902, 0.223529)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.079, 0.079)
+texture = ExtResource("2_qmedo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_vkkla")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]

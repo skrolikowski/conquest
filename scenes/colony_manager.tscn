@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1uh7im15md52"]
+
+[ext_resource type="Script" path="res://scenes/colony_manager.gd" id="1_k7cqv"]
+
+[node name="ColonyManager" type="Node2D"]
+z_index = 1
+script = ExtResource("1_k7cqv")
+
+[node name="ColonyList" type="Node2D" parent="."]

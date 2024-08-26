@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://c1u6cxd1powe6"]
+
+[ext_resource type="Script" path="res://scenes/buildings/center_building.gd" id="1_fstkx"]
+[ext_resource type="PackedScene" uid="uid://duehosmp2o35k" path="res://scenes/bank.tscn" id="2_pmawp"]
+[ext_resource type="Texture2D" uid="uid://ddjejss1111o8" path="res://icon.svg" id="3_26t3x"]
+[ext_resource type="PackedScene" uid="uid://mayunnsp8hti" path="res://scenes/building_manager.tscn" id="4_0ev27"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gs41h"]
+size = Vector2(32, 32)
+
+[node name="CenterBuilding" type="Area2D" groups=["buildings"]]
+collision_layer = 2
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_fstkx")
+title = "Colony"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_26t3x")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_gs41h")
+
+[node name="Bank" parent="." instance=ExtResource("2_pmawp")]
+
+[node name="BuildingManager" parent="." node_paths=PackedStringArray("colony") instance=ExtResource("4_0ev27")]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
+colony = NodePath("..")

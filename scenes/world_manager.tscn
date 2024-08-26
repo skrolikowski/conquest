@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://ba354gic7in0a"]
+
+[ext_resource type="Script" path="res://scenes/world_manager.gd" id="1_uhvwe"]
+[ext_resource type="PackedScene" uid="uid://45bq430g8u3a" path="res://scenes/world_map.tscn" id="2_x3762"]
+[ext_resource type="PackedScene" uid="uid://rmwgcu4n5q1" path="res://scenes/player.tscn" id="3_1vu3g"]
+[ext_resource type="PackedScene" uid="uid://de3t5875vnq06" path="res://ui/world_canvas.tscn" id="4_7jw07"]
+
+[node name="WorldManager" type="Node2D" groups=["world"]]
+script = ExtResource("1_uhvwe")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="WorldMap" parent="." instance=ExtResource("2_x3762")]
+unique_name_in_owner = true
+
+[node name="Player" parent="." groups=["world"] instance=ExtResource("3_1vu3g")]
+
+[node name="WorldCanvas" parent="." groups=["canvas_layer", "world_canvas"] instance=ExtResource("4_7jw07")]
+unique_name_in_owner = true

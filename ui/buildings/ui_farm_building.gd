@@ -1,0 +1,2 @@
+extends UIMakeBuilding
+class_name UIFarmBuilding

@@ -1,0 +1,122 @@
+[gd_scene load_steps=3 format=3 uid="uid://rlwmpix4s07f"]
+
+[ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_edb6e"]
+[ext_resource type="Script" path="res://ui/buildings/ui_mill_building.gd" id="1_vopuy"]
+
+[node name="UIMillBuilding" type="PanelContainer"]
+custom_minimum_size = Vector2(256, 256)
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_vertical = 0
+theme = ExtResource("1_edb6e")
+script = ExtResource("1_vopuy")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="BuildingTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Mill"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ColonyTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Colony: --"
+horizontal_alignment = 1
+
+[node name="BuildingLevel" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Level: 0"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BuildingDemolish" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Demolish"
+
+[node name="BuildingUpgrade" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Upgrade"
+
+[node name="BuildingRefund" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Halt Construction"
+
+[node name="Production" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProductionLabel" type="Label" parent="MarginContainer/VBoxContainer/Production"]
+layout_mode = 2
+text = "Wood Production"
+horizontal_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/Production"]
+layout_mode = 2
+size_flags_vertical = 6
+columns = 2
+
+[node name="ThisBuilding" type="Label" parent="MarginContainer/VBoxContainer/Production/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "This Mill:"
+horizontal_alignment = 2
+
+[node name="ThisBuildingValue" type="Label" parent="MarginContainer/VBoxContainer/Production/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "--"
+horizontal_alignment = 1
+
+[node name="AllBuildings" type="Label" parent="MarginContainer/VBoxContainer/Production/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "All Mills:"
+horizontal_alignment = 2
+
+[node name="AllBuildingsValue" type="Label" parent="MarginContainer/VBoxContainer/Production/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "--"
+horizontal_alignment = 1
+
+[node name="Stockpile" type="Label" parent="MarginContainer/VBoxContainer/Production/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Stockpile:"
+horizontal_alignment = 2
+
+[node name="StockpileValue" type="Label" parent="MarginContainer/VBoxContainer/Production/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "--"
+horizontal_alignment = 1
+
+[node name="Modifier" type="Label" parent="MarginContainer/VBoxContainer/Production"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Modifier: +0% [+0%] (+0%)"
+horizontal_alignment = 1

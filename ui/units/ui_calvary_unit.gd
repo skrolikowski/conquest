@@ -1,0 +1,2 @@
+extends UIUnit
+class_name UICalvaryUnit

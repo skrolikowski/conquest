@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://rmwgcu4n5q1"]
+
+[ext_resource type="Script" path="res://scenes/player.gd" id="1_bmdt2"]
+[ext_resource type="PackedScene" uid="uid://b1uh7im15md52" path="res://scenes/colony_manager.tscn" id="2_n53cf"]
+
+[node name="Player" type="Node2D"]
+script = ExtResource("1_bmdt2")
+
+[node name="ColonyManager" parent="." node_paths=PackedStringArray("player") instance=ExtResource("2_n53cf")]
+unique_name_in_owner = true
+player = NodePath("..")
+
+[node name="Units" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Timer" type="Timer" parent="."]
