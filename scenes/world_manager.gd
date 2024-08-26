@@ -1,6 +1,3 @@
-##
-# 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
-##
 extends Node2D
 class_name WorldManager
 
