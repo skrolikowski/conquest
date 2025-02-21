@@ -7,6 +7,8 @@ class_name Player
 @export var is_human : bool = true
 @export var is_turn  : bool = true
 
+var turn_number : int = 0
+
 
 func _ready() -> void:
 	if Def.FOG_OF_WAR_ENABLED and is_human:
@@ -25,6 +27,14 @@ func _ready() -> void:
 func debug() -> void:
 	cm.found_colony(Vector2i(8, 11), Vector2(0, 0), 1)
 	cm.create_colony()
+
+	# var center : CenterBuilding = cm.get_colonies()[0] as CenterBuilding
+	# center.create_building(Term.BuildingType.DOCK)
+	# center.bm._update_temp_building(Vector2i(5, 11))
+	# center.bm._place_temp_building()
+
+	# --
+	call_deferred("begin_turn")
 
 
 #region COLONIES
@@ -48,15 +58,26 @@ func _on_timer_timeout() -> void:
 
 #region TURN MANAGEMENT
 func begin_turn() -> void:
-	for colony:CenterBuilding in get_colonies():
-		colony.begin_turn()
+	print("[NOTE] Begin Turn - Player")
 
 	is_turn = true
+	
+	turn_number += 1
+
+	# --
+	var wc : WorldCanvas = Def.get_world_canvas()
+	wc.turn_number = turn_number
+	wc.refresh_current_building_ui()
+
+	# --
+	if turn_number > 1:
+		for colony:CenterBuilding in get_colonies():
+			colony.begin_turn()
 
 	# -- 
 	if is_human:
 		reveal_fog_of_war_for_units()
-
+		
 
 func end_turn() -> void:
 	is_turn = false

@@ -217,7 +217,7 @@ func _on_map_loaded() -> void:
 func _on_end_turn() -> void:
 	print("[NOTE] Turn Ended")
 	# combat_manager.begin_turn()
-	# player.begin_turn()
+	player.begin_turn()
 	
 #endregion
 

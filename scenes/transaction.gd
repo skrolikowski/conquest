@@ -13,7 +13,7 @@ func _init() -> void:
 func clone() -> Transaction:
 	var transaction : Transaction = Transaction.new()
 	for i:Term.ResourceType in transaction.resources:
-		resources[i] = transaction.resources[i]
+		transaction.resources[i] = resources[i]
 	return transaction
 
 

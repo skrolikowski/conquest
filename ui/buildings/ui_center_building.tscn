@@ -27,6 +27,7 @@ layout_mode = 2
 
 [node name="ExitMenu" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(24, 2.08165e-12)
 layout_mode = 2
 text = "x"

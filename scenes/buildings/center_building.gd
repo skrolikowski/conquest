@@ -480,6 +480,8 @@ func create_building(_building_type: Term.BuildingType) -> void:
 	"""
 	var building_scene : PackedScene = Def.get_building_scene_by_type(_building_type)
 	var building       : Building = building_scene.instantiate() as Building
+	#NOTE: Call _ready on specific building type..
+	building._ready()
 	
 	building.colony = self
 	building.player = player

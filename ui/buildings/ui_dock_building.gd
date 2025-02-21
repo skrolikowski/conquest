@@ -20,19 +20,17 @@ func _set_building(_building: Building) -> void:
 	%ShipCountValue.text = "Ship Count: " + str(unit_count) + "/" + str(unit_capacity)
 	
 	# -- Construct Ship
-	construct_ship.disabled = not building.can_construct_ship()
+	construct_ship.disabled = not _building.can_construct_ship()
 
 
 func refresh_ui() -> void:
 	super.refresh_ui()
-	
-	building = building as DockBuilding
 
 	construct_ship.disabled = not building.can_construct_ship()
 
 
 func _on_construct_ship_toggled(toggled_on : bool) -> void:
-	building = building as DockBuilding
+	# building = building as DockBuilding
 
 	if toggled_on:
 		building.construct_ship = true

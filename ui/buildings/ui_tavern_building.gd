@@ -26,13 +26,13 @@ func _set_building(_building: Building) -> void:
 func refresh_ui() -> void:
 	super.refresh_ui()
 	
-	building = building as TavernBuilding
+	# building = building as TavernBuilding
 	
 	recruit_explorer.disabled = not building.can_recruit_explorer()
 
 
 func _on_recruit_explorer_toggled(toggled_on : bool) -> void:
-	building = building as TavernBuilding
+	# building = building as TavernBuilding
 
 	if toggled_on:
 		building.recruit_explorer = true

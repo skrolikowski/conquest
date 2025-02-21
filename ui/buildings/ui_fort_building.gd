@@ -29,7 +29,7 @@ func _ready() -> void:
 	#Popups.HideItemPopup()
 
 func _on_unit_level_selected(index: int) -> void:
-	building = building as FortBuilding
+	# building = building as FortBuilding
 	building.train_level = index + 1
 
 

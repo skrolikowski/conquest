@@ -10,6 +10,8 @@ signal camera_zoom(_direction:int)
 var current_ui : Array[PanelContainer] = []
 var current_unit_list_ui : PanelContainer
 
+var turn_number : int : set = _set_turn_number
+
 
 func _ready() -> void:
 	%ZoomIn.connect("pressed", _on_zoom_in_pressed)
@@ -29,6 +31,10 @@ func _ready() -> void:
 	#TODO:
 	%Next.disabled = true
 	#%Next.connect("pressed", _on_next_pressed)
+
+
+func _set_turn_number(_value: int) -> void:
+	%TurnNumber.text = "Turn: " + str(_value)
 
 
 func _process(_delta: float) -> void:
@@ -185,17 +191,19 @@ func open_found_colony_menu(_cm: ColonyManager) -> void:
 #endregion
 
 
+#region BUILDING MENUS
 func open_building_menu(_building: Building) -> void:
 	close_all_ui()
 	# --
 
 	var scene : PackedScene = Def.get_ui_building_scene_by_type(_building.building_type)
 	var ui    : PanelContainer = scene.instantiate() as PanelContainer
-	ui.building = _building
 		
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 
+	ui.building = _building
+	
 	current_ui.append(ui)
 
 
@@ -208,6 +216,19 @@ func open_building_unit_list(_building: CenterBuilding) -> void:
 
 	current_ui.append(ui)
 	current_unit_list_ui = ui
+
+
+func refresh_current_building_ui() -> void:
+	for ui in current_ui:
+		"""
+		Note: reset the ui to itself to trigger the refresh function
+		"""
+		if ui.building:
+			ui.building = ui.building
+		elif ui.unit:
+			ui.unit = ui.unit
+
+#endregion
 
 
 #region UNIT MENUS

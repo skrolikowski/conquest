@@ -17,7 +17,8 @@ const ATTACKER_FLAG_SQUARE : Vector2i = Vector2i(1, 1)
 
 # --
 const FOG_OF_WAR_ENABLED : bool = false
-const CONFIRM_END_TURN_ENABLED : bool = true
+const CONFIRM_END_TURN_ENABLED : bool = false
+const WEALTH_MODE_ENABLED : bool = true
 
 # --
 const STATUS_SEP : String = "; "
@@ -355,7 +356,7 @@ func get_building_stat(_building_type: Term.BuildingType, _building_level: int) 
 #region UNITS
 func get_unit_cost(_unit_type: Term.UnitType, _unit_level: int) -> Transaction:
 	var transaction : Transaction = units[_unit_type]["cost"][_unit_level-1]
-	return transaction.duplicate()
+	return transaction.clone()
 
 func get_unit_stat(_unit_type: Term.UnitType, _unit_level: int) -> Dictionary:
 	if "stat" in units[_unit_type]:

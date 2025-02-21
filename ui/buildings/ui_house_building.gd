@@ -25,7 +25,7 @@ func _set_building(_building: Building) -> void:
 func refresh_ui() -> void:
 	super.refresh_ui()
 	
-	building = building as HouseBuilding
+	# building = building as HouseBuilding
 	
 	recruit_settler.disabled = not building.can_recruit_settler()
 
