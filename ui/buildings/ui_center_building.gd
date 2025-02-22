@@ -1,21 +1,35 @@
 extends PanelContainer
 class_name UICenterBuilding
 
+@onready var btn_exit : Button = %ExitMenu as Button
+@onready var btn_build : Button = %BuildBuilding as Button
+@onready var btn_pop_details : Button = %PopulationDetails as Button
+@onready var btn_com_details : Button = %CommodityDetails as Button
+@onready var btn_build_list : Button = %BuildingList as Button
+@onready var btn_undo_colony : Button = %UndoFoundColony as Button
+@onready var btn_colony_contents : Button = %ColonyContents as Button
+@onready var btn_upgrade : Button = %ColonyUpgrade as Button
+@onready var btn_leader : Button = %LeaderCheckBox as Button
+
+
 var building       : CenterBuilding : set = _set_building
 var building_state : Term.BuildingState
 
 
 func _ready() -> void:
-	%ExitMenu.connect("pressed", _on_exit_menu_pressed)
-	%BuildBuilding.connect("pressed", _on_build_building_pressed)
-	%PopulationDetails.connect("pressed", _on_population_details_pressed)
-	%CommodityDetails.connect("pressed", _on_commodity_details_pressed)
-	%BuildingList.connect("pressed", _on_building_list_pressed)
-	%UndoFoundColony.connect("pressed", _on_undo_found_colony_pressed)
-	%ColonyContents.connect("pressed", _on_colony_contents_pressed)
+	btn_exit.connect("pressed", _on_exit_menu_pressed)
+	btn_build.connect("pressed", _on_build_building_pressed)
+	btn_pop_details.connect("pressed", _on_population_details_pressed)
+	btn_com_details.connect("pressed", _on_commodity_details_pressed)
+	btn_build_list.connect("pressed", _on_building_list_pressed)
+	btn_undo_colony.connect("pressed", _on_undo_found_colony_pressed)
+	btn_colony_contents.connect("pressed", _on_colony_contents_pressed)
 	
-	%ColonyUpgrade.connect("toggled", _on_building_upgrade_toggled)
-	%LeaderCheckBox.connect("toggled", _on_leader_commission_toggled)
+	btn_upgrade.connect("toggled", _on_building_upgrade_toggled)
+	
+	btn_leader.connect("toggled", _on_leader_commission_toggled)
+	btn_leader.connect("mouse_entered", _on_leader_commission_entered)
+	btn_leader.connect("mouse_exited", _on_leader_commission_exited)
 
 
 func _set_building(_building: CenterBuilding) -> void:
@@ -25,14 +39,14 @@ func _set_building(_building: CenterBuilding) -> void:
 	%ColonyTitle.text        = building.title
 	%ColonyLevel.text        = "Level: " + str(building.level)
 	
-	%ColonyUpgrade.disabled  = not building.can_upgrade()
-	%LeaderCheckBox.disabled = not building.can_commission_leader()
+	btn_upgrade.disabled  = not building.can_upgrade()
+	btn_leader.disabled = not building.can_commission_leader()
 	
 	# -- Undo Found Colony..
 	if _building.building_state == Term.BuildingState.NEW:
-		%UndoFoundColony.show()
+		btn_undo_colony.show()
 	else:
-		%UndoFoundColony.hide()
+		btn_undo_colony.hide()
 	
 	# -- Colony Resource/Supplies
 	var gold_supply       : int = building.bank.get_resource_value(Term.ResourceType.GOLD)
@@ -80,9 +94,9 @@ func _set_building(_building: CenterBuilding) -> void:
 
 func _on_building_upgrade_toggled(toggled_on:bool) -> void:
 	if toggled_on:
-		building.state = Term.BuildingState.UPGRADE
+		building.building_state = Term.BuildingState.UPGRADE
 	else:
-		building.state = building_state
+		building.building_state = building_state
 
 
 func _on_build_building_pressed() -> void:
@@ -102,6 +116,14 @@ func _on_leader_commission_toggled(toggled_on:bool) -> void:
 		building.commission_leader = true
 	else:
 		building.commission_leader = false
+
+
+func _on_leader_commission_entered() -> void:
+	Def.get_world_canvas().update_status(Print.buy_unit_type(Term.UnitType.LEADER))
+
+
+func _on_leader_commission_exited() -> void:
+	Def.get_world_canvas().clear_status()
 
 
 func _on_building_list_pressed() -> void:

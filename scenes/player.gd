@@ -28,6 +28,9 @@ func debug() -> void:
 	cm.found_colony(Vector2i(8, 11), Vector2(0, 0), 1)
 	cm.create_colony()
 
+	"""
+	NOTE: this really doesn't work due to race conditions..
+	"""
 	# var center : CenterBuilding = cm.get_colonies()[0] as CenterBuilding
 	# center.create_building(Term.BuildingType.DOCK)
 	# center.bm._update_temp_building(Vector2i(5, 11))
@@ -36,20 +39,6 @@ func debug() -> void:
 	# --
 	call_deferred("begin_turn")
 
-
-#region COLONIES
-func get_colonies() -> Array[Node]:
-	return cm.get_colonies()
-
-
-func found_colony(_tile : Vector2i, _position: Vector2, _level:int = 1) -> void:
-	cm.found_colony(_tile, _position, _level)
-
-
-func undo_found_colony(_building:CenterBuilding) -> void:
-	cm.undo_create_colony(_building)
-
-#endregion
 
 
 func _on_timer_timeout() -> void:
@@ -64,15 +53,13 @@ func begin_turn() -> void:
 	
 	turn_number += 1
 
-	# --
+	# -- Canvas updates..
 	var wc : WorldCanvas = Def.get_world_canvas()
 	wc.turn_number = turn_number
 	wc.refresh_current_building_ui()
 
-	# --
-	if turn_number > 1:
-		for colony:CenterBuilding in get_colonies():
-			colony.begin_turn()
+	# -- Colony management..
+	begin_turn_for_colonies()
 
 	# -- 
 	if is_human:
@@ -81,6 +68,32 @@ func begin_turn() -> void:
 
 func end_turn() -> void:
 	is_turn = false
+
+#endregion
+
+
+#region COLONIES
+func begin_turn_for_colonies() -> void:
+	for colony:CenterBuilding in get_colonies():
+		if colony.building_state == Term.BuildingState.NEW:
+			colony.building_state = Term.BuildingState.ACTIVE
+		else:
+			if colony.building_state == Term.BuildingState.UPGRADE:
+				colony.upgrade_building(colony)
+
+		colony.begin_turn()
+
+
+func get_colonies() -> Array[Node]:
+	return cm.get_colonies()
+
+
+func found_colony(_tile : Vector2i, _position: Vector2, _level:int = 1) -> void:
+	cm.found_colony(_tile, _position, _level)
+
+
+func undo_found_colony(_building:CenterBuilding) -> void:
+	cm.undo_create_colony(_building)
 
 #endregion
 

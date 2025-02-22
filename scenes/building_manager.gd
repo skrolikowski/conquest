@@ -13,8 +13,10 @@ var occupy_tiles     : Array[Vector2i]
 	
 
 func _ready() -> void:
-	init_building_list()
-	# call_deferred("init_building_list")
+	"""
+	Defer to allow for colony placement
+	"""
+	call_deferred("init_building_list")
 
 
 func _process(_delta: float) -> void:
@@ -128,11 +130,11 @@ func _can_place_temp_building() -> bool:
 
 
 func _place_temp_building() -> void:
-	# if not _can_place_temp_building():
-	# 	remove_building(placing_building)
-	# else:
-	_add_to_occupied_tiles(placing_tile, placing_building.get_tile_end())
-	colony.purchase_building(placing_building)
+	if not _can_place_temp_building():
+		remove_building(placing_building)
+	else:
+		_add_to_occupied_tiles(placing_tile, placing_building.get_tile_end())
+		colony.purchase_building(placing_building)
 
 		#TODO: apply `terrain_modifier` if MakeBuilding
 

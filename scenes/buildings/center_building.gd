@@ -282,6 +282,7 @@ func train_military_research(_research_type:Term.MilitaryResearch, _unit_type:Te
 	else:
 		military_research[_research_type][_unit_type]["exp"] = prev_exp + _gold
 
+
 func get_colony_military_units() -> Array[Node]:
 	return player.get_military_units_by_colony(self)
 
@@ -296,8 +297,10 @@ func get_max_military_unit_count() -> int:
 		if building.building_type == Term.BuildingType.FORT:
 			value += building.get_unit_capacity_value()
 	return value
+#endregion
 
 
+#region SHIPS
 func get_player_ships() -> Array[Node]:
 	return player.get_ships()
 
@@ -526,13 +529,34 @@ func get_buildings_sorted_by_building_type() -> Array[Node]:
 #endregion
 
 
-
-
+#region LEADER
+func create_leader_unit() -> void:
+	if commission_leader:
+		# -- Purchase Leader
+		var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.LEADER, level)
+		bank.resource_purchase(unit_cost)
+		
+		# -- Add Leader
+		var leader : UnitStats = UnitStats.New_Unit(Term.UnitType.LEADER, level)
+		attached_units.append(leader)
+	
+		detach_unit(leader)
+		commission_leader = false
 
 
 func can_commission_leader() -> bool:
-	return false
+	# -- Allow for unchecking..
+	if commission_leader:
+		return true
 
+	# -- Building state check..
+	if building_state != Term.BuildingState.ACTIVE:
+		return false
+
+	# -- Resource availability check..
+	var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.LEADER, level)
+	return bank.can_afford_this_turn(unit_cost)
+#endregion
 
 
 # func _on_input_event(_viewport: Node, _event: InputEvent, _shape_idx: int) -> void:

@@ -223,9 +223,9 @@ func refresh_current_building_ui() -> void:
 		"""
 		Note: reset the ui to itself to trigger the refresh function
 		"""
-		if ui.building:
+		if ui.building != null:
 			ui.building = ui.building
-		elif ui.unit:
+		elif ui.unit != null:
 			ui.unit = ui.unit
 
 #endregion

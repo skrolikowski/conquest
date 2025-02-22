@@ -97,8 +97,12 @@ func can_upgrade() -> bool:
 	
 	# -- Resource availability check..
 	var upgrade_cost : Transaction = get_upgrade_cost()
-	if not colony.bank.can_afford_this_turn(upgrade_cost):
-		return false
+	if self is CenterBuilding:
+		if not self.bank.can_afford_this_turn(upgrade_cost):
+			return false
+	else:
+		if not colony.bank.can_afford_this_turn(upgrade_cost):
+			return false
 	
 	return true
 	
