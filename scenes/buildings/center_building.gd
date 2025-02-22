@@ -7,7 +7,7 @@ class_name CenterBuilding
 @export var population : int = 0
 
 var placing_level     : int = 1  # Resource level; for undoing found colony
-var commission_leader : bool = false
+var commission_leader : bool : set = _set_commission_leader
 var military_research : Dictionary = {}  #TODO: Move to Player?
 var attached_units    : Array[UnitStats] = []
 
@@ -530,12 +530,23 @@ func get_buildings_sorted_by_building_type() -> Array[Node]:
 
 
 #region LEADER
-func create_leader_unit() -> void:
+func _set_commission_leader(_value: bool) -> void:
+	commission_leader = _value
+
 	if commission_leader:
-		# -- Purchase Leader
+		# -- Provide finds for training..
 		var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.LEADER, level)
 		bank.resource_purchase(unit_cost)
-		
+	else:
+		# -- Refund finds..
+		var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.LEADER, level)
+		bank.resource_credit(unit_cost)
+
+	Def.get_world_canvas().refresh_current_building_ui()
+
+
+func create_leader_unit() -> void:
+	if commission_leader:
 		# -- Add Leader
 		var leader : UnitStats = UnitStats.New_Unit(Term.UnitType.LEADER, level)
 		attached_units.append(leader)

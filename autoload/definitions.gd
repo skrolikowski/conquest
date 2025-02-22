@@ -314,12 +314,12 @@ func _convert_to_transaction(_resources: Dictionary) -> Transaction:
 #region BUILDINGS
 func get_building_cost(_building_type: Term.BuildingType, _building_level: int = 1) -> Transaction:
 	var transaction : Transaction = buildings[_building_type]["cost"][_building_level-1]
-	return transaction
+	return transaction.clone()
 
 
 func get_building_make(_building_type: Term.BuildingType, _building_level: int) -> Transaction:
 	var transaction : Transaction = buildings[_building_type]["make"][_building_level-1]
-	return transaction
+	return transaction.clone()
 
 
 func get_building_need(_building_type: Term.BuildingType, _building_level: int) -> Transaction:

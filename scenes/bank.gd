@@ -121,8 +121,8 @@ func set_trading_value(resource_type: Term.ResourceType, value: int) -> void:
 
 
 func resource_purchase(transaction: Transaction) -> void:
-	if Def.WEALTH_MODE_ENABLED:
-		return
+	# if Def.WEALTH_MODE_ENABLED:
+	# 	return
 
 	# --
 	for type:Term.ResourceType in transaction.resources:
@@ -131,8 +131,8 @@ func resource_purchase(transaction: Transaction) -> void:
 
 
 func resource_credit(transaction: Transaction) -> void:
-	if Def.WEALTH_MODE_ENABLED:
-		return
+	# if Def.WEALTH_MODE_ENABLED:
+	# 	return
 
 	# --
 	for type:Term.ResourceType in transaction.resources:
