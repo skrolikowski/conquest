@@ -41,6 +41,7 @@ func _set_building(_building: CenterBuilding) -> void:
 	
 	btn_upgrade.disabled  = not building.can_upgrade()
 	btn_leader.disabled = not building.can_commission_leader()
+	btn_leader.button_pressed  = building.commission_leader
 	
 	# -- Undo Found Colony..
 	if _building.building_state == Term.BuildingState.NEW:

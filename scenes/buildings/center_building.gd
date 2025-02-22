@@ -531,6 +531,10 @@ func get_buildings_sorted_by_building_type() -> Array[Node]:
 
 #region LEADER
 func _set_commission_leader(_value: bool) -> void:
+	if _value == commission_leader:
+		return
+	
+	# --
 	commission_leader = _value
 
 	if commission_leader:
