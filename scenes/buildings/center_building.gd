@@ -7,9 +7,12 @@ class_name CenterBuilding
 @export var population : int = 0
 
 var placing_level     : int = 1  # Resource level; for undoing found colony
-var commission_leader : bool : set = _set_commission_leader
 var military_research : Dictionary = {}  #TODO: Move to Player?
 var attached_units    : Array[UnitStats] = []
+
+# -- Leader Commission
+var commission_leader        : bool : set = _set_commission_leader
+var commission_leader_unit   : UnitStats
 
 
 func _ready() -> void:
@@ -78,6 +81,10 @@ func begin_turn() -> void:
 			build_building(building)
 		elif building.building_state == Term.BuildingState.UPGRADE:
 			upgrade_building(building)
+
+	# -- Leader Commission
+	if commission_leader:
+		create_leader_unit()
 
 	# -- Resource Management
 	bank.commit()
@@ -226,13 +233,13 @@ func detach_unit(_unit_stat: UnitStats) -> void:
 	var unit       : Unit = unit_scene.instantiate() as Unit
 	
 	unit.stat     = _unit_stat
-	unit.position = global_position
-	unit.player   = player
+	unit.position = position
 	
 	player.add_unit(unit)
 	
 	# -- Remove from collection..
-	attached_units.erase(_unit_stat)
+	if attached_units.has(_unit_stat):
+		attached_units.erase(_unit_stat)
 
 	# -- Remove Unit/Leader reference..
 	#WARNING: this should work.. untested
@@ -530,40 +537,59 @@ func get_buildings_sorted_by_building_type() -> Array[Node]:
 
 
 #region LEADER
-func _set_commission_leader(_value: bool) -> void:
-	if _value == commission_leader:
+func _set_commission_leader(_commission_leader: bool) -> void:
+	if _commission_leader == commission_leader:
 		return
 	
 	# --
-	commission_leader = _value
+	commission_leader = _commission_leader
 
 	if commission_leader:
-		# -- Provide finds for training..
+		commission_leader_unit = UnitStats.New_Unit(Term.UnitType.LEADER, level)
+		Def.get_world_canvas().open_create_leader_unit_menu(self, commission_leader_unit)
+
+		# -- Provide funds for training..
 		var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.LEADER, level)
 		bank.resource_purchase(unit_cost)
 	else:
-		# -- Refund finds..
+		commission_leader_unit = null
+		
+		# -- Refund training funds..
 		var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.LEADER, level)
 		bank.resource_credit(unit_cost)
 
 	Def.get_world_canvas().refresh_current_building_ui()
 
 
+func lock_commission_leader() -> void:
+
+	# -- Provide funds for training..
+	# var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.LEADER, level)
+	# bank.resource_purchase(unit_cost)
+
+	Def.get_world_canvas().refresh_current_building_ui()
+
+
+func cancel_commission_leader() -> void:
+	commission_leader      = false
+	commission_leader_unit = null
+
+	Def.get_world_canvas().refresh_current_building_ui()
+
+
 func create_leader_unit() -> void:
-	if commission_leader:
-		# -- Add Leader
-		var leader : UnitStats = UnitStats.New_Unit(Term.UnitType.LEADER, level)
-		attached_units.append(leader)
+	if commission_leader_unit != null:
+		# attached_units.append(temp_leader_unit)
+		detach_unit(commission_leader_unit)
 	
-		detach_unit(leader)
-		commission_leader = false
+	commission_leader = false
 
 
 func can_commission_leader() -> bool:
 	# -- Allow for unchecking..
 	if commission_leader:
 		return true
-
+		
 	# -- Building state check..
 	if building_state != Term.BuildingState.ACTIVE:
 		return false

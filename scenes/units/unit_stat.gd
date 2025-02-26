@@ -102,6 +102,7 @@ func has_capacity() -> bool:
 #region STATIC METHODS
 static func New_Unit(_unit_type : Term.UnitType, _level : int=1) -> UnitStats:
 	var r:UnitStats = UnitStats.new()
+	r.unit_name  = NameGenerator.generate(4, 5) +  " " + NameGenerator.generate(6, 8)
 	r.title      = Def._convert_unit_type_to_name(_unit_type)
 	r.unit_type  = _unit_type
 	r.unit_state = Term.UnitState.IDLE

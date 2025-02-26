@@ -1,23 +1,23 @@
 extends PanelContainer
 class_name UICenterBuilding
 
-@onready var btn_exit : Button = %ExitMenu as Button
+@onready var btn_close : Button = %BtnClose as Button
 @onready var btn_build : Button = %BuildBuilding as Button
 @onready var btn_pop_details : Button = %PopulationDetails as Button
 @onready var btn_com_details : Button = %CommodityDetails as Button
 @onready var btn_build_list : Button = %BuildingList as Button
 @onready var btn_undo_colony : Button = %UndoFoundColony as Button
 @onready var btn_colony_contents : Button = %ColonyContents as Button
-@onready var btn_upgrade : Button = %ColonyUpgrade as Button
-@onready var btn_leader : Button = %LeaderCheckBox as Button
-
+@onready var btn_upgrade   : Button = %ColonyUpgrade as Button
+@onready var btn_leader    : Button = %LeaderCheckBox as Button
+#@onready var ctn_blocker   : PanelContainer = %BlockContainer as PanelContainer
 
 var building       : CenterBuilding : set = _set_building
 var building_state : Term.BuildingState
 
 
 func _ready() -> void:
-	btn_exit.connect("pressed", _on_exit_menu_pressed)
+	btn_close.connect("pressed", _on_close_pressed)
 	btn_build.connect("pressed", _on_build_building_pressed)
 	btn_pop_details.connect("pressed", _on_population_details_pressed)
 	btn_com_details.connect("pressed", _on_commodity_details_pressed)
@@ -38,10 +38,13 @@ func _set_building(_building: CenterBuilding) -> void:
 	
 	%ColonyTitle.text        = building.title
 	%ColonyLevel.text        = "Level: " + str(building.level)
-	
+
+	# -- Building Upgrade
 	btn_upgrade.disabled  = not building.can_upgrade()
+	
+	# -- Commission Leader..
 	btn_leader.disabled = not building.can_commission_leader()
-	btn_leader.button_pressed  = building.commission_leader
+	btn_leader.button_pressed = building.commission_leader_unit != null
 	
 	# -- Undo Found Colony..
 	if _building.building_state == Term.BuildingState.NEW:
@@ -142,5 +145,5 @@ func _on_colony_contents_pressed() -> void:
 	Def.get_world_canvas().open_building_unit_list(building)
 
 
-func _on_exit_menu_pressed() -> void:
+func _on_close_pressed() -> void:
 	Def.get_world_canvas().close_ui(self)

@@ -4,8 +4,12 @@ class_name WorldCanvas
 signal end_turn
 signal camera_zoom(_direction:int)
 
-@onready var confirm := %ConfirmationDialog as ConfirmationDialog
-@onready var close_btn := %CloseUI as Button
+@onready var confirm      := %ConfirmationDialog as ConfirmationDialog
+@onready var btn_close    := %BtnCloseUI as Button
+@onready var btn_zoom_in  := %BtnZoomIn as Button
+@onready var btn_zoom_out := %BtnZoomOut as Button
+@onready var btn_end_turn := %BtnEndTurn as Button
+@onready var btn_menu     := %BtnMenu as Button
 
 var current_ui : Array[PanelContainer] = []
 var current_unit_list_ui : PanelContainer
@@ -14,15 +18,15 @@ var turn_number : int : set = _set_turn_number
 
 
 func _ready() -> void:
-	%ZoomIn.connect("pressed", _on_zoom_in_pressed)
-	%ZoomOut.connect("pressed", _on_zoom_out_pressed)
-	close_btn.connect("pressed", _on_close_ui_pressed)
-	%Menu.connect("pressed", _on_menu_pressed)
+	btn_zoom_in.connect("pressed", _on_zoom_in_pressed)
+	btn_zoom_out.connect("pressed", _on_zoom_out_pressed)
+	# btn_close.connect("pressed", _on_close_ui_pressed)
+	btn_menu.connect("pressed", _on_menu_pressed)
 	
 	if Def.CONFIRM_END_TURN_ENABLED:
-		%EndTurn.connect("pressed", _on_end_turn_pressed)
+		btn_end_turn.connect("pressed", _on_end_turn_pressed)
 	else:
-		%EndTurn.connect("pressed", _on_end_turn_confirmed)
+		btn_end_turn.connect("pressed", _on_end_turn_confirmed)
 	
 	#TODO:
 	%UnitList.disabled = true
@@ -37,8 +41,8 @@ func _set_turn_number(_value: int) -> void:
 	%TurnNumber.text = "Turn: " + str(_value)
 
 
-func _process(_delta: float) -> void:
-	close_btn.visible = current_ui.size() > 0
+#func _process(_delta: float) -> void:
+	#close_btn.visible = current_ui.size() > 0
 
 
 func _on_end_turn_confirmed() -> void:
@@ -75,8 +79,8 @@ func _on_menu_pressed() -> void:
 
 
 #region CLOSE UI
-func _on_close_ui_pressed() -> void:
-	close_all_ui()
+# func _on_close_ui_pressed() -> void:
+# 	close_all_ui()
 
 
 func close_all_ui() -> void:
@@ -103,6 +107,38 @@ func close_ui(_ui:PanelContainer) -> void:
 #endregion
 
 
+#region BLOCKER
+func block_other_ui(_ui: PanelContainer) -> void:
+	for ui : PanelContainer in current_ui:
+		if ui != _ui:
+			_add_blocker(ui)
+
+
+func block_all_ui() -> void:
+	for ui : PanelContainer in current_ui:
+		_add_blocker(ui)
+
+
+func unblock_all_ui() -> void:
+	for ui : PanelContainer in current_ui:
+		_remove_blocker(ui)
+
+
+func _add_blocker(_ui: PanelContainer) -> void:
+	var blocker : PanelContainer = PanelContainer.new()
+	blocker.name = "Blocker"
+	_ui.add_child(blocker)
+
+
+func _remove_blocker(_ui: PanelContainer) -> void:
+	var blocker : PanelContainer = _ui.get_node("Blocker") as PanelContainer
+	if blocker:
+		_ui.remove_child(blocker)
+		blocker.queue_free()
+
+#endregion
+
+
 #region CENTER BUILDING MENUS
 func open_colony_build_building_menu(_building: CenterBuilding) -> void:
 	
@@ -115,13 +151,13 @@ func open_colony_build_building_menu(_building: CenterBuilding) -> void:
 	# --
 	var ui : UIBuildBuilding = Preload.ui_build_building_scene.instantiate() as UIBuildBuilding
 	ui.colony = _building
-
+	
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 
 	current_ui.append(ui)
-
-
+	
+	
 func open_colony_population_detail(_building: CenterBuilding) -> void:
 	
 	# --
@@ -198,13 +234,12 @@ func open_building_menu(_building: Building) -> void:
 
 	var scene : PackedScene = Def.get_ui_building_scene_by_type(_building.building_type)
 	var ui    : PanelContainer = scene.instantiate() as PanelContainer
-		
+	current_ui.append(ui)
+	
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
-
-	ui.building = _building
 	
-	current_ui.append(ui)
+	ui.building = _building
 
 
 func open_building_unit_list(_building: CenterBuilding) -> void:
@@ -255,6 +290,18 @@ func open_carrier_unit_list(_unit: Unit) -> void:
 
 	current_ui.append(ui)
 	current_unit_list_ui = ui
+
+
+func open_create_leader_unit_menu(_building: CenterBuilding, _leader: UnitStats) -> void:
+	var ui : UICreateLeaderUnit = Preload.ui_create_leader_scene.instantiate() as UICreateLeaderUnit
+	current_ui.append(ui)
+
+	%Panels.add_child(ui)
+	%Panels.move_child(ui, 0)
+	
+	ui.building = _building
+	ui.leader = _leader
+
 
 #endregion
 
