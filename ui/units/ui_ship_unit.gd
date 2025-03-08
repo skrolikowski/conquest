@@ -1,41 +1,46 @@
 extends UIUnit
 class_name UIShipUnit
 
-@onready var btn_close : Button = %BtnClose as Button
+@onready var unit_name	    : Label = %UnitName as Label
+@onready var cargo_hold	    : Label = %CargoHold as Label
+@onready var btn_close      : Button = %BtnClose as Button
+@onready var btn_cargo      : Button = %BtnCargo as Button
+@onready var btn_explore    : Button = %BtnExplore as Button
+@onready var btn_detach_all : Button = %BtnDetachAll as Button
 
 
 func _ready() -> void:
 	super._ready()
 
 	btn_close.connect("pressed", _on_close_pressed)
-	%UnitsAttached.connect("pressed", _on_units_attached_pressed)
-	%Explore.connect("pressed", _on_explore_pressed)
-	%DetachAll.connect("pressed", _on_detach_all_pressed)
+	btn_cargo.connect("pressed", _on_cargo_pressed)
+	btn_explore.connect("pressed", _on_explore_pressed)
+	btn_detach_all.connect("pressed", _on_detach_all_pressed)
 
 
 func refresh_ui() -> void:
 	super.refresh_ui()
 	
 	# --
-	%Explore.disabled   = not unit.can_explore()
-	%DetachAll.disabled = not unit.can_detach_unit()
+	btn_explore.disabled    = not unit.can_explore()
+	btn_detach_all.disabled = not unit.can_detach_unit()
 	
 	# -- Explort button
 	if unit.is_exploring:
-		%Explore.text = "Halt"
+		btn_explore.text = "Halt"
 	else:
-		%Explore.text = "Explore"
+		btn_explore.text = "Explore"
 	
 	# -- Unit name
-	%UnitName.text = unit.stat.unit_name
+	unit_name.text = "Name: " + unit.stat.unit_name
 	
 	# -- Cargo Hold
 	var unit_count    : int = unit.stat.attached_units.size()
 	var unit_capacity : int = unit.stat.max_attached_units
-	%CargoHold.text = "Cargo Hold: " + str(unit_count) + "/" + str(unit_capacity)
+	cargo_hold.text = "Cargo Hold: " + str(unit_count) + "/" + str(unit_capacity)
 
 
-func _on_units_attached_pressed() -> void:
+func _on_cargo_pressed() -> void:
 	Def.get_world_canvas().open_carrier_unit_list(unit)
 
 
@@ -55,4 +60,4 @@ func _on_detach_all_pressed() -> void:
 
 
 func _on_close_pressed() -> void:
-	Def.get_world_canvas().close_ui(self)
+	Def.get_world_canvas().close_all_ui()

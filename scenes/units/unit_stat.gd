@@ -92,21 +92,44 @@ func can_attach_units() -> bool:
 
 
 func has_capacity() -> bool:
-	if not can_attach_units():
-		return false
-		
-	return attached_units.size() < max_attached_units
+	return can_attach_units() and attached_units.size() < max_attached_units
+
+
+func get_units_sorted_by_unit_type() -> Array[UnitStats]:
+	var units : Array[UnitStats] = attached_units
+	units.sort_custom(func(a:Unit, b:Unit) -> bool: return a.unit_type < b.unit_type)
+	return units
 #endregion
 
 
 #region STATIC METHODS
-static func New_Unit(_unit_type : Term.UnitType, _level : int=1) -> UnitStats:
-	var r:UnitStats = UnitStats.new()
-	r.unit_name  = NameGenerator.generate(4, 5) +  " " + NameGenerator.generate(6, 8)
-	r.title      = Def._convert_unit_type_to_name(_unit_type)
-	r.unit_type  = _unit_type
-	r.unit_state = Term.UnitState.IDLE
-	r.level      = _level
-	return r
+static func New_Unit(_unit_type : Term.UnitType, _level : int = 1) -> UnitStats:
+	
+	var unit_stats : UnitStats = UnitStats.new()
+	unit_stats.title      = Def._convert_unit_type_to_name(_unit_type)
+	unit_stats.unit_type  = _unit_type
+	unit_stats.unit_state = Term.UnitState.IDLE
+	unit_stats.level      = _level
+	
+	if _unit_type == Term.UnitType.LEADER:
+		unit_stats.unit_name  = NameGenerator.generate(4, 5) +  " " + NameGenerator.generate(6, 8)
+		unit_stats.max_attached_units = 8
+		unit_stats.attached_units = []
+		unit_stats.stat_props = {
+			"attacks_in_combat": 0,
+			"move_bonus": 0,
+			"charisma": 0,
+			"reputation": 0
+		}
+		unit_stats.unit_category = Term.UnitCategory.MILITARY
+	elif _unit_type == Term.UnitType.SHIP:
+		unit_stats.unit_name  = NameGenerator.generate(6, 8)
+		unit_stats.max_attached_units = Def.get_unit_stat(_unit_type, _level).cargo_hold
+		unit_stats.attached_units = []
+		unit_stats.unit_category = Term.UnitCategory.SHIP
+	elif _unit_type == Term.UnitType.INFANTRY || _unit_type == Term.UnitType.CALVARY || _unit_type == Term.UnitType.ARTILLARY:
+		unit_stats.unit_category = Term.UnitCategory.MILITARY
+		
+	return unit_stats
 
 #endregion

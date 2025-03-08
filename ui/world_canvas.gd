@@ -241,13 +241,17 @@ func open_building_menu(_building: Building) -> void:
 
 
 func open_building_unit_list(_building: CenterBuilding) -> void:
+	# [SUB UI]
+	# --
+	close_all_sub_ui()
+	
 	var ui : UIBuildingUnitList = Preload.ui_building_unit_list_scene.instantiate() as UIBuildingUnitList
-	ui.building = _building
 	
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
-
-	current_ui.append(ui)
+	
+	ui.building = _building
+	current_sub_ui.append(ui)
 	# current_unit_list_ui = ui
 
 
@@ -266,27 +270,33 @@ func refresh_current_building_ui() -> void:
 
 #region UNIT MENUS
 func open_unit_menu(_unit: Unit) -> void:
-	close_all_ui()
+	# [MAIN UI]
 	# --
+	close_all_ui()
 
 	var scene : PackedScene = Def.get_ui_unit_scene_by_type(_unit.stat.unit_type)
 	var ui    : PanelContainer = scene.instantiate() as PanelContainer
-	ui.unit = _unit
-		
+	
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 	
-	current_ui.append(ui)
+	ui.unit = _unit
+	current_ui = ui
 
 
 func open_carrier_unit_list(_unit: Unit) -> void:
-	var ui : UICarrierUnitList = Preload.ui_carrier_unit_list_scene.instantiate() as UICarrierUnitList
-	ui.carrier = _unit
+	# [SUB UI]
+	# --
+	close_all_sub_ui()
+	
+	var scene : PackedScene = Preload.ui_carrier_unit_list_scene
+	var ui : UICarrierUnitList = scene.instantiate() as UICarrierUnitList
 	
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 
-	current_ui.append(ui)
+	ui.carrier = _unit
+	current_sub_ui.append(ui)
 	# current_unit_list_ui = ui
 
 

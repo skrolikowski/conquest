@@ -9,24 +9,6 @@ func _ready() -> void:
 	%DetachSelected.connect("pressed", _on_detach_unit_pressed)
 
 
-func _on_unit_selected() -> void:
-	var tree_item : TreeItem = %UnitList.get_selected()
-	%DetachSelected.disabled = tree_item == null
-	
-
-func _on_detach_unit_pressed() -> void:
-	var tree_item : TreeItem = %UnitList.get_selected()
-	if tree_item == null:
-		return
-#
-	var unit_stat : UnitStats = tree_item.get_metadata(0) as UnitStats
-	if unit_stat == null:
-		return
-
-	building.detach_unit(unit_stat)
-	%UnitList.remove_tree_item(tree_item)
-
-
 func _set_building(_building: CenterBuilding) -> void:
 	building = _building
 
@@ -48,3 +30,21 @@ func _set_building(_building: CenterBuilding) -> void:
 		tree_item.set_text(0, unit_stat.title + " (" + str(unit_stat.level) + ")")
 		tree_item.set_metadata(0, unit_stat)
 		
+
+
+func _on_unit_selected() -> void:
+	var tree_item : TreeItem = %UnitList.get_selected()
+	%DetachSelected.disabled = tree_item == null
+	
+
+func _on_detach_unit_pressed() -> void:
+	var tree_item : TreeItem = %UnitList.get_selected()
+	if tree_item == null:
+		return
+#
+	var unit_stat : UnitStats = tree_item.get_metadata(0) as UnitStats
+	if unit_stat == null:
+		return
+
+	building.detach_unit(unit_stat)
+	%UnitList.remove_tree_item(tree_item)

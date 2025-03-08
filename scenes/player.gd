@@ -36,13 +36,22 @@ func debug() -> void:
 	# center.bm._update_temp_building(Vector2i(5, 11))
 	# center.bm._place_temp_building()
 
+	# -- Starting Ship
+	# var coast_tiles : Array[Vector2i] = Def.get_world_map().get_coast_tiles()
+	# var start_tile  : Vector2i = coast_tiles.pick_random()
+	
 	var ship     : UnitStats = UnitStats.New_Unit(Term.UnitType.SHIP, 1)
 	var ship_pos : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(4, 8))
 	var ship_unit : Unit = create_unit(ship, ship_pos)
-	ship_unit.stat.max_attached_units = 8
-	ship_unit.stat.attached_units = [
-		UnitStats.New_Unit(Term.UnitType.INFANTRY, 1)
-	]
+	
+	var leader : UnitStats = UnitStats.New_Unit(Term.UnitType.LEADER, 1)
+	leader.attach_unit(UnitStats.New_Unit(Term.UnitType.INFANTRY, 1))
+	# leader.attached_units.append(UnitStats.New_Unit(Term.UnitType.INFANTRY, 1))
+	ship_unit.stat.attached_units.append(leader)
+
+	ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.SETTLER, 1))
+	ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.EXPLORER, 1))
+	ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.EXPLORER, 1))
 
 	# --
 	call_deferred("begin_turn")
