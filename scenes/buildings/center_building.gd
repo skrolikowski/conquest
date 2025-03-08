@@ -113,11 +113,14 @@ func get_total_population_capacity_value(_building_type:Term.BuildingType) -> in
 
 func get_max_population() -> int:
 	var value : int = Def.get_building_stat(building_type, level).max_population
-	for building:Building in bm.get_buildings():
-		if building.building_type == Term.BuildingType.HOUSING:
-			value += Def.get_building_stat(building.building_type, level).max_population
-		elif building.building_type == Term.BuildingType.FARM:
-			value += Def.get_building_stat(building.building_type, level).max_population
+
+	for building: Building in bm.get_buildings():
+		if building.building_state == Term.BuildingState.ACTIVE:
+			if building.building_type == Term.BuildingType.HOUSING:
+				value += Def.get_building_stat(building.building_type, level).max_population
+			elif building.building_type == Term.BuildingType.FARM:
+				value += Def.get_building_stat(building.building_type, level).max_population
+	
 	return value
 
 
@@ -126,8 +129,28 @@ func is_at_max_population() -> bool:
 
 
 func get_next_max_population() -> int:
-	#TODO: calculate based on housing being contructed
-	return 0
+	var value : int = 0
+
+	if building_state == Term.BuildingState.UPGRADE:
+		#TODO: handle max building level error
+		var curr_max : int = Def.get_building_stat(building_type, level).max_population
+		var next_max : int = Def.get_building_stat(building_type, level + 1).max_population
+		value += next_max - curr_max
+
+	for building: Building in bm.get_buildings():
+		if building.building_state == Term.BuildingState.NEW:
+			if building.building_type == Term.BuildingType.HOUSING:
+				#TODO: handle max building level error
+				var curr_max : int = Def.get_building_stat(building_type, level).max_population
+				var next_max : int = Def.get_building_stat(building_type, level + 1).max_population
+				value += next_max - curr_max
+			elif building.building_type == Term.BuildingType.FARM:
+				#TODO: handle max building level error
+				var curr_max : int = Def.get_building_stat(building_type, level).max_population
+				var next_max : int = Def.get_building_stat(building_type, level + 1).max_population
+				value += next_max - curr_max
+
+	return value
 
 
 func get_total_population() -> int:
