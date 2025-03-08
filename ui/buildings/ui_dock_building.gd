@@ -5,6 +5,8 @@ class_name UIDockBuilding
 
 
 func _ready() -> void:
+	super._ready()
+	
 	construct_ship.connect("toggled", _on_construct_ship_toggled)
 
 

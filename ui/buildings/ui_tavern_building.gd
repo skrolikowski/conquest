@@ -5,6 +5,8 @@ class_name UITavernBuilding
 
 
 func _ready() -> void:
+	super._ready()
+	
 	recruit_explorer.connect("toggled", _on_recruit_explorer_toggled)
 
 

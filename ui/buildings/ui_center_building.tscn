@@ -28,6 +28,7 @@ layout_mode = 2
 [node name="BtnClose" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
+toggle_mode = true
 text = "X"
 
 [node name="UITitle" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]

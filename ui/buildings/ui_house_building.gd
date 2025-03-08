@@ -5,6 +5,8 @@ class_name UIHouseBuilding
 
 
 func _ready() -> void:
+	super._ready()
+	
 	recruit_settler.connect("pressed", _on_recruit_settler_toggled)
 
 

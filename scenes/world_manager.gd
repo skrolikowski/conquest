@@ -216,6 +216,10 @@ func _on_map_loaded() -> void:
 
 func _on_end_turn() -> void:
 	print("[NOTE] Turn Ended")
+
+	Def.get_world_canvas().close_all_ui()
+	unselect_all()
+
 	# combat_manager.begin_turn()
 	player.begin_turn()
 	
@@ -229,7 +233,8 @@ func attempt_select_area2D(_position : Vector2) -> void:
 		if collision is Unit:
 			select_unit(collision as Unit)
 		elif collision is Building:
-			select_building(collision as Building)
+			var building : Building = collision as Building
+			select_building(building)
 	else:
 		unselect_all()
 

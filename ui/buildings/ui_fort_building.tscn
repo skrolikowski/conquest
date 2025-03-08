@@ -1,124 +1,142 @@
-[gd_scene load_steps=2 format=3 uid="uid://yhm04o0mge02"]
+[gd_scene load_steps=3 format=3 uid="uid://yhm04o0mge02"]
 
 [ext_resource type="Script" path="res://ui/buildings/ui_fort_building.gd" id="1_03jic"]
+[ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_l60um"]
 
 [node name="UIFortBuilding" type="PanelContainer"]
-custom_minimum_size = Vector2(384, 352)
+custom_minimum_size = Vector2(384, 320)
 offset_right = 40.0
 offset_bottom = 40.0
 size_flags_vertical = 0
+theme = ExtResource("1_l60um")
 script = ExtResource("1_03jic")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="BuildingTitle" type="Label" parent="VBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(2.08165e-12, 32)
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="BtnClose" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "X"
+
+[node name="BuildingTitle" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(2.08165e-12, 24)
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Fort"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ColonyTitle" type="Label" parent="VBoxContainer"]
+[node name="ColonyTitle" type="Label" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Colony: --"
 horizontal_alignment = 1
 
-[node name="BuildingLevel" type="Label" parent="VBoxContainer"]
+[node name="BuildingLevel" type="Label" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Level: 0"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="BuildingDemolish" type="CheckBox" parent="VBoxContainer/HBoxContainer"]
+[node name="BuildingDemolish" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "Demolish"
 
-[node name="BuildingUpgrade" type="CheckBox" parent="VBoxContainer/HBoxContainer"]
+[node name="BuildingUpgrade" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "Upgrade"
 
-[node name="BuildingRefund" type="Button" parent="VBoxContainer"]
+[node name="BuildingRefund" type="Button" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "Halt Construction"
 
-[node name="Information" type="VBoxContainer" parent="VBoxContainer"]
+[node name="Information" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="TotalArmyCount" type="Label" parent="VBoxContainer/Information"]
+[node name="TotalArmyCount" type="Label" parent="MarginContainer/VBoxContainer/Information"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Total Army: 0 / 0"
 horizontal_alignment = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/Information"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Information"]
 layout_mode = 2
 
-[node name="UnitLevelLabel" type="Label" parent="VBoxContainer/Information/HBoxContainer2"]
+[node name="UnitLevelLabel" type="Label" parent="MarginContainer/VBoxContainer/Information/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "New Unit Level:"
 
-[node name="UnitLevelSelect" type="OptionButton" parent="VBoxContainer/Information/HBoxContainer2"]
+[node name="UnitLevelSelect" type="OptionButton" parent="MarginContainer/VBoxContainer/Information/HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="ColonyDefense" type="Label" parent="VBoxContainer/Information"]
+[node name="ColonyDefense" type="Label" parent="MarginContainer/VBoxContainer/Information"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Colony Defense"
 horizontal_alignment = 1
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/Information"]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/Information"]
 layout_mode = 2
 columns = 6
 
-[node name="UnitLabel" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="UnitLabel" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 custom_minimum_size = Vector2(96, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 horizontal_alignment = 2
 
-[node name="Units1" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="Units1" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "1"
 
-[node name="Units2" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="Units2" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "2"
 
-[node name="Units3" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="Units3" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "3"
 
-[node name="Units4" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="Units4" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "4"
 
-[node name="TrainUnit" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="TrainUnit" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 2.08165e-12)
 layout_mode = 2
@@ -126,110 +144,110 @@ size_flags_horizontal = 6
 text = "Train"
 horizontal_alignment = 1
 
-[node name="InfantryUnits" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="InfantryUnits" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 custom_minimum_size = Vector2(96, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 text = "Infantry:"
 horizontal_alignment = 2
 
-[node name="InfantryUnits1" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="InfantryUnits1" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "0"
 
-[node name="InfantryUnits2" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="InfantryUnits2" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "0"
 
-[node name="InfantryUnits3" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="InfantryUnits3" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "0"
 
-[node name="InfantryUnits4" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="InfantryUnits4" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "0"
 
-[node name="TrainInfantryUnit" type="CheckBox" parent="VBoxContainer/Information/GridContainer"]
+[node name="TrainInfantryUnit" type="CheckBox" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="CalvaryUnits" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="CalvaryUnits" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 custom_minimum_size = Vector2(96, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 text = "Calvary:"
 horizontal_alignment = 2
 
-[node name="CalvaryUnits1" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="CalvaryUnits1" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "0"
 
-[node name="CalvaryUnits2" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="CalvaryUnits2" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "0"
 
-[node name="CalvaryUnits3" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="CalvaryUnits3" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "0"
 
-[node name="CalvaryUnits4" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="CalvaryUnits4" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "0"
 
-[node name="TrainCalvaryUnit" type="CheckBox" parent="VBoxContainer/Information/GridContainer"]
+[node name="TrainCalvaryUnit" type="CheckBox" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="ArtillaryUnits" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="ArtillaryUnits" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 custom_minimum_size = Vector2(96, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 text = "Artillary:"
 horizontal_alignment = 2
 
-[node name="ArtillaryUnits1" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="ArtillaryUnits1" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "0"
 
-[node name="ArtillaryUnits2" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="ArtillaryUnits2" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "0"
 
-[node name="ArtillaryUnits3" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="ArtillaryUnits3" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "0"
 
-[node name="ArtillaryUnits4" type="Label" parent="VBoxContainer/Information/GridContainer"]
+[node name="ArtillaryUnits4" type="Label" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "0"
 
-[node name="TrainArtillaryUnit" type="CheckBox" parent="VBoxContainer/Information/GridContainer"]
+[node name="TrainArtillaryUnit" type="CheckBox" parent="MarginContainer/VBoxContainer/Information/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6

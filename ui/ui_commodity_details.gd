@@ -1,7 +1,12 @@
 extends PanelContainer
 class_name UICommodityDetails
 
+@onready var btn_close : Button = %BtnClose as Button
+
 var colony : CenterBuilding : set = _set_colony
+
+func _ready() -> void:
+	btn_close.connect("pressed", _on_close_pressed)
 
 
 func _set_colony(_building: CenterBuilding) -> void:
@@ -65,3 +70,6 @@ func _set_colony(_building: CenterBuilding) -> void:
 	%CropsTotal.text     = str(crops_total)
 	
 	
+func _on_close_pressed() -> void:
+	Def.get_world_canvas().close_ui(self)
+

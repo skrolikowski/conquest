@@ -41,10 +41,11 @@ func _set_building(_building: CenterBuilding) -> void:
 
 	# -- Building Upgrade
 	btn_upgrade.disabled  = not building.can_upgrade()
+	#TODO: if disabled let user know why (e.g. tooltip or status bar)
 	
 	# -- Commission Leader..
 	btn_leader.disabled = not building.can_commission_leader()
-	btn_leader.button_pressed = building.commission_leader_unit != null
+	btn_leader.set_pressed_no_signal(building.commission_leader)
 	
 	# -- Undo Found Colony..
 	if _building.building_state == Term.BuildingState.NEW:
@@ -115,11 +116,8 @@ func _on_commodity_details_pressed() -> void:
 	Def.get_world_canvas().open_colony_commodity_detail(building)
 
 
-func _on_leader_commission_toggled(toggled_on:bool) -> void:
-	if toggled_on:
-		building.commission_leader = true
-	else:
-		building.commission_leader = false
+func _on_leader_commission_toggled(_toggled_on:bool) -> void:
+	building.set_commission_leader(_toggled_on)
 
 
 func _on_leader_commission_entered() -> void:

@@ -11,8 +11,8 @@ var military_research : Dictionary = {}  #TODO: Move to Player?
 var attached_units    : Array[UnitStats] = []
 
 # -- Leader Commission
-var commission_leader        : bool : set = _set_commission_leader
-var commission_leader_unit   : UnitStats
+var commission_leader      : bool
+var commission_leader_unit : UnitStats
 
 
 func _ready() -> void:
@@ -537,11 +537,7 @@ func get_buildings_sorted_by_building_type() -> Array[Node]:
 
 
 #region LEADER
-func _set_commission_leader(_commission_leader: bool) -> void:
-	if _commission_leader == commission_leader:
-		return
-	
-	# --
+func set_commission_leader(_commission_leader: bool) -> void:
 	commission_leader = _commission_leader
 
 	if commission_leader:
@@ -561,28 +557,10 @@ func _set_commission_leader(_commission_leader: bool) -> void:
 	Def.get_world_canvas().refresh_current_building_ui()
 
 
-func lock_commission_leader() -> void:
-
-	# -- Provide funds for training..
-	# var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.LEADER, level)
-	# bank.resource_purchase(unit_cost)
-
-	Def.get_world_canvas().refresh_current_building_ui()
-
-
-func cancel_commission_leader() -> void:
-	commission_leader      = false
-	commission_leader_unit = null
-
-	Def.get_world_canvas().refresh_current_building_ui()
-
-
 func create_leader_unit() -> void:
-	if commission_leader_unit != null:
-		# attached_units.append(temp_leader_unit)
+	if commission_leader:
 		detach_unit(commission_leader_unit)
-	
-	commission_leader = false
+		commission_leader = false
 
 
 func can_commission_leader() -> bool:
