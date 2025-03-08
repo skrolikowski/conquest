@@ -144,4 +144,4 @@ func _on_colony_contents_pressed() -> void:
 
 
 func _on_close_pressed() -> void:
-	Def.get_world_canvas().close_ui(self)
+	Def.get_world_canvas().close_all_ui()

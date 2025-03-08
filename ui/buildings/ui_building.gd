@@ -38,7 +38,7 @@ func _set_building(_building: Building) -> void:
 
 func _on_building_refund_pressed() -> void:
 	building.colony.sell_building(building)
-	Def.get_world_canvas().close_ui(self)
+	Def.get_world_canvas().close_all_ui()
 
 
 func _on_building_demolish_toggled(toggled_on:bool) -> void:
@@ -60,4 +60,4 @@ func _on_building_upgrade_toggled(toggled_on:bool) -> void:
 
 
 func _on_close_pressed() -> void:
-	Def.get_world_canvas().close_ui(self)
+	Def.get_world_canvas().close_all_ui()

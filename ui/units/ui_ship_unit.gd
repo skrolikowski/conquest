@@ -1,10 +1,13 @@
 extends UIUnit
 class_name UIShipUnit
 
+@onready var btn_close : Button = %BtnClose as Button
+
 
 func _ready() -> void:
 	super._ready()
 
+	btn_close.connect("pressed", _on_close_pressed)
 	%UnitsAttached.connect("pressed", _on_units_attached_pressed)
 	%Explore.connect("pressed", _on_explore_pressed)
 	%DetachAll.connect("pressed", _on_detach_all_pressed)
@@ -14,11 +17,8 @@ func refresh_ui() -> void:
 	super.refresh_ui()
 	
 	# --
-	var can_detach_unit : bool = unit.can_detach_unit()
-	
-	%UnitsAttached.disabled = not can_detach_unit
-	%Explore.disabled       = not unit.can_explore()
-	%DetachAll.disabled     = not can_detach_unit
+	%Explore.disabled   = not unit.can_explore()
+	%DetachAll.disabled = not unit.can_detach_unit()
 	
 	# -- Explort button
 	if unit.is_exploring:
@@ -50,5 +50,9 @@ func _on_detach_all_pressed() -> void:
 	unit.detach_all_units()
 	
 	# -- close "unit list" if applicable..
-	var world_canvas:WorldCanvas = Def.get_world_canvas()
-	world_canvas.close_ui(world_canvas.current_unit_list_ui)
+	# var world_canvas:WorldCanvas = Def.get_world_canvas()
+	# world_canvas.close_ui(world_canvas.current_unit_list_ui)
+
+
+func _on_close_pressed() -> void:
+	Def.get_world_canvas().close_ui(self)

@@ -11,8 +11,9 @@ signal camera_zoom(_direction:int)
 @onready var btn_end_turn := %BtnEndTurn as Button
 @onready var btn_menu     := %BtnMenu as Button
 
-var current_ui : Array[PanelContainer] = []
-var current_unit_list_ui : PanelContainer
+var current_ui     : PanelContainer
+var current_sub_ui : Array[PanelContainer] = []
+# var current_unit_list_ui : PanelContainer
 
 var turn_number : int : set = _set_turn_number
 
@@ -84,23 +85,29 @@ func _on_menu_pressed() -> void:
 
 
 func close_all_ui() -> void:
-	for ui:PanelContainer in current_ui:
+	if current_ui != null:
+		%Panels.remove_child(current_ui)
+		current_ui.queue_free()
+
+	for ui: PanelContainer in current_sub_ui:
 		%Panels.remove_child(ui)
 		ui.queue_free()
-	
-	current_ui = []
+
+	current_ui     = null
+	current_sub_ui = []
 
 
-func close_last_ui() -> void:
-	if current_ui.size() > 0:
-		var ui:PanelContainer = current_ui.pop_back()
+func close_all_sub_ui() -> void:
+	for ui: PanelContainer in current_sub_ui:
 		%Panels.remove_child(ui)
 		ui.queue_free()
-		
 
-func close_ui(_ui:PanelContainer) -> void:
-	if current_ui.has(_ui):
-		current_ui.erase(_ui)
+	current_sub_ui = []
+
+
+func close_sub_ui(_ui: PanelContainer) -> void:
+	if current_sub_ui.has(_ui):
+		current_sub_ui.erase(_ui)
 		%Panels.remove_child(_ui)
 		_ui.queue_free()
 
@@ -109,18 +116,19 @@ func close_ui(_ui:PanelContainer) -> void:
 
 #region BLOCKER
 func block_other_ui(_ui: PanelContainer) -> void:
-	for ui : PanelContainer in current_ui:
+	if current_ui != null and current_ui != _ui:
+		_add_blocker(current_ui)
+
+	for ui : PanelContainer in current_sub_ui:
 		if ui != _ui:
 			_add_blocker(ui)
 
 
-func block_all_ui() -> void:
-	for ui : PanelContainer in current_ui:
-		_add_blocker(ui)
-
-
 func unblock_all_ui() -> void:
-	for ui : PanelContainer in current_ui:
+	if current_ui != null:
+		_remove_blocker(current_ui)
+
+	for ui : PanelContainer in current_sub_ui:
 		_remove_blocker(ui)
 
 
@@ -141,13 +149,10 @@ func _remove_blocker(_ui: PanelContainer) -> void:
 
 #region CENTER BUILDING MENUS
 func open_colony_build_building_menu(_building: CenterBuilding) -> void:
-	
+	# [SUB UI]
 	# --
-	for ui: PanelContainer in current_ui:
-		if ui is UIBuildBuilding:
-			close_ui(ui)
-			break
-	
+	close_all_sub_ui()
+
 	# --
 	var ui : UIBuildBuilding = Preload.ui_build_building_scene.instantiate() as UIBuildBuilding
 	ui.colony = _building
@@ -155,16 +160,13 @@ func open_colony_build_building_menu(_building: CenterBuilding) -> void:
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 
-	current_ui.append(ui)
+	current_sub_ui.append(ui)
 	
 	
 func open_colony_population_detail(_building: CenterBuilding) -> void:
-	
+	# [SUB UI]
 	# --
-	for ui: PanelContainer in current_ui:
-		if ui is UIPopulationDetail:
-			close_ui(ui)
-			break
+	close_all_sub_ui()
 	
 	# --
 	var ui : UIPopulationDetail = Preload.ui_pop_detail_scene.instantiate() as UIPopulationDetail
@@ -173,16 +175,13 @@ func open_colony_population_detail(_building: CenterBuilding) -> void:
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 	
-	current_ui.append(ui)
+	current_sub_ui.append(ui)
 
 
 func open_colony_commodity_detail(_building: CenterBuilding) -> void:
-	
+	# [SUB UI]
 	# --
-	for ui: PanelContainer in current_ui:
-		if ui is UICommodityDetails:
-			close_ui(ui)
-			break
+	close_all_sub_ui()
 
 	# --
 	var ui : UICommodityDetails = Preload.ui_commodity_detail_scene.instantiate() as UICommodityDetails
@@ -191,16 +190,13 @@ func open_colony_commodity_detail(_building: CenterBuilding) -> void:
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 
-	current_ui.append(ui)
+	current_sub_ui.append(ui)
 
 
 func open_colony_building_list(_building: CenterBuilding) -> void:
-	
+	# [SUB UI]
 	# --
-	for ui: PanelContainer in current_ui:
-		if ui is UIBuildingList:
-			close_ui(ui)
-			break
+	close_all_sub_ui()
 	
 	# --
 	var ui : UIBuildingList = Preload.ui_building_list_scene.instantiate() as UIBuildingList
@@ -209,12 +205,13 @@ func open_colony_building_list(_building: CenterBuilding) -> void:
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 
-	current_ui.append(ui)
+	current_sub_ui.append(ui)
 
 
 func open_found_colony_menu(_cm: ColonyManager) -> void:
-	close_all_ui()
+	# [MAIN UI]
 	# --
+	close_all_ui()
 
 	var ui : UIFoundColony = Preload.ui_found_colony_scene.instantiate() as UIFoundColony
 	ui.colony_manager = _cm
@@ -222,24 +219,25 @@ func open_found_colony_menu(_cm: ColonyManager) -> void:
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 
-	current_ui.append(ui)
+	current_ui = ui
 
 #endregion
 
 
 #region BUILDING MENUS
 func open_building_menu(_building: Building) -> void:
-	close_all_ui()
+	# [MAIN UI]
 	# --
+	close_all_ui()
 
 	var scene : PackedScene = Def.get_ui_building_scene_by_type(_building.building_type)
 	var ui    : PanelContainer = scene.instantiate() as PanelContainer
-	current_ui.append(ui)
 	
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 	
 	ui.building = _building
+	current_ui = ui
 
 
 func open_building_unit_list(_building: CenterBuilding) -> void:
@@ -250,18 +248,18 @@ func open_building_unit_list(_building: CenterBuilding) -> void:
 	%Panels.move_child(ui, 0)
 
 	current_ui.append(ui)
-	current_unit_list_ui = ui
+	# current_unit_list_ui = ui
 
 
 func refresh_current_building_ui() -> void:
-	for ui in current_ui:
+	if current_ui != null:
 		"""
 		Note: reset the ui to itself to trigger the refresh function
 		"""
-		if ui.building != null:
-			ui.building = ui.building
-		elif ui.unit != null:
-			ui.unit = ui.unit
+		if current_ui.building != null:
+			current_ui.building = current_ui.building
+		elif current_ui.unit != null:
+			current_ui.unit = current_ui.unit
 
 #endregion
 
@@ -289,7 +287,7 @@ func open_carrier_unit_list(_unit: Unit) -> void:
 	%Panels.move_child(ui, 0)
 
 	current_ui.append(ui)
-	current_unit_list_ui = ui
+	# current_unit_list_ui = ui
 
 
 func open_create_leader_unit_menu(_building: CenterBuilding, _leader: UnitStats) -> void:

@@ -36,6 +36,14 @@ func debug() -> void:
 	# center.bm._update_temp_building(Vector2i(5, 11))
 	# center.bm._place_temp_building()
 
+	var ship     : UnitStats = UnitStats.New_Unit(Term.UnitType.SHIP, 1)
+	var ship_pos : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(4, 8))
+	var ship_unit : Unit = create_unit(ship, ship_pos)
+	ship_unit.stat.max_attached_units = 8
+	ship_unit.stat.attached_units = [
+		UnitStats.New_Unit(Term.UnitType.INFANTRY, 1)
+	]
+
 	# --
 	call_deferred("begin_turn")
 
@@ -135,7 +143,7 @@ func get_ships() -> Array[Node]:
 	return _units
 
 
-func create_unit(_unit_stat: UnitStats, _position:Vector2) -> void:
+func create_unit(_unit_stat: UnitStats, _position:Vector2) -> Unit:
 	var unit_scene : PackedScene = Def.get_unit_scene_by_type(_unit_stat.unit_type)
 	var unit       : Unit = unit_scene.instantiate() as Unit
 	
@@ -144,6 +152,7 @@ func create_unit(_unit_stat: UnitStats, _position:Vector2) -> void:
 	unit.position    = _position
 	
 	add_unit(unit)
+	return unit
 
 
 func add_unit(_unit : Unit) -> void:
