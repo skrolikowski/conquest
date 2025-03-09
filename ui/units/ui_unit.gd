@@ -16,12 +16,15 @@ func _process(_delta:float) -> void:
 		queue_free()
 	else:
 		if unit.is_moving:
-			%MovementValue.value = unit.move_points / 64
+			refresh_ui()
 
 
 func refresh_ui() -> void:
 	%UnitDisband.disabled = not unit.can_disband()
 	%UnitPersistent.disabled  = not unit.can_persist()
+
+	#TODO: get max move points
+	%MovementValue.value = unit.move_points / 64
 
 
 func _set_unit(_unit: Unit) -> void:
@@ -30,9 +33,8 @@ func _set_unit(_unit: Unit) -> void:
 	
 	%UnitTitle.text = unit.stat.title
 	%UnitLevel.text = "Level: " + str(unit.stat.level)
-	
-	%MovementValue.value = unit.move_points / 64
-	
+
+	# --
 	refresh_ui()
 	
 	

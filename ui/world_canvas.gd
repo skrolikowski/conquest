@@ -252,18 +252,6 @@ func open_building_unit_list(_building: CenterBuilding) -> void:
 	
 	ui.building = _building
 	current_sub_ui.append(ui)
-	# current_unit_list_ui = ui
-
-
-func refresh_current_building_ui() -> void:
-	if current_ui != null:
-		"""
-		Note: reset the ui to itself to trigger the refresh function
-		"""
-		if current_ui.building != null:
-			current_ui.building = current_ui.building
-		elif current_ui.unit != null:
-			current_ui.unit = current_ui.unit
 
 #endregion
 
@@ -297,19 +285,34 @@ func open_carrier_unit_list(_unit: Unit) -> void:
 
 	ui.carrier = _unit
 	current_sub_ui.append(ui)
-	# current_unit_list_ui = ui
 
 
 func open_create_leader_unit_menu(_building: CenterBuilding, _leader: UnitStats) -> void:
-	var ui : UICreateLeaderUnit = Preload.ui_create_leader_scene.instantiate() as UICreateLeaderUnit
-	current_ui.append(ui)
+	# [SUB UI]
+	# --
+	close_all_sub_ui()
+	
+	var scene : PackedScene = Preload.ui_create_leader_scene
+	var ui    : UICreateLeaderUnit = scene.instantiate() as UICreateLeaderUnit
 
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 	
 	ui.building = _building
 	ui.leader = _leader
+	current_sub_ui.append(ui)
 
+#endregion
+
+
+#region REFRESH UI
+func refresh_current_ui() -> void:
+	if current_ui != null and current_ui.has_method("refresh_ui"):
+		current_ui.refresh_ui()
+
+	for ui : PanelContainer in current_sub_ui:
+		if ui.has_method("refresh_ui"):
+			ui.refresh_ui()
 
 #endregion
 

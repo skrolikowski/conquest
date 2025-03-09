@@ -32,20 +32,22 @@ func _ready() -> void:
 	btn_leader.connect("mouse_exited", _on_leader_commission_exited)
 
 
+func refresh_ui() -> void:
+	# -- Commission Leader..
+	btn_leader.disabled = not building.can_commission_leader()
+	btn_leader.set_pressed_no_signal(building.commission_leader)
+
+
 func _set_building(_building: CenterBuilding) -> void:
 	building = _building
 	building_state = building.building_state
 	
-	%ColonyTitle.text        = building.title
-	%ColonyLevel.text        = "Level: " + str(building.level)
+	%ColonyTitle.text = building.title
+	%ColonyLevel.text = "Level: " + str(building.level)
 
 	# -- Building Upgrade
-	btn_upgrade.disabled  = not building.can_upgrade()
+	btn_upgrade.disabled = not building.can_upgrade()
 	#TODO: if disabled let user know why (e.g. tooltip or status bar)
-	
-	# -- Commission Leader..
-	btn_leader.disabled = not building.can_commission_leader()
-	btn_leader.set_pressed_no_signal(building.commission_leader)
 	
 	# -- Undo Found Colony..
 	if _building.building_state == Term.BuildingState.NEW:

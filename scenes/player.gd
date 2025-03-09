@@ -73,7 +73,7 @@ func begin_turn() -> void:
 	# -- Canvas updates..
 	var wc : WorldCanvas = Def.get_world_canvas()
 	wc.turn_number = turn_number
-	wc.refresh_current_building_ui()
+	wc.refresh_current_ui()
 
 	# -- Colony management..
 	begin_turn_for_colonies()

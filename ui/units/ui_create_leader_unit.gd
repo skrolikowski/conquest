@@ -31,9 +31,9 @@ func _on_submit_pressed() -> void:
 func _on_cancel_pressed() -> void:
 	building.commission_leader = false
 
-	Def.get_world_canvas().close_ui(self)
+	Def.get_world_canvas().close_sub_ui(self)
 
 
 func _on_unready() -> void:
-	Def.get_world_canvas().refresh_current_building_ui()
+	Def.get_world_canvas().refresh_current_ui()
 	Def.get_world_canvas().unblock_all_ui()

@@ -577,7 +577,8 @@ func set_commission_leader(_commission_leader: bool) -> void:
 		var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.LEADER, level)
 		bank.resource_credit(unit_cost)
 
-	Def.get_world_canvas().refresh_current_building_ui()
+	# --
+	Def.get_world_canvas().refresh_current_ui()
 
 
 func create_leader_unit() -> void:

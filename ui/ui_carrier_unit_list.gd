@@ -5,31 +5,31 @@ class_name UICarrierUnitList
 @onready var btn_detach : Button = %BtnDetach as Button
 @onready var unit_list  : Tree = %UnitList as Tree
 
-var carrier : Unit : set = _set_carrier
+var carrier        : Unit : set = _set_carrier
+var selected_items : Array[TreeItem] = []
 
 
 func _ready() -> void:
 	btn_close.connect("pressed", _on_close_pressed)
-	btn_detach.connect("pressed", _on_detach_unit_pressed)
-	unit_list.connect("item_selected", _on_unit_selected)
+	btn_detach.connect("pressed", _on_detach_units_pressed)
 	unit_list.connect("multi_selected", _on_multiple_unit_selected)
 
 
 func _set_carrier(_carrier: CarrierUnit) -> void:
 	carrier = _carrier
 
-	# -- Nothing selected..
-	btn_detach.disabled = true
-	
-	# -- Create unit list..
 	_create_unit_list_tree()
+	
+	refresh_ui()
 
+
+func refresh_ui() -> void:
+	btn_detach.disabled = selected_items.size() == 0 or not carrier.can_detach_unit()
+	
 
 func _create_unit_list_tree() -> void:
 	var carrier_stat : UnitStats = carrier.stat
 
-	# unit_list.allow_search = true
-	# unit_list.allow_rmb_select = true
 	unit_list.hide_root = true
 	unit_list.columns = 1
 	unit_list.select_mode = Tree.SELECT_MULTI
@@ -61,23 +61,27 @@ func _create_unit_list_tree_item(_root : TreeItem, _carrier_stat : UnitStats) ->
 			_create_unit_list_tree_item(tree_item, unit_stat)
 
 
-func _on_unit_selected() -> void:
-	var tree_item : TreeItem = unit_list.get_selected()
-	btn_detach.disabled = tree_item == null
-
-
 func _on_multiple_unit_selected(_item:TreeItem, _column:int, _selected:bool) -> void:
-	_on_unit_selected()
+	if _selected:
+		selected_items.append(_item)
+	else:
+		selected_items.erase(_item)
+	
+	refresh_ui()
 
 
-func _on_detach_unit_pressed() -> void:
-	var selected_node  : TreeItem = unit_list.get_next_selected(null)
-	var selected_items : Array[TreeItem] = []
+func get_selected_items() -> Array[TreeItem]:
+	var selected_item : TreeItem = unit_list.get_next_selected(null)
+	var selected      : Array[TreeItem] = []
 
-	while selected_node:
-		selected_items.append(selected_node)
-		selected_node = unit_list.get_next_selected(selected_node)
-		
+	while selected_item:
+		selected.append(selected_item)
+		selected_item = unit_list.get_next_selected(selected_item)
+	
+	return selected
+
+
+func _on_detach_units_pressed() -> void:
 	for item : TreeItem in selected_items:
 		var unit_stat : UnitStats = item.get_metadata(0) as UnitStats
 		carrier.detach_unit(unit_stat)
@@ -86,8 +90,3 @@ func _on_detach_unit_pressed() -> void:
 
 func _on_close_pressed() -> void:
 	Def.get_world_canvas().close_sub_ui(self)
-
-
-func can_detach_unit() -> bool:
-	var tree_item : TreeItem = %UnitList.get_selected()
-	return carrier.can_detach_unit() and tree_item != null
