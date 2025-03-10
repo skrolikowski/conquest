@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://c4rynw2vosiyr"]
 
 [ext_resource type="Script" path="res://scenes/buildings/mill_building.gd" id="1_t42k4"]
-[ext_resource type="Texture2D" uid="uid://dnv38mdwarq5t" path="res://assets/maps/WinLu_Fantasy_World_Buildings.png" id="2_6xlnl"]
+[ext_resource type="Texture2D" uid="uid://dnv38mdwarq5t" path="res://assets/maps/WinLu_Fantasy_World/WinLu_Fantasy_World_Buildings.png" id="2_6xlnl"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4d84w"]
 atlas = ExtResource("2_6xlnl")

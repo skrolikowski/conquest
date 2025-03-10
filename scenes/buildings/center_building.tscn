@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/buildings/center_building.gd" id="1_fstkx"]
 [ext_resource type="PackedScene" uid="uid://duehosmp2o35k" path="res://scenes/bank.tscn" id="2_pmawp"]
-[ext_resource type="Texture2D" uid="uid://dnv38mdwarq5t" path="res://assets/maps/WinLu_Fantasy_World_Buildings.png" id="3_dlgo2"]
+[ext_resource type="Texture2D" uid="uid://dnv38mdwarq5t" path="res://assets/maps/WinLu_Fantasy_World/WinLu_Fantasy_World_Buildings.png" id="3_dlgo2"]
 [ext_resource type="PackedScene" uid="uid://mayunnsp8hti" path="res://scenes/building_manager.tscn" id="4_0ev27"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e7f07"]
