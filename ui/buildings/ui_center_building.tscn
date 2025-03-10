@@ -22,16 +22,16 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 alignment = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="TitleContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="BtnClose" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="BtnClose" type="Button" parent="MarginContainer/VBoxContainer/TitleContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
 text = "X"
 
-[node name="UITitle" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="UITitle" type="Label" parent="MarginContainer/VBoxContainer/TitleContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 24)
 layout_mode = 2
 size_flags_horizontal = 3

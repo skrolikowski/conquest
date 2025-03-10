@@ -1,6 +1,7 @@
 extends Area2D
 class_name BuildingManager
 
+@onready var ghost_timer : Timer = $GhostTimer as Timer
 @onready var build_shape := $BuildShape as CollisionShape2D
 
 @export var colony : CenterBuilding
@@ -137,6 +138,18 @@ func _place_temp_building() -> void:
 		colony.purchase_building(placing_building)
 
 		#TODO: apply `terrain_modifier` if MakeBuilding
+
+		# --
+		# Set timer to disallow selection of building until placed
+		placing_building.is_selectable = false
+		var cb : Callable = func(_b:Building) -> void:
+			_b.is_selectable = true
+
+		ghost_timer.wait_time = 0.1
+		ghost_timer.connect("timeout", cb.bind(placing_building), CONNECT_ONE_SHOT)
+		ghost_timer.start()
+
+		Def.get_world_canvas().refresh_current_ui()
 
 	# -- clear
 	placing_building = null

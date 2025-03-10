@@ -45,8 +45,8 @@ func debug() -> void:
 	var ship_unit : Unit = create_unit(ship, ship_pos)
 	
 	var leader : UnitStats = UnitStats.New_Unit(Term.UnitType.LEADER, 1)
-	leader.attach_unit(UnitStats.New_Unit(Term.UnitType.INFANTRY, 1))
-	# leader.attached_units.append(UnitStats.New_Unit(Term.UnitType.INFANTRY, 1))
+	leader.attach_unit(UnitStats.New_Unit(Term.UnitType.INFANTRY, 2))
+	leader.attached_units.append(UnitStats.New_Unit(Term.UnitType.INFANTRY, 2))
 	ship_unit.stat.attached_units.append(leader)
 
 	ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.SETTLER, 1))

@@ -36,8 +36,7 @@ func create_button(_building_type : Term.BuildingType) -> void:
 func _on_button_pressed(_building_type: Term.BuildingType) -> void:
 	colony.create_building(_building_type)
 
-	Def.get_world_canvas().close_all_ui()
-	Def.get_world().unselect_all()
+	Def.get_world_canvas().close_sub_ui(self)
 
 
 func _on_button_entered(_building_type: Term.BuildingType) -> void:

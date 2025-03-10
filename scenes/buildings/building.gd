@@ -10,6 +10,7 @@ class_name Building
 var max_level     : int = 4
 var building_type : Term.BuildingType
 var building_size : Term.BuildingSize
+var is_selectable : bool = true
 
 func _ready() -> void:
 	building_state = Term.BuildingState.NEW

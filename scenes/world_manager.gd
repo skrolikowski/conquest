@@ -64,8 +64,10 @@ func _unhandled_input(_event:InputEvent) -> void:
 				"""
 				if selection is Unit:
 					world_canvas.open_unit_menu(selection as Unit)
+					unselect_all()
 				elif selection is Building:
 					world_canvas.open_building_menu(selection as Building)
+					unselect_all()
 
 			elif mouse_event.pressed:
 				#var tile_map : TileMap = world_map.tile_map
@@ -233,14 +235,13 @@ func attempt_select_area2D(_position : Vector2) -> void:
 		if collision is Unit:
 			select_unit(collision as Unit)
 		elif collision is Building:
-			var building : Building = collision as Building
-			select_building(building)
+			select_building(collision as Building)
 	else:
 		unselect_all()
 
 
 func select_building(_building: Building) -> void:
-	if selection != _building:
+	if selection != _building and _building.is_selectable:
 		selection = _building
 
 
