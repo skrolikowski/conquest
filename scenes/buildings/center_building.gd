@@ -73,6 +73,9 @@ func refresh_bank() -> void:
 #region TURN MANAGEMENT
 func begin_turn() -> void:
 
+	# -- Update population details..
+	population = population + get_immigration()
+
 	# BUILDING ACTIONS
 	for building:Building in bm.get_buildings():
 		if building.building_state == Term.BuildingState.SELL:
@@ -201,7 +204,7 @@ func get_immigration() -> int:
 		immigration = floor(population * growth_rate)
 
 	# --
-	if is_starving():
+	if is_starving() and immigration > 0:
 		#emigration
 		return immigration * -1
 

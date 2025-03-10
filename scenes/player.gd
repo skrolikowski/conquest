@@ -67,8 +67,6 @@ func begin_turn() -> void:
 	print("[NOTE] Begin Turn - Player")
 
 	is_turn = true
-	
-	turn_number += 1
 
 	# -- Canvas updates..
 	var wc : WorldCanvas = Def.get_world_canvas()
@@ -76,11 +74,14 @@ func begin_turn() -> void:
 	wc.refresh_current_ui()
 
 	# -- Colony management..
-	begin_turn_for_colonies()
+	if turn_number > 0:
+		begin_turn_for_colonies()
 
 	# -- 
 	if is_human:
 		reveal_fog_of_war_for_units()
+
+	turn_number += 1
 		
 
 func end_turn() -> void:
