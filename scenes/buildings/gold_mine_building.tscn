@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bys8qqj127mqj"]
 
-[ext_resource type="Script" path="res://scenes/buildings/gold_mine_building.gd" id="1_58soj"]
+[ext_resource type="Script" uid="uid://chvm5bkryhkj8" path="res://scenes/buildings/gold_mine_building.gd" id="1_58soj"]
 [ext_resource type="Texture2D" uid="uid://ddjejss1111o8" path="res://icon.svg" id="2_rejc1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7y5l5"]

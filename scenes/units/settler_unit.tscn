@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://ik5ele5hm5fh"]
 
-[ext_resource type="Script" path="res://scenes/units/settler_unit.gd" id="1_ol2dy"]
+[ext_resource type="Script" uid="uid://bk41yw5nrl5j3" path="res://scenes/units/settler_unit.gd" id="1_ol2dy"]
 [ext_resource type="Texture2D" uid="uid://ddjejss1111o8" path="res://icon.svg" id="2_gwffb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gpwph"]

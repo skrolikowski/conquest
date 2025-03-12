@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://c4rysmdcqa42l"]
 
-[ext_resource type="Script" path="res://combat/combat_square.gd" id="1_s4yjc"]
+[ext_resource type="Script" uid="uid://cefbwtthatncd" path="res://combat/combat_square.gd" id="1_s4yjc"]
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="2_btk75"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0bkr8"]

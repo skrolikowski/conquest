@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://hb101eay4b6k"]
 
-[ext_resource type="Script" path="res://ui/ui_building_list.gd" id="1_dttyq"]
+[ext_resource type="Script" uid="uid://bwsd2f4onoht5" path="res://ui/ui_building_list.gd" id="1_dttyq"]
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_fa11m"]
 
 [node name="UIBuildingList" type="PanelContainer"]

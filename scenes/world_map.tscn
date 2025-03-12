@@ -1,15 +1,16 @@
-[gd_scene load_steps=26 format=3 uid="uid://45bq430g8u3a"]
+[gd_scene load_steps=27 format=3 uid="uid://45bq430g8u3a"]
 
-[ext_resource type="Script" path="res://addons/gaea/generators/2D/noise_generator/noise_generator.gd" id="1_jkk1s"]
-[ext_resource type="Script" path="res://scenes/world_map.gd" id="1_vi8yv"]
-[ext_resource type="Script" path="res://addons/gaea/others/falloff_map.gd" id="2_0xht2"]
-[ext_resource type="Script" path="res://addons/gaea/renderers/2D/tilemap_gaea_renderer.gd" id="2_5sb6w"]
-[ext_resource type="Script" path="res://addons/gaea/generators/2D/noise_generator/noise_generator_settings.gd" id="2_oicdl"]
+[ext_resource type="Script" uid="uid://b8vr3c8v7wstb" path="res://addons/gaea/generators/2D/noise_generator/noise_generator.gd" id="1_jkk1s"]
+[ext_resource type="Script" uid="uid://c653bu6b16uxc" path="res://scenes/world_map.gd" id="1_vi8yv"]
+[ext_resource type="Script" uid="uid://cbb0ljhm51ypn" path="res://addons/gaea/others/falloff_map.gd" id="2_0xht2"]
+[ext_resource type="Script" uid="uid://c64t0aufp4gyj" path="res://addons/gaea/renderers/2D/tilemap_gaea_renderer.gd" id="2_5sb6w"]
+[ext_resource type="Script" uid="uid://grcjespwfbld" path="res://addons/gaea/generators/2D/noise_generator/noise_generator_settings.gd" id="2_oicdl"]
 [ext_resource type="TileSet" uid="uid://ddr4depx33fq2" path="res://assets/maps/tile_map.tres" id="2_xx42q"]
-[ext_resource type="Script" path="res://addons/gaea/generators/2D/noise_generator/noise_generator_data.gd" id="3_i1t1p"]
-[ext_resource type="Script" path="res://addons/gaea/tile_info/tilemap_tile_info.gd" id="4_kcld1"]
+[ext_resource type="Script" uid="uid://b7ns3c0ojkryt" path="res://addons/gaea/generators/2D/noise_generator/noise_generator_data.gd" id="3_i1t1p"]
+[ext_resource type="Script" uid="uid://ditcl7kbi1u17" path="res://addons/gaea/modifiers/2D/modifier_2d.gd" id="4_55716"]
+[ext_resource type="Script" uid="uid://cpeeigoklgbik" path="res://addons/gaea/tile_info/tilemap_tile_info.gd" id="4_kcld1"]
 
-[sub_resource type="Image" id="Image_nl0vq"]
+[sub_resource type="Image" id="Image_55716"]
 data = {
 "data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 0, 59, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 59, 0, 59, 174, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 174, 59, 0, 59, 174, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 174, 59, 0, 59, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 174, 59, 0, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59, 59),
 "format": "Lum8",
@@ -18,12 +19,12 @@ data = {
 "width": 32
 }
 
-[sub_resource type="ImageTexture" id="ImageTexture_x5jjn"]
-image = SubResource("Image_nl0vq")
+[sub_resource type="ImageTexture" id="ImageTexture_0hitc"]
+image = SubResource("Image_55716")
 
 [sub_resource type="Resource" id="Resource_48xm7"]
 script = ExtResource("2_0xht2")
-texture = SubResource("ImageTexture_x5jjn")
+texture = SubResource("ImageTexture_0hitc")
 falloff_start = 0.8
 falloff_end = 1.0
 
@@ -148,7 +149,7 @@ infinite = false
 world_size = Vector2i(32, 32)
 falloff_enabled = true
 falloff_map = SubResource("Resource_48xm7")
-modifiers = Array[Resource("res://addons/gaea/modifiers/2D/modifier_2d.gd")]([])
+modifiers = Array[ExtResource("4_55716")]([])
 
 [node name="WorldMap" type="Node2D"]
 script = ExtResource("1_vi8yv")
@@ -172,9 +173,7 @@ layer_1/navigation_enabled = false
 layer_1/tile_data = PackedInt32Array(655369, 917504, 7)
 layer_2/name = "FogWar"
 layer_2/navigation_enabled = false
-layer_2/tile_data = PackedInt32Array()
 
-[node name="TilemapGaeaRenderer" type="Node" parent="." node_paths=PackedStringArray("tile_map", "generator")]
+[node name="TilemapGaeaRenderer" type="Node" parent="." node_paths=PackedStringArray("generator")]
 script = ExtResource("2_5sb6w")
-tile_map = NodePath("../TileMap")
 generator = NodePath("../NoiseGenerator")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://pav1ubjmbs15"]
 
-[ext_resource type="Script" path="res://scenes/units/leader_unit.gd" id="1_j30gk"]
+[ext_resource type="Script" uid="uid://b7757ml1rc3w7" path="res://scenes/units/leader_unit.gd" id="1_j30gk"]
 [ext_resource type="Texture2D" uid="uid://ddjejss1111o8" path="res://icon.svg" id="2_qmedo"]
 [ext_resource type="PackedScene" uid="uid://bardxsiggrtyx" path="res://scenes/units/carrier.tscn" id="3_vbg80"]
 

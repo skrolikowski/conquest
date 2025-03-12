@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://xjq04takw0ii"]
 
-[ext_resource type="Script" path="res://ui/units/ui_infantry_unit.gd" id="1_hkqdl"]
+[ext_resource type="Script" uid="uid://fcielsdaaaq8" path="res://ui/units/ui_infantry_unit.gd" id="1_hkqdl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6pi7"]
 bg_color = Color(0.266667, 0.266667, 0.266667, 1)

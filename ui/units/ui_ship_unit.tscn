@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://2jxqgtdpaqtd"]
 
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_40u0i"]
-[ext_resource type="Script" path="res://ui/units/ui_ship_unit.gd" id="1_88cki"]
+[ext_resource type="Script" uid="uid://dm0hp8yaw6qpb" path="res://ui/units/ui_ship_unit.gd" id="1_88cki"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rhovt"]
 bg_color = Color(0.266667, 0.266667, 0.266667, 1)

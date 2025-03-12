@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://j3he4ebp21wr"]
 
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_hqhjh"]
-[ext_resource type="Script" path="res://ui/buildings/ui_war_college_building.gd" id="2_omwfo"]
+[ext_resource type="Script" uid="uid://cm0i8ih28mehl" path="res://ui/buildings/ui_war_college_building.gd" id="2_omwfo"]
 
 [node name="UIWarCollegeBuilding" type="PanelContainer"]
 custom_minimum_size = Vector2(512, 416)

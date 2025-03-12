@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bardxsiggrtyx"]
 
-[ext_resource type="Script" path="res://scenes/units/carrier.gd" id="1_b3vxc"]
+[ext_resource type="Script" uid="uid://bv4k2748pm6qs" path="res://scenes/units/carrier.gd" id="1_b3vxc"]
 
 [node name="Carrier" type="Area2D"]
 collision_layer = 2

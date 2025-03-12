@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dkx3h80pd3ac7"]
 
-[ext_resource type="Script" path="res://ui/units/ui_calvary_unit.gd" id="1_mhur8"]
+[ext_resource type="Script" uid="uid://dwqenr6cf804a" path="res://ui/units/ui_calvary_unit.gd" id="1_mhur8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6jxfl"]
 bg_color = Color(0.266667, 0.266667, 0.266667, 1)

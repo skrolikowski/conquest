@@ -1,6 +1,6 @@
 [gd_scene load_steps=70 format=3 uid="uid://brrvqw41vdsdj"]
 
-[ext_resource type="Script" path="res://combat/combat_unit.gd" id="1_b4abw"]
+[ext_resource type="Script" uid="uid://ds4tnhakicirq" path="res://combat/combat_unit.gd" id="1_b4abw"]
 [ext_resource type="Texture2D" uid="uid://c6bv4emayoeal" path="res://assets/combat/PVGames/knight.png" id="2_edwcl"]
 [ext_resource type="PackedScene" uid="uid://c3gdbn34snv7s" path="res://ui/units/ui_combat_unit.tscn" id="2_nr48y"]
 

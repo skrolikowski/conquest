@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bcfytyujbcr4r"]
 
-[ext_resource type="Script" path="res://ui/ui_commodity_details.gd" id="1_e703w"]
+[ext_resource type="Script" uid="uid://bg21bghj6pv2s" path="res://ui/ui_commodity_details.gd" id="1_e703w"]
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_yrusm"]
 
 [node name="UICommunityDetails" type="PanelContainer"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bjrwu1ur5y3tc"]
 
-[ext_resource type="Script" path="res://scenes/buildings/farm_building.gd" id="1_j55u0"]
+[ext_resource type="Script" uid="uid://cgjyxv5cuugwb" path="res://scenes/buildings/farm_building.gd" id="1_j55u0"]
 [ext_resource type="Texture2D" uid="uid://dnv38mdwarq5t" path="res://assets/maps/WinLu_Fantasy_World/WinLu_Fantasy_World_Buildings.png" id="2_8roup"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0kdcl"]

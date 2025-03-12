@@ -1,7 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://cr72g8u847qti"]
 
-[ext_resource type="Script" path="res://ui/ui_building_unit_list.gd" id="1_74rql"]
-[ext_resource type="Script" path="res://ui/ui_carrier_unit_list_tree.gd" id="2_fvis4"]
+[ext_resource type="Script" uid="uid://da1qxo6jr4gln" path="res://ui/ui_building_unit_list.gd" id="1_74rql"]
+
+[sub_resource type="Resource" id="Resource_t4hfl"]
+metadata/__load_path__ = "res://ui/ui_carrier_unit_list_tree.gd"
 
 [node name="UIBuildingUnitList" type="PanelContainer"]
 custom_minimum_size = Vector2(256, 320)
@@ -38,7 +40,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 drop_mode_flags = 3
-script = ExtResource("2_fvis4")
+script = SubResource("Resource_t4hfl")
 
 [node name="DetachSelected" type="Button" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true

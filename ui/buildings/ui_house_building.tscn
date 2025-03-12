@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://d2wyc1vg7pfrl"]
 
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_b3ppi"]
-[ext_resource type="Script" path="res://ui/buildings/ui_house_building.gd" id="1_y04ro"]
+[ext_resource type="Script" uid="uid://ciopnxc8h0m8x" path="res://ui/buildings/ui_house_building.gd" id="1_y04ro"]
 
 [node name="UIHouseBuilding" type="PanelContainer"]
 custom_minimum_size = Vector2(256, 256)

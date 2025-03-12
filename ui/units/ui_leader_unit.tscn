@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bw5hx57d01cps"]
 
-[ext_resource type="Script" path="res://ui/units/ui_leader_unit.gd" id="1_51hc4"]
+[ext_resource type="Script" uid="uid://cchad6mpmnu2a" path="res://ui/units/ui_leader_unit.gd" id="1_51hc4"]
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_prfgu"]
 
 [node name="UILeaderUnit" type="PanelContainer"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b4aeideoakvi7"]
 
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_d5la6"]
-[ext_resource type="Script" path="res://ui/buildings/ui_church_building.gd" id="1_jgm7h"]
+[ext_resource type="Script" uid="uid://d07b4w01dyw5s" path="res://ui/buildings/ui_church_building.gd" id="1_jgm7h"]
 
 [node name="UIChurchBuilding" type="PanelContainer"]
 custom_minimum_size = Vector2(256, 224)

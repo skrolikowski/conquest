@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dus3cxbhuvtfe"]
 
-[ext_resource type="Script" path="res://combat/combat.gd" id="1_yjm4r"]
+[ext_resource type="Script" uid="uid://bxlkbyo7h4jbb" path="res://combat/combat.gd" id="1_yjm4r"]
 [ext_resource type="PackedScene" uid="uid://c4rysmdcqa42l" path="res://combat/combat_square.tscn" id="2_smk8w"]
 [ext_resource type="PackedScene" uid="uid://d3ckm3li0meag" path="res://map/tile_map.tscn" id="2_sv3ei"]
 

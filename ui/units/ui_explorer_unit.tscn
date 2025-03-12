@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dqnh0rtm345lg"]
 
-[ext_resource type="Script" path="res://ui/units/ui_explorer_unit.gd" id="1_gaao6"]
+[ext_resource type="Script" uid="uid://qhd7x2ilud1f" path="res://ui/units/ui_explorer_unit.gd" id="1_gaao6"]
 
 [node name="UIExplorerUnit" type="PanelContainer"]
 custom_minimum_size = Vector2(256, 224)

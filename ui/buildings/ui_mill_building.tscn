@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://rlwmpix4s07f"]
 
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_edb6e"]
-[ext_resource type="Script" path="res://ui/buildings/ui_mill_building.gd" id="1_vopuy"]
+[ext_resource type="Script" uid="uid://c3681lin35u7u" path="res://ui/buildings/ui_mill_building.gd" id="1_vopuy"]
 
 [node name="UIMillBuilding" type="PanelContainer"]
 custom_minimum_size = Vector2(256, 256)

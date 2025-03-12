@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cav6wsvd1i8cw"]
 
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_kha2r"]
-[ext_resource type="Script" path="res://ui/ui_population_detail.gd" id="1_t7y3t"]
+[ext_resource type="Script" uid="uid://b0gfp7nbr5pqu" path="res://ui/ui_population_detail.gd" id="1_t7y3t"]
 
 [node name="UIPopulationDetail" type="PanelContainer"]
 custom_minimum_size = Vector2(320, 280)
