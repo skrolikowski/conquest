@@ -13,7 +13,7 @@ var is_moving       : bool = false
 var move_delta      : Vector2
 var move_points     : float = 64.0
 var max_move_points : float = 64.0
-var move_speed      : float = 8.0
+var move_speed      : float = 48.0 * 0.8
 
 # -- Entering a "carrier node"..
 var entering_node : Node : set = _set_entering_node
@@ -30,10 +30,12 @@ func _process(_delta: float) -> void:
 		if not nav_agent.is_target_reached():
 			
 			# -- Get current tile data..
-			var tile_map       : TileMap = Def.get_world().world_map.tile_map
-			var map_position   : Vector2 = tile_map.local_to_map(global_position)
-			var tile_data      : TileData = tile_map.get_cell_tile_data(0, map_position)
-			var terrain_weight : float = tile_data.get_custom_data("weight")
+			var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
+			var map_position   : Vector2 = tile_map_layer.local_to_map(global_position)
+			var tile_data      : TileData = tile_map_layer.get_cell_tile_data(map_position)
+			#TODO: set this, see: `world_map`
+			#var terrain_weight : float = tile_data.get_custom_data("weight")
+			var terrain_weight : float = 1
 			
 			# -- Movement..
 			var move_target    : Vector2 = nav_agent.get_next_path_position()

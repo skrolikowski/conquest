@@ -7,10 +7,10 @@
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e7f07"]
 atlas = ExtResource("3_dlgo2")
-region = Rect2(192, 288, 48, 48)
+region = Rect2(48, 0, 96, 96)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gs41h"]
-size = Vector2(32, 32)
+size = Vector2(96, 96)
 
 [node name="CenterBuilding" type="Area2D" groups=["buildings"]]
 collision_layer = 2
@@ -20,7 +20,6 @@ script = ExtResource("1_fstkx")
 title = "Colony"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.65, 0.65)
 texture = SubResource("AtlasTexture_e7f07")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

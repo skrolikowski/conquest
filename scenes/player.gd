@@ -25,6 +25,9 @@ func _ready() -> void:
 
 
 func debug() -> void:
+	"""
+	Create colony
+	"""
 	cm.found_colony(Vector2i(8, 11), Vector2(0, 0), 1)
 	cm.create_colony()
 
@@ -41,7 +44,7 @@ func debug() -> void:
 	# var start_tile  : Vector2i = coast_tiles.pick_random()
 	
 	var ship     : UnitStats = UnitStats.New_Unit(Term.UnitType.SHIP, 1)
-	var ship_pos : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(4, 8))
+	var ship_pos : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(2, 4))
 	var ship_unit : Unit = create_unit(ship, ship_pos)
 	
 	var leader : UnitStats = UnitStats.New_Unit(Term.UnitType.LEADER, 1)

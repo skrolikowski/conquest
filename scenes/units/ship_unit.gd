@@ -7,4 +7,3 @@ func _ready() -> void:
 	
 	stat.title     = "Ship"
 	stat.unit_type = Term.UnitType.SHIP
-

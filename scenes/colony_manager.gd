@@ -63,7 +63,7 @@ func found_colony(_tile: Vector2i, _position: Vector2, _level: int = 1) -> void:
 	placing_colony = building
 
 	var world_pos : Vector2 = Def.get_world_tile_map().map_to_local(_tile)
-	placing_colony.global_position = world_pos + Vector2(8, 8)
+	placing_colony.global_position = world_pos + Vector2(Def.TILE_SIZE.x * 0.5, Def.TILE_SIZE.y * 0.5)
 	placing_colony.player   = player
 	placing_colony.modulate = Color(1, 1, 1, 0.25)
 	
@@ -111,8 +111,8 @@ func create_colony() -> void:
 
 
 func _refresh_colony_tiles(_tile: Vector2i) -> void:
-	var tile_map  : TileMap = Def.get_world_tile_map()
-	var tile_size : Vector2 = tile_map.tile_set.tile_size
+	var tile_map_layer : TileMapLayer = Def.get_world_tile_map()
+	var tile_size      : Vector2 = tile_map_layer.tile_set.tile_size
 	
 	placing_tile   = _tile
 	placing_tiles  = {}
@@ -124,17 +124,17 @@ func _refresh_colony_tiles(_tile: Vector2i) -> void:
 		var build_radius_4 : float = Def.get_building_stat(Term.BuildingType.CENTER, 4).build_radius
 	
 		var bounds : Array[Dictionary] = [
-			{ "tiles" : Def.get_world().world_map.get_tiles_in_radius(placing_colony.global_position, 8), "color" : Color.BLUE },
-			{ "tiles" : Def.get_world().world_map.get_tiles_in_radius(placing_colony.global_position, build_radius_1), "color" : Color(Color.WHITE, 0.50) },
-			{ "tiles" : Def.get_world().world_map.get_tiles_in_radius(placing_colony.global_position, build_radius_2), "color" : Color(Color.BLUE, 0.25) },
-			{ "tiles" : Def.get_world().world_map.get_tiles_in_radius(placing_colony.global_position, build_radius_3), "color" : Color(Color.WHITE, 0.50) },
-			{ "tiles" : Def.get_world().world_map.get_tiles_in_radius(placing_colony.global_position, build_radius_4), "color" : Color(Color.BLUE, 0.25) }
+			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, 8), "color" : Color.BLUE },
+			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, build_radius_1), "color" : Color(Color.WHITE, 0.50) },
+			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, build_radius_2), "color" : Color(Color.BLUE, 0.25) },
+			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, build_radius_3), "color" : Color(Color.WHITE, 0.50) },
+			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, build_radius_4), "color" : Color(Color.BLUE, 0.25) }
 		]
 		
 		for bound: Dictionary in bounds:
 			for tile: Vector2i in bound.tiles:
 				if not tile in placing_tiles:
-					var tile_pos  : Vector2 = tile_map.map_to_local(tile)
+					var tile_pos  : Vector2 = tile_map_layer.map_to_local(tile)
 					var tile_tl   : Vector2 = tile_pos - tile_size * 0.5
 					var tile_rect : Rect2 = Rect2(tile_tl, tile_size)
 					

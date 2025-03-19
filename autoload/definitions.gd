@@ -9,6 +9,8 @@ var UIBuildingScenes : Dictionary
 var UnitScenes       : Dictionary
 var UIUnitScenes     : Dictionary
 
+const TILE_SIZE : Vector2i = Vector2i(48, 48)
+
 # -- Combat constants
 const DEFENDER_RESERVE_ROW : Vector2i = Vector2i(5, 0)
 const DEFENDER_FLAG_SQUARE : Vector2i = Vector2i(4, 1)
@@ -160,12 +162,13 @@ func get_world() -> WorldManager:
 	return get_tree().get_first_node_in_group("world") as WorldManager
 
 
-func get_world_map() -> WorldMap:
-	return get_world().world_map
+func get_world_map() -> WorldGen:
+	return get_world().world_gen
+	#return get_world().world_map
 
 
-func get_world_tile_map() -> TileMap:
-	return get_world_map().tile_map
+func get_world_tile_map() -> TileMapLayer:
+	return get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
 
 
 func get_building_scene_by_type(_building_type: Term.BuildingType) -> PackedScene:

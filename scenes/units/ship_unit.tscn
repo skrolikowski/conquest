@@ -1,14 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://dcfshltv0e7y3"]
+[gd_scene load_steps=7 format=3 uid="uid://dcfshltv0e7y3"]
 
 [ext_resource type="Script" uid="uid://hyetuygy8lrl" path="res://scenes/units/ship_unit.gd" id="1_377pb"]
-[ext_resource type="Texture2D" uid="uid://ddjejss1111o8" path="res://icon.svg" id="2_mcpnb"]
+[ext_resource type="Texture2D" uid="uid://utlb047k5o6f" path="res://assets/maps/WinLu_Fantasy_World/Fantasy_Vehicle.png" id="3_68p7g"]
 [ext_resource type="PackedScene" uid="uid://bardxsiggrtyx" path="res://scenes/units/carrier.tscn" id="3_rts31"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v0dym"]
-radius = 12.0
+radius = 24.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aboks"]
+atlas = ExtResource("3_68p7g")
+region = Rect2(144, 48, 48, 48)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s0mwa"]
-size = Vector2(12, 12)
+size = Vector2(48, 48)
 
 [node name="ShipUnit" type="Area2D"]
 collision_mask = 0
@@ -23,11 +27,11 @@ shape = SubResource("CircleShape2D_v0dym")
 debug_color = Color(0, 0.6, 0.192157, 0.227451)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.095, 0.095)
-texture = ExtResource("2_mcpnb")
+texture = SubResource("AtlasTexture_aboks")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_s0mwa")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 navigation_layers = 2
+debug_enabled = true

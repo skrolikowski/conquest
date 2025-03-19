@@ -25,8 +25,8 @@ func is_water_building() -> bool:
 	
 
 func get_tile() -> Vector2i:
-	var tile_map : TileMap = Def.get_world().world_map.tile_map
-	return tile_map.local_to_map(global_position - get_size() * 0.5)
+	var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
+	return tile_map_layer.local_to_map(global_position - get_size() * 0.5)
 
 
 func get_tile_end() -> Vector2i:

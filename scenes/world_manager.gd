@@ -2,7 +2,7 @@ extends Node2D
 class_name WorldManager
 
 @onready var camera         := $Camera2D as Camera2D
-@onready var world_map      := %WorldMap as WorldMap
+@onready var world_gen      := %WorldGen as WorldGen
 @onready var world_canvas   := %WorldCanvas as CanvasLayer
 @onready var player         := $Player as Player
 
@@ -24,7 +24,7 @@ func _ready() -> void:
 	camera.position = Vector2(256, 256)
 	camera.zoom = Vector2(camera_zoom, camera_zoom)
 	
-	world_map.connect("map_loaded", _on_map_loaded)
+	world_gen.connect("map_loaded", _on_map_loaded)
 	
 	world_canvas.connect("end_turn", _on_end_turn)
 	world_canvas.connect("camera_zoom", _on_camera_zoom)
@@ -112,7 +112,8 @@ func _unhandled_input(_event:InputEvent) -> void:
 	# -- Map Information..
 	if _event is InputEventMouse:
 		var world_position : Vector2 = get_global_mouse_position()
-		var tile_coords    : Vector2i = world_map.tile_map.local_to_map(world_position)
+		var tile_coords    : Vector2i = world_gen.tilemap_layers[WorldGen.MapLayer.LAND].local_to_map(world_position)
+		#var tile_coords    : Vector2i = world_map.tile_map.local_to_map(world_position)
 
 		if focus_tile != tile_coords:
 			map_set_focus_tile(tile_coords)
@@ -125,9 +126,16 @@ func detect_collision(_position:Vector2) -> Node:
 	query.collide_with_bodies = false
 	query.position            = _position
 
-	var results : Array[Dictionary] = space.intersect_point(query, 1)
-	if results.size() == 1:
-		return results[0]['collider']
+	var results : Array[Dictionary] = space.intersect_point(query, 2)
+	"""
+		Dev-note:
+		Some Units/Buildings have multiple Area2D
+	"""
+	if results.size() > 0:
+		if results[0]['collider'] is Unit or results[0]['collider'] is Building:
+			return results[0]['collider']
+		elif results[1]['collider'] is Unit or results[1]['collider'] is Building:
+			return results[1]['collider']
 	return null
 
 
@@ -140,10 +148,12 @@ func map_set_focus_tile(_tile: Vector2i) -> void:
 
 
 func map_refresh_cursor() -> void:
-	world_map.clear_cursor_tiles()
+	#world_map.clear_cursor_tiles()
+	world_gen.clear_cursor_tiles()
 
 	if focus_node == null:
-		world_map.set_cursor_tile(focus_tile)
+		#world_map.set_cursor_tile(focus_tile)
+		world_gen.set_cursor_tile(focus_tile)
 
 
 func map_refresh_status() -> void:
@@ -173,11 +183,11 @@ func map_refresh_tile_status() -> void:
 	var tile_status : PackedStringArray = PackedStringArray()
 
 	# -- Tile height..
-	var tile_height : float = world_map.get_tile_height(focus_tile)
+	var tile_height : float = world_gen.get_tile_height(focus_tile)
 	tile_status.append("Height: " + str(snapped(tile_height, 0.01)))
 
 	# -- Industry modifiers..
-	var mod_data : Dictionary = world_map.get_terrain_modifier_by_industry_type(focus_tile)
+	var mod_data : Dictionary = world_gen.get_terrain_modifier_by_industry_type(focus_tile)
 	var mod_text : PackedStringArray = PackedStringArray()
 	mod_text.append("Farm: " + str(mod_data[Term.IndustryType.FARM]) + "%")
 	mod_text.append("Mill: " + str(mod_data[Term.IndustryType.MILL]) + "%")
@@ -195,10 +205,10 @@ func map_set_focus_node(_node: Node) -> void:
 
 
 #region CAMERA
-var camera_move_speed : float = 200.0
-var camera_zoom       : float = 2.00
-var camera_zoom_min   : float = 1.00
-var camera_zoom_max   : float = 3.00
+var camera_move_speed : float = 600.0
+var camera_zoom       : float = 1.00
+var camera_zoom_min   : float = 0.50
+var camera_zoom_max   : float = 2.00
 var camera_zoom_step  : float = 0.50
 
 func _on_camera_zoom(_direction:int) -> void:
@@ -223,7 +233,7 @@ func _on_end_turn() -> void:
 	unselect_all()
 
 	# combat_manager.begin_turn()
-	player.begin_turn()
+	#player.begin_turn()
 	
 #endregion
 

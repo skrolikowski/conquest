@@ -174,13 +174,13 @@ func _refresh_build_tiles() -> void:
 	"""
 	# var build_radius   : float = (build_shape.shape as CircleShape2D).radius
 	var build_radius   : float = Def.get_building_stat(Term.BuildingType.CENTER, colony.level).build_radius
-	var tiles_in_range : Array[Vector2i] = Def.get_world().world_map.get_tiles_in_radius(global_position, build_radius)
-	var tile_map       : TileMap = Def.get_world().world_map.tile_map
+	var tiles_in_range : Array[Vector2i] = Def.get_world_map().get_tiles_in_radius(global_position, build_radius)
+	var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
 
 	build_tiles = {}
 	
 	for tile : Vector2i in tiles_in_range:
-		build_tiles[tile] = tile_map.get_cell_tile_data(0, tile)
+		build_tiles[tile] = tile_map_layer.get_cell_tile_data(tile)
 
 
 func _add_to_occupied_tiles(_start: Vector2i, _end: Vector2i) -> void:
