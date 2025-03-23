@@ -8,7 +8,7 @@ func _ready() -> void:
 	title = "Farm"
 	
 	building_type      = Term.BuildingType.FARM
-	building_size      = Term.BuildingSize.LARGE
+	building_size      = Term.BuildingSize.SMALL
 
 	# -- Make properties..
 	make_resource_type = Term.ResourceType.CROPS

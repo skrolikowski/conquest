@@ -22,8 +22,8 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if placing_building != null:
-		var tile_map : TileMap = Def.get_world().world_map.tile_map
-		var map_tile : Vector2i = tile_map.local_to_map(get_global_mouse_position())
+		var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
+		var map_tile       : Vector2i = tile_map_layer.local_to_map(get_global_mouse_position())
 
 		if placing_tile != map_tile:
 			_update_temp_building(map_tile)
@@ -32,10 +32,10 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	if placing_building != null:
 		for tile: Vector2 in build_tiles.keys():
-			var tile_map  : TileMap = Def.get_world().world_map.tile_map
-			var tile_size : Vector2 = tile_map.tile_set.tile_size
-			var tile_pos  : Vector2 = global_position - tile_map.map_to_local(tile)
-			var tile_rect : Rect2 = Rect2(tile_pos - tile_size * 0.5, tile_size)
+			var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
+			var tile_size      : Vector2 = tile_map_layer.tile_set.tile_size
+			var tile_pos       : Vector2 = global_position - tile_map_layer.map_to_local(tile)
+			var tile_rect      : Rect2 = Rect2(tile_pos - tile_size * 0.5, tile_size)
 			
 			draw_rect(tile_rect, Color(Color.WHITE, 0.5), true)
 
@@ -77,8 +77,8 @@ func _update_temp_building(_tile: Vector2i) -> void:
 	placing_tile = _tile
 
 	# -- update placing building position..
-	var tile_map  : TileMap = Def.get_world().world_map.tile_map
-	var map_pos  : Vector2 = tile_map.map_to_local(_tile)
+	var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
+	var map_pos        : Vector2 = tile_map_layer.map_to_local(_tile)
 	placing_building.global_position = map_pos
 	
 	# -- Note: Offset to building placement for large buildings
@@ -118,12 +118,12 @@ func _can_place_temp_building() -> bool:
 
 			# Height checks..
 			if placing_building.is_water_building():
-				var is_water_tile : bool = Def.get_world().world_map.is_water_tile(tile)
-				if not is_water_tile:
+				var is_shore_tile : bool = Def.get_world_map().is_shore_tile(tile)
+				if not is_shore_tile:
 					return false
 			else:
 				# -- check if height too high..
-				var is_land_tile : bool = Def.get_world().world_map.is_land_tile(tile)
+				var is_land_tile : bool = Def.get_world_map().is_land_tile(tile)
 				if not is_land_tile:
 					return false
 	
@@ -181,6 +181,7 @@ func _refresh_build_tiles() -> void:
 	
 	for tile : Vector2i in tiles_in_range:
 		build_tiles[tile] = tile_map_layer.get_cell_tile_data(tile)
+	print("Building Tiles: ", build_tiles.size())
 
 
 func _add_to_occupied_tiles(_start: Vector2i, _end: Vector2i) -> void:

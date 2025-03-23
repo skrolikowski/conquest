@@ -11,10 +11,10 @@ func detach_all_units() -> void:
 
 
 func get_detach_tile() -> Vector2i:
-	var tile_map     : TileMap = Def.get_world_map().tile_map
-	var map_position : Vector2 = tile_map.local_to_map(global_position)
-	var neighbors    : Array[Vector2i] = tile_map.get_surrounding_cells(map_position)
-	var detach_tiles : Array[Vector2i] = []
+	var tilemap_layer : TileMapLayer = Def.get_world_map().get_land_layer()
+	var map_position   : Vector2i = tilemap_layer.local_to_map(global_position)
+	var neighbors      : Array[Vector2i] = tilemap_layer.get_surrounding_cells(map_position)
+	var detach_tiles   : Array[Vector2i] = []
 
 	for neighbor : Vector2i in neighbors:
 		if Def.get_world_map().is_land_tile(neighbor):
@@ -27,7 +27,8 @@ func get_detach_tile() -> Vector2i:
 
 
 func can_detach_unit() -> bool:
-	return get_detach_tile() != Vector2i.ZERO
+	# return get_detach_tile() != Vector2i.ZERO
+	return Def.get_world_map().is_shore_tile(get_tile())
 
 
 func detach_unit(_unit_stat: UnitStats) -> void:
@@ -36,7 +37,7 @@ func detach_unit(_unit_stat: UnitStats) -> void:
 
 
 func _detach_unit(_unit_stat: UnitStats) -> void:
-	var tile_map   : TileMap = Def.get_world_map().tile_map
+	var tile_map   : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
 	var unit_scene : PackedScene = Def.get_unit_scene_by_type(_unit_stat.unit_type)
 	var unit       : Unit = unit_scene.instantiate() as Unit
 	

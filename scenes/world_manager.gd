@@ -148,11 +148,9 @@ func map_set_focus_tile(_tile: Vector2i) -> void:
 
 
 func map_refresh_cursor() -> void:
-	#world_map.clear_cursor_tiles()
 	world_gen.clear_cursor_tiles()
 
 	if focus_node == null:
-		#world_map.set_cursor_tile(focus_tile)
 		world_gen.set_cursor_tile(focus_tile)
 
 

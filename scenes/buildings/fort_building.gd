@@ -8,7 +8,7 @@ func _ready() -> void:
 	super._ready()
 	
 	building_type = Term.BuildingType.FORT
-	building_size = Term.BuildingSize.LARGE
+	building_size = Term.BuildingSize.SMALL
 
 
 func get_unit_capacity_value() -> int:

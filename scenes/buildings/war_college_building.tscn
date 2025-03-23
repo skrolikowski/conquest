@@ -1,20 +1,44 @@
-[gd_scene load_steps=4 format=3 uid="uid://cti1xhj0dsvj3"]
+[gd_scene load_steps=8 format=3 uid="uid://cti1xhj0dsvj3"]
 
 [ext_resource type="Script" uid="uid://jn2clrhr6tfn" path="res://scenes/buildings/war_college_building.gd" id="1_juqax"]
-[ext_resource type="Texture2D" uid="uid://ddjejss1111o8" path="res://icon.svg" id="2_1i5nc"]
+[ext_resource type="Texture2D" uid="uid://dnv38mdwarq5t" path="res://assets/maps/WinLu_Fantasy_World/WinLu_Fantasy_World_Buildings.png" id="2_stlnt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dylnb"]
-size = Vector2(32, 32)
+size = Vector2(96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p2qqk"]
+atlas = ExtResource("2_stlnt")
+region = Rect2(432, 240, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eilmc"]
+atlas = ExtResource("2_stlnt")
+region = Rect2(48, 336, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_24yl3"]
+atlas = ExtResource("2_stlnt")
+region = Rect2(336, 528, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m54u7"]
+atlas = ExtResource("2_stlnt")
+region = Rect2(0, 240, 48, 48)
 
 [node name="WarCollegeBuilding" type="Area2D"]
 script = ExtResource("1_juqax")
-title = null
-level = null
-building_state = null
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("2_1i5nc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_dylnb")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_p2qqk")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(24, 16)
+texture = SubResource("AtlasTexture_eilmc")
+
+[node name="Sprite2D3" type="Sprite2D" parent="."]
+position = Vector2(0, -24)
+texture = SubResource("AtlasTexture_24yl3")
+
+[node name="Sprite2D4" type="Sprite2D" parent="."]
+position = Vector2(-16, 16)
+texture = SubResource("AtlasTexture_m54u7")

@@ -1,17 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://ik5ele5hm5fh"]
+[gd_scene load_steps=5 format=3 uid="uid://ik5ele5hm5fh"]
 
 [ext_resource type="Script" uid="uid://bk41yw5nrl5j3" path="res://scenes/units/settler_unit.gd" id="1_ol2dy"]
-[ext_resource type="Texture2D" uid="uid://ddjejss1111o8" path="res://icon.svg" id="2_gwffb"]
+[ext_resource type="Texture2D" uid="uid://bp0anc1eh14ed" path="res://assets/images/units/Seth_rogues.png" id="2_l4kcp"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xb4ew"]
+atlas = ExtResource("2_l4kcp")
+region = Rect2(0, 160, 32, 32)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gpwph"]
-size = Vector2(8, 8)
+size = Vector2(32, 32)
 
 [node name="SettlerUnit" type="Area2D"]
 script = ExtResource("1_ol2dy")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.063, 0.063)
-texture = ExtResource("2_gwffb")
+texture = SubResource("AtlasTexture_xb4ew")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_gpwph")

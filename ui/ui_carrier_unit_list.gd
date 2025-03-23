@@ -86,6 +86,9 @@ func _on_detach_units_pressed() -> void:
 		var unit_stat : UnitStats = item.get_metadata(0) as UnitStats
 		carrier.detach_unit(unit_stat)
 		unit_list.remove_tree_item(item)
+	
+	selected_items.clear()
+	refresh_ui()
 
 
 func _on_close_pressed() -> void:

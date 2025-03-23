@@ -50,5 +50,3 @@ func commit_military_research() -> void:
 				else:
 					# -- Not enough gold, set back to suspended..
 					gold_values[research_type][unit_type]["status"] = Term.ResearchStatus.SUSPENDED
-
-

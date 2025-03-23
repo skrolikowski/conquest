@@ -33,5 +33,6 @@ texture = SubResource("AtlasTexture_aboks")
 shape = SubResource("RectangleShape2D_s0mwa")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 4.0
+target_desired_distance = 4.0
 navigation_layers = 2
-debug_enabled = true

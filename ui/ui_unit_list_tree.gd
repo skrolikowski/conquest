@@ -121,4 +121,7 @@ func add_tree_item_as_child(_item:TreeItem, _parent:TreeItem) -> void:
 
 
 func remove_tree_item(_item: TreeItem) -> void:
-	_item.get_parent().remove_child(_item)
+	_item.free()
+	#var parent_item : TreeItem = _item.get_parent()
+	#parent_item.remove_child(_item)
+	#_item.get_parent().remove_child(_item)

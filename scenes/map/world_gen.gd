@@ -35,7 +35,8 @@ enum MapLayer
 {
 	WATER,
 	LAND,
-	MOUNTAINS,
+	SHORE,
+	BIOMES,
 	SNOW,
 	CURSOR,
 	FOGOFWAR,
@@ -70,6 +71,7 @@ var is_map_loaded : bool
 @onready var tilemap_layers : Array[TileMapLayer]
 
 var river_tiles       : Array[Vector2i] = []
+var shore_tiles	      : Array[Vector2i] = []
 var terrain_modifier  : Dictionary = {}
 var artifact_modifier : Dictionary = {}
 
@@ -80,31 +82,54 @@ func _ready() -> void:
 	%NoiseGenerator.connect("generation_finished", _on_noise_generation_finished)
 
 
+func fix_water_navigation() -> void:
+	for tile: Vector2i in get_land_tiles():
+		tilemap_layers[MapLayer.WATER].set_cell(tile, SourceID.WATER, Vector2i(8, 4))
+
+
 func _on_noise_generation_finished() -> void:
 	print("Noise Generation Finished")
-	call_deferred("do_stuff")
-func do_stuff() -> void:
+
+	call_deferred("fix_water_navigation")
+	call_deferred("generate_rivers")
 	# generate_rivers()
 	# generate_terrain_modifiers()
 	# generate_artifacts()
 
-	var land_tiles : Array[Vector2i] = tilemap_layers[MapLayer.LAND].get_used_cells()
-	for tile: Vector2i in land_tiles:
-		tilemap_layers[MapLayer.WATER].set_cell(tile, SourceID.WATER, Vector2i(8, 4))
-
-	#var tile_map_layers: Array[TileMapLayer] = (%TilemapGaeaRenderer as TilemapGaeaRenderer).tile_map_layers
-	#var _land_tiles : Array[Vector2i] = tile_map_layers[1].get_used_cells()
-	#var land_tiles : Array[Vector2i] = land_layer.get_used_cells()
-	#for tile: Vector2i in land_tiles:
-		#water_layer.set_cell(tile, SourceID.WATER, Vector2i(8, 4))
 
 	# -- Fog of war..
-	if Def.FOG_OF_WAR_ENABLED:
-		generate_fog_of_war()
+	# if Def.FOG_OF_WAR_ENABLED:
+	# 	generate_fog_of_war()
 
 	# --
 	is_map_loaded = true
 	map_loaded.emit()
+
+
+#region HELPERS
+func get_water_layer() -> TileMapLayer:
+	return tilemap_layers[MapLayer.WATER]
+
+func get_water_tiles() -> Array[Vector2i]:
+	return get_water_layer().get_used_cells()
+
+func get_land_layer() -> TileMapLayer:
+	return tilemap_layers[MapLayer.LAND]
+
+func get_land_tiles() -> Array[Vector2i]:
+	return get_land_layer().get_used_cells()
+
+
+func get_shore_tiles() -> Array[Vector2i]:
+	return tilemap_layers[MapLayer.SHORE].get_used_cells()
+
+
+func get_biome_tiles() -> Array[Vector2i]:
+	return tilemap_layers[MapLayer.BIOMES].get_used_cells()
+
+
+func get_cursor_tiles() -> Array[Vector2i]:
+	return tilemap_layers[MapLayer.CURSOR].get_used_cells()
 
 
 func is_river_tile(_tile: Vector2i) -> bool:
@@ -112,15 +137,19 @@ func is_river_tile(_tile: Vector2i) -> bool:
 
 
 func is_sea_tile(_tile: Vector2i) -> bool:
-	return get_tile_height(_tile) <= -0.01
+	return get_tile_height(_tile) < 0.0
 
 
 func is_water_tile(_tile: Vector2i) -> bool:
 	return is_river_tile(_tile) or is_sea_tile(_tile)
 
 
+func is_shore_tile(_tile: Vector2i) -> bool:
+	return _tile in get_shore_tiles()
+
+
 func is_land_tile(_tile: Vector2i) -> bool:
-	return get_tile_height(_tile) >= 0 and get_tile_height(_tile) <= 1
+	return _tile in get_land_tiles()
 
 
 func get_tile_height(_tile: Vector2i) -> float:
@@ -128,20 +157,6 @@ func get_tile_height(_tile: Vector2i) -> float:
 	#if noise_gen.settings.falloff_enabled and noise_gen.settings.falloff_map and not noise_gen.settings.infinite:
 		#noise = ((noise + 1) * noise_gen.settings.falloff_map.get_value(_tile)) - 1.0
 	return noise
-
-
-func get_lowest_neighbor(_tile:Vector2i) -> Vector2i:
-	var neighbors       : Array[Vector2i] = tilemap_layers[MapLayer.LAND].get_surrounding_cells(_tile)
-	var lowest_neighbor : Vector2i
-	var lowest_height   : float = 1.0
-	
-	for neighbor : Vector2i in neighbors:
-		var neighbor_height : float = get_tile_height(neighbor)
-		if neighbor_height < lowest_height:
-			lowest_neighbor = neighbor
-			lowest_height   = neighbor_height
-
-	return lowest_neighbor
 
 
 func get_tiles_in_radius(_pos:Vector2, _radius:float) -> Array[Vector2i]:
@@ -165,68 +180,81 @@ func get_tiles_in_radius(_pos:Vector2, _radius:float) -> Array[Vector2i]:
 				tiles.append(tile)
 
 	return tiles
+#endregion
+
 
 
 
 #region RIVERS
 func get_river_sources() -> Array[Vector2i]:
 	var tiles : Array[Vector2i] = []
-	var min_height : float = 0.55
-	var max_height : float = 0.85
+	var min_height : float = 0.45
+	var max_height : float = 0.48
 	
-	var used_tiles : Array[Vector2i] = tilemap_layers[MapLayer.LAND].get_used_cells()
-	for tile: Vector2i in used_tiles:
+	for tile: Vector2i in get_biome_tiles():
 		var height : float = get_tile_height(tile)
-		if height >= min_height and height <= max_height:
-			if randf() > 0.80:
-				tiles.append(Vector2i(tile.x, tile.y))
+		if height >= min_height and height <= max_height and randf() > 0.75:
+			tiles.append(Vector2i(tile.x, tile.y))
 
 	return tiles
 
 
 func generate_rivers() -> void:
-	print("Generating rivers...")
-
-	for source : Vector2i in get_river_sources():
-		generate_river(source)
-
-		tilemap_layers[MapLayer.LAND].set_cells_terrain_connect(
-			river_tiles, TerrainSet.DEFAULT, Terrain.NONE, true)
-
-	# # -- update tile appearance..
-	# for tile : Vector2i in river_tiles:
-	# 	tile_map.set_cell(MapLayer.LAND, tile, -1)
-	# 	# tile_map.set_cell(MapLayer.LAND, tile, 0, Vector2i(0, 2))
+	river_tiles.clear()
 
 	# --
-	# tile_map.force_update(MapLayer.LAND)
-	# tile_map.update_internals()
+	var river_sources : Array[Vector2i] = get_river_sources()
+	print("Generating %d river(s)..." % river_sources.size())
+	
+	# --
+	for source : Vector2i in river_sources:
+		generate_river(source)
+
+	tilemap_layers[MapLayer.LAND].set_cells_terrain_connect(
+		river_tiles, TerrainSet.DEFAULT, Terrain.NONE, true)
+
+	tilemap_layers[MapLayer.BIOMES].set_cells_terrain_connect(
+		river_tiles, TerrainSet.DEFAULT, Terrain.NONE, true)
 	
 
 func generate_river(_tile:Vector2i) -> void:
-	if is_water_tile(_tile):
+	if is_shore_tile(_tile):
 		return
 
-	var lowest_neighbor : Vector2i = get_lowest_neighbor(_tile)
-	if lowest_neighbor == null:
+	var lowest_neighbor : Vector2i = _get_lowest_neighbor(_tile)
+	if lowest_neighbor in river_tiles:
 		return
 
 	# --
 	river_tiles.append(_tile)
 	generate_river(lowest_neighbor)
 
+
+func _get_lowest_neighbor(_tile:Vector2i) -> Vector2i:
+	var neighbors       : Array[Vector2i] = tilemap_layers[MapLayer.LAND].get_surrounding_cells(_tile)
+	var lowest_neighbor : Vector2i
+	var lowest_height   : float = 1.0
+	
+	for neighbor : Vector2i in neighbors:
+		var neighbor_height : float = get_tile_height(neighbor)
+		if neighbor_height < lowest_height:
+			lowest_neighbor = neighbor
+			lowest_height   = neighbor_height
+
+	return lowest_neighbor
+
 #endregion
 
 
 #region CURSOR
 func set_cursor_tile(_tile: Vector2i) -> void:
-	#tile_map.set_cell(MapLayer.CURSOR, _tile, SourceID.WATER, TILE_CURSOR)
+	#tilemap_layers[MapLayer.CURSOR].set_cell(_tile, SourceID.WATER, TILE_CURSOR)
 	pass
 
 
 func clear_cursor_tiles() -> void:
-	#for tile: Vector2i in tile_map.get_used_cells(MapLayer.CURSOR):
-		#tile_map.set_cell(MapLayer.CURSOR, tile, SourceID.NONE)
+	#for tile: Vector2i in get_cursor_tiles():
+		#tilemap_layers[MapLayer.CURSOR].set_cell(tile, SourceID.NONE)
 	pass
 	
 #endregion
@@ -333,11 +361,10 @@ func get_source_tiles_by_industry_type(_industry_type: Term.IndustryType) -> Dic
 	"""
 	var tiles : Dictionary = {}
 	
-	for tile: Vector2i in tilemap_layers[MapLayer.LAND].get_used_cells():
+	for tile: Vector2i in get_land_tiles():
 		var height : float = get_tile_height(tile)
 
 		if _industry_type == Term.IndustryType.MINE:
-			# Threshold: Mountain [0.45 - 1.00]
 			if height > 0.00 and height <= 0.45 and randf() < 0.25:
 				tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": -2 }
 			elif height > 0.35 and height <= 0.45 and randf() < 0.95:

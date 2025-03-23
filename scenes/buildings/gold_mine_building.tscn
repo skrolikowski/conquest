@@ -1,17 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://bys8qqj127mqj"]
+[gd_scene load_steps=5 format=3 uid="uid://bys8qqj127mqj"]
 
 [ext_resource type="Script" uid="uid://chvm5bkryhkj8" path="res://scenes/buildings/gold_mine_building.gd" id="1_58soj"]
-[ext_resource type="Texture2D" uid="uid://ddjejss1111o8" path="res://icon.svg" id="2_rejc1"]
+[ext_resource type="Texture2D" uid="uid://cqb83f4rypbye" path="res://assets/maps/WinLu_Fantasy_World/Fantasy_World_vegetation.png" id="2_42b37"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7y5l5"]
-size = Vector2(16, 16)
+size = Vector2(48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o6juk"]
+atlas = ExtResource("2_42b37")
+region = Rect2(384, 192, 48, 48)
 
 [node name="GoldMineBuilding" type="Area2D"]
 script = ExtResource("1_58soj")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.125, 0.125)
-texture = ExtResource("2_rejc1")
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_7y5l5")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_o6juk")

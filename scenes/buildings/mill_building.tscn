@@ -1,22 +1,32 @@
-[gd_scene load_steps=5 format=3 uid="uid://c4rynw2vosiyr"]
+[gd_scene load_steps=7 format=3 uid="uid://c4rynw2vosiyr"]
 
 [ext_resource type="Script" uid="uid://beinsoamsiofa" path="res://scenes/buildings/mill_building.gd" id="1_t42k4"]
 [ext_resource type="Texture2D" uid="uid://dnv38mdwarq5t" path="res://assets/maps/WinLu_Fantasy_World/WinLu_Fantasy_World_Buildings.png" id="2_6xlnl"]
+[ext_resource type="Texture2D" uid="uid://cqb83f4rypbye" path="res://assets/maps/WinLu_Fantasy_World/Fantasy_World_vegetation.png" id="2_xhkuu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4d84w"]
+atlas = ExtResource("2_xhkuu")
+region = Rect2(192, 0, 48, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3uftc"]
 atlas = ExtResource("2_6xlnl")
-region = Rect2(48, 336, 48, 48)
+region = Rect2(144, 96, 48, 48)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wjx8h"]
 custom_solver_bias = 1.0
-size = Vector2(16, 16)
+size = Vector2(48, 48)
 
 [node name="MillBuilding" type="Area2D"]
 script = ExtResource("1_t42k4")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.35, 0.35)
+position = Vector2(8, -8)
+scale = Vector2(0.75, 0.75)
 texture = SubResource("AtlasTexture_4d84w")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+position = Vector2(-10, 0)
+texture = SubResource("AtlasTexture_3uftc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_wjx8h")
