@@ -58,7 +58,8 @@ func _draw() -> void:
 
 
 func get_tile() -> Vector2i:
-	return Def.get_world_map().get_water_layer().local_to_map(global_position - shape.shape.size * 0.5)
+	# return Def.get_world_map().get_water_layer().local_to_map(global_position) - shape.shape.size * 0.5)
+	return Def.get_world_map().get_water_layer().local_to_map(global_position)
 
 
 func get_tile_position() -> Vector2:

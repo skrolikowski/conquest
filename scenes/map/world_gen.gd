@@ -20,14 +20,18 @@ enum TerrainSet
 	DEFAULT,
 }
 
-enum Terrain
+enum LandTerrain
 {
-	WATER,
 	GRASS,
-	MOUNTAINS,
-	FOREST,
-	SNOW,
+	NONE,
+	RIVER,
+}
+
+enum BiomeTerrain
+{
 	SWAMP,
+	FOREST,
+	MOUNTAINS,
 	NONE,
 }
 
@@ -36,23 +40,7 @@ enum MapLayer
 	WATER,
 	LAND,
 	SHORE,
-	BIOMES,
-	SNOW,
-	CURSOR,
-	FOGOFWAR,
-}
-
-enum SourceID
-{
-	NONE = -1,
-	GRASS = 0,
-	WATER = 1,
-	MOUNTAINS = 4,
-	FOREST = 5,
-	SNOW = 6,
-	SWAMP = 7,
-	LIQUID = 8,
-	UI = 9,
+	BIOME,
 }
 
 enum NavLayer
@@ -64,37 +52,38 @@ enum NavLayer
 const TILE_CURSOR     : Vector2i = Vector2i(5, 7)   # TEMP
 const TILE_FOG_OF_WAR : Vector2i = Vector2i(13, 14) # TEMP
 
-var is_map_loaded : bool
+@export var rivers_enabled : bool = true
 
-@onready var noise_gen    := %NoiseGenerator as NoiseGenerator
-@onready var map_renderer := %TilemapGaeaRenderer as TilemapGaeaRenderer
+@onready var noise_gen    := $NoiseGenerator as NoiseGenerator
+@onready var map_renderer := $TilemapGaeaRenderer as TilemapGaeaRenderer
 @onready var tilemap_layers : Array[TileMapLayer]
 
+var is_map_loaded     : bool = false
 var river_tiles       : Array[Vector2i] = []
-var shore_tiles	      : Array[Vector2i] = []
 var terrain_modifier  : Dictionary = {}
 var artifact_modifier : Dictionary = {}
 
 
 func _ready() -> void:
-	is_map_loaded  = false
 	tilemap_layers = map_renderer.tile_map_layers
 	%NoiseGenerator.connect("generation_finished", _on_noise_generation_finished)
 
 
 func fix_water_navigation() -> void:
 	for tile: Vector2i in get_land_tiles():
-		tilemap_layers[MapLayer.WATER].set_cell(tile, SourceID.WATER, Vector2i(8, 4))
+		tilemap_layers[MapLayer.WATER].set_cell(tile, 2, Vector2i(9, 12))
 
 
 func _on_noise_generation_finished() -> void:
 	print("Noise Generation Finished")
 
 	call_deferred("fix_water_navigation")
-	call_deferred("generate_rivers")
-	# generate_rivers()
-	# generate_terrain_modifiers()
-	# generate_artifacts()
+
+	if rivers_enabled:
+		call_deferred("generate_rivers")
+
+	# call_deferred("generate_terrain_modifiers")
+	# call_deferred("generate_artifacts")
 
 
 	# -- Fog of war..
@@ -125,11 +114,11 @@ func get_shore_tiles() -> Array[Vector2i]:
 
 
 func get_biome_tiles() -> Array[Vector2i]:
-	return tilemap_layers[MapLayer.BIOMES].get_used_cells()
+	return tilemap_layers[MapLayer.BIOME].get_used_cells()
 
 
-func get_cursor_tiles() -> Array[Vector2i]:
-	return tilemap_layers[MapLayer.CURSOR].get_used_cells()
+# func get_cursor_tiles() -> Array[Vector2i]:
+# 	return tilemap_layers[MapLayer.CURSOR].get_used_cells()
 
 
 func is_river_tile(_tile: Vector2i) -> bool:
@@ -180,6 +169,12 @@ func get_tiles_in_radius(_pos:Vector2, _radius:float) -> Array[Vector2i]:
 				tiles.append(tile)
 
 	return tiles
+
+
+func get_random_shore_tile() -> Vector2i:
+	var shore_tiles : Array[Vector2i] = get_shore_tiles()
+	return shore_tiles[randi() % shore_tiles.size()]
+
 #endregion
 
 
@@ -193,7 +188,7 @@ func get_river_sources() -> Array[Vector2i]:
 	
 	for tile: Vector2i in get_biome_tiles():
 		var height : float = get_tile_height(tile)
-		if height >= min_height and height <= max_height and randf() > 0.75:
+		if height >= min_height and height <= max_height and randf() > 0.65:
 			tiles.append(Vector2i(tile.x, tile.y))
 
 	return tiles
@@ -211,13 +206,13 @@ func generate_rivers() -> void:
 		generate_river(source)
 
 	tilemap_layers[MapLayer.LAND].set_cells_terrain_connect(
-		river_tiles, TerrainSet.DEFAULT, Terrain.NONE, true)
+		river_tiles, TerrainSet.DEFAULT, LandTerrain.RIVER, true)
 
-	tilemap_layers[MapLayer.BIOMES].set_cells_terrain_connect(
-		river_tiles, TerrainSet.DEFAULT, Terrain.NONE, true)
+	tilemap_layers[MapLayer.BIOME].set_cells_terrain_connect(
+		river_tiles, TerrainSet.DEFAULT, BiomeTerrain.NONE, true)
 	
 
-func generate_river(_tile:Vector2i) -> void:
+func generate_river(_tile: Vector2i) -> void:
 	if is_shore_tile(_tile):
 		return
 

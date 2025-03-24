@@ -21,7 +21,7 @@ var drag_end    : Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
-	camera.position = Vector2(256, 256)
+	camera.position = Vector2(0, 0)
 	camera.zoom = Vector2(camera_zoom, camera_zoom)
 	
 	world_gen.connect("map_loaded", _on_map_loaded)
@@ -205,9 +205,9 @@ func map_set_focus_node(_node: Node) -> void:
 #region CAMERA
 var camera_move_speed : float = 600.0
 var camera_zoom       : float = 1.00
-var camera_zoom_min   : float = 0.50
-var camera_zoom_max   : float = 2.00
-var camera_zoom_step  : float = 0.50
+var camera_zoom_min   : float = 0.25
+var camera_zoom_max   : float = 1.50
+var camera_zoom_step  : float = 0.25
 
 func _on_camera_zoom(_direction:int) -> void:
 	_camera_zoom(_direction)

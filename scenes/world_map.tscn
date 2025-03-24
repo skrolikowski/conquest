@@ -1,14 +1,14 @@
 [gd_scene load_steps=27 format=3 uid="uid://45bq430g8u3a"]
 
-[ext_resource type="Script" uid="uid://b8vr3c8v7wstb" path="res://addons/gaea/generators/2D/noise_generator/noise_generator.gd" id="1_jkk1s"]
+[ext_resource type="Script" path="res://addons/_gaea/generators/2D/noise_generator/noise_generator.gd" id="1_jkk1s"]
 [ext_resource type="Script" uid="uid://c653bu6b16uxc" path="res://scenes/world_map.gd" id="1_vi8yv"]
-[ext_resource type="Script" uid="uid://cbb0ljhm51ypn" path="res://addons/gaea/others/falloff_map.gd" id="2_0xht2"]
-[ext_resource type="Script" uid="uid://c64t0aufp4gyj" path="res://addons/gaea/renderers/2D/tilemap_gaea_renderer.gd" id="2_5sb6w"]
-[ext_resource type="Script" uid="uid://grcjespwfbld" path="res://addons/gaea/generators/2D/noise_generator/noise_generator_settings.gd" id="2_oicdl"]
+[ext_resource type="Script" path="res://addons/_gaea/others/falloff_map.gd" id="2_0xht2"]
+[ext_resource type="Script" path="res://addons/_gaea/renderers/2D/tilemap_gaea_renderer.gd" id="2_5sb6w"]
+[ext_resource type="Script" path="res://addons/_gaea/generators/2D/noise_generator/noise_generator_settings.gd" id="2_oicdl"]
 [ext_resource type="TileSet" uid="uid://ddr4depx33fq2" path="res://assets/maps/tile_map.tres" id="2_xx42q"]
-[ext_resource type="Script" uid="uid://b7ns3c0ojkryt" path="res://addons/gaea/generators/2D/noise_generator/noise_generator_data.gd" id="3_i1t1p"]
-[ext_resource type="Script" uid="uid://ditcl7kbi1u17" path="res://addons/gaea/modifiers/2D/modifier_2d.gd" id="4_55716"]
-[ext_resource type="Script" uid="uid://cpeeigoklgbik" path="res://addons/gaea/tile_info/tilemap_tile_info.gd" id="4_kcld1"]
+[ext_resource type="Script" path="res://addons/_gaea/generators/2D/noise_generator/noise_generator_data.gd" id="3_i1t1p"]
+[ext_resource type="Script" path="res://addons/_gaea/modifiers/2D/modifier_2d.gd" id="4_55716"]
+[ext_resource type="Script" path="res://addons/_gaea/tile_info/tilemap_tile_info.gd" id="4_kcld1"]
 
 [sub_resource type="Image" id="Image_55716"]
 data = {
