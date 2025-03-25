@@ -118,10 +118,10 @@ func _refresh_colony_tiles(_tile: Vector2i) -> void:
 	placing_tiles  = {}
 
 	if placing_tile != Vector2i.ZERO:
-		var build_radius_1 : float = Def.get_building_stat(Term.BuildingType.CENTER, 1).build_radius
-		var build_radius_2 : float = Def.get_building_stat(Term.BuildingType.CENTER, 2).build_radius
-		var build_radius_3 : float = Def.get_building_stat(Term.BuildingType.CENTER, 3).build_radius
-		var build_radius_4 : float = Def.get_building_stat(Term.BuildingType.CENTER, 4).build_radius
+		var build_radius_1 : float = Def.get_building_stat(Term.BuildingType.CENTER, 1).build_radius * tile_size.x
+		var build_radius_2 : float = Def.get_building_stat(Term.BuildingType.CENTER, 2).build_radius * tile_size.x
+		var build_radius_3 : float = Def.get_building_stat(Term.BuildingType.CENTER, 3).build_radius * tile_size.x
+		var build_radius_4 : float = Def.get_building_stat(Term.BuildingType.CENTER, 4).build_radius * tile_size.x
 	
 		var bounds : Array[Dictionary] = [
 			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, 8), "color" : Color.BLUE },

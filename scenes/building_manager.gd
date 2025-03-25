@@ -173,7 +173,7 @@ func _refresh_build_tiles() -> void:
 	NOTE: Should be called once per building level change
 	"""
 	# var build_radius   : float = (build_shape.shape as CircleShape2D).radius
-	var build_radius   : float = Def.get_building_stat(Term.BuildingType.CENTER, colony.level).build_radius
+	var build_radius   : float = Def.get_building_stat(Term.BuildingType.CENTER, colony.level).build_radius * Def.TILE_SIZE.x
 	var tiles_in_range : Array[Vector2i] = Def.get_world_map().get_tiles_in_radius(global_position, build_radius)
 	var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
 
