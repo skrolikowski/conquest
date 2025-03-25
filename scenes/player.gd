@@ -28,8 +28,9 @@ func debug() -> void:
 	"""
 	Create colony
 	"""
-	# cm.found_colony(Vector2i(5, 6), Vector2(0, 0), 1)
-	# cm.create_colony()
+	cm.found_colony(Vector2i(26, 8), Vector2(0, 0), 1)
+	cm.create_colony()
+	Def.get_world().camera.position = cm.get_colonies()[0].global_position
 
 	"""
 	NOTE: this really doesn't work due to race conditions..
@@ -44,10 +45,10 @@ func debug() -> void:
 	# var start_tile  : Vector2i = coast_tiles.pick_random()
 
 	# -- Just a Settler..
-	var settler       : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, 1)
-	var settler_pos   : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(26, 8))
-	var settler_unit  : Unit = create_unit(settler, settler_pos)
-	Def.get_world().camera.position = settler_unit.position
+	# var settler       : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, 1)
+	# var settler_pos   : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(26, 8))
+	# var settler_unit  : Unit = create_unit(settler, settler_pos)
+	# Def.get_world().camera.position = settler_unit.position
 	
 	# var ship       : UnitStats = UnitStats.New_Unit(Term.UnitType.SHIP, 1)
 	# var shore_tile : Vector2i = Def.get_world_map().get_random_shore_tile()

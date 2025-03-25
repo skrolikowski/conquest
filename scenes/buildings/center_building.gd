@@ -353,7 +353,7 @@ func get_max_ship_unit_count() -> int:
 
 func get_military_unit_level_count_by_unit_type(_unit_type: Term.UnitType) -> Dictionary:
 	var value : Dictionary = {}
-	var units : Array[Unit] = get_colony_military_units() as Array[Unit]
+	var units : Array[Node] = get_colony_military_units() as Array[Node]
 	
 	for i in range(4):
 		value[i + 1] = 0

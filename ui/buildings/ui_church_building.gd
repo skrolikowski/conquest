@@ -1,18 +1,25 @@
 extends UIBuilding
 class_name UIChurcBuilding
 
+@onready var production_container := %Production as VBoxContainer
 
 func _set_building(_building: Building) -> void:
 	super._set_building(_building)
 	
+	# --
+	refresh_ui()
+
+
+func refresh_ui() -> void:
+	super.refresh_ui()
 	
-	# -- Church Building Data
-	_building = _building as ChurchBuilding
+	var church_building : ChurchBuilding = building as ChurchBuilding
 	
-	if _building.building_state == Term.BuildingState.NEW:
-		%Production.hide()
+	# -- Production
+	if church_building.building_state == Term.BuildingState.NEW:
+		production_container.hide()
 	else:
-		%Production.show()
+		production_container.show()
 		
-		%ThisBuildingValue.text = str(building.get_immigration_bonus())
-		%AllBuildingsValue.text = str(building.colony.get_immigration())
+		%ThisBuildingValue.text = str(church_building.get_immigration_bonus())
+		%AllBuildingsValue.text = str(church_building.colony.get_immigration())

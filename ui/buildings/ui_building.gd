@@ -1,7 +1,12 @@
 extends PanelContainer
 class_name UIBuilding
 
-@onready var btn_close : Button = %BtnClose as Button
+@onready var btn_demolish : CheckBox = %BtnDemolish as CheckBox
+@onready var btn_upgrade  : CheckBox = %BtnUpgrade as CheckBox
+@onready var btn_refund   : Button = %BtnRefund as Button
+@onready var btn_close    : Button = %BtnClose as Button
+
+@onready var action_container := %ActionContainer as HBoxContainer
 
 var building       : Building : set = _set_building
 var building_state : Term.BuildingState
@@ -10,14 +15,19 @@ var building_state : Term.BuildingState
 func _ready() -> void:
 	btn_close.connect("pressed", _on_close_pressed)
 	
-	%BuildingDemolish.connect("toggled", _on_building_demolish_toggled)
-	%BuildingUpgrade.connect("toggled", _on_building_upgrade_toggled)
-	%BuildingRefund.connect("pressed", _on_building_refund_pressed)
+	btn_demolish.connect("toggled", _on_building_demolish_toggled)
+	btn_upgrade.connect("toggled", _on_building_upgrade_toggled)
+	btn_refund.connect("pressed", _on_building_refund_pressed)
 
 
 func refresh_ui() -> void:
-	%BuildingDemolish.disabled = not building.can_demolish()
-	%BuildingUpgrade.disabled  = not building.can_upgrade()
+	btn_demolish.disabled = not building.can_demolish()
+	btn_upgrade.disabled  = not building.can_upgrade()
+
+	if building.building_state == Term.BuildingState.NEW:
+		action_container.hide()
+	else:
+		action_container.show()
 
 
 func _set_building(_building: Building) -> void:
@@ -29,9 +39,9 @@ func _set_building(_building: Building) -> void:
 	%BuildingLevel.text = "Level: " + str(building.level)
 	
 	if building_state == Term.BuildingState.NEW:
-		%BuildingRefund.show()
+		btn_refund.show()
 	else:
-		%BuildingRefund.hide()
+		btn_refund.hide()
 
 	refresh_ui()
 

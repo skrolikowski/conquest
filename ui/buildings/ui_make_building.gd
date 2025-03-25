@@ -1,27 +1,31 @@
 extends UIBuilding
 class_name UIMakeBuilding
 
-@onready var action_container     := %ActionContainer as HBoxContainer
 @onready var production_container := %Production as VBoxContainer
 
 
 func _set_building(_building: Building) -> void:
 	super._set_building(_building)
 
+	# --
+	refresh_ui()
+
+
+func refresh_ui() -> void:
+	super.refresh_ui()
 
 	# -- Make Building Data
-	_building = _building as MakeBuilding
+	var make_building : MakeBuilding = building as MakeBuilding
 	
-	if _building.building_state == Term.BuildingState.NEW:
+	# -- Production
+	if make_building.building_state == Term.BuildingState.NEW:
 		production_container.hide()
-		action_container.hide()
 	else:
 		production_container.show()
-		action_container.show()
 
-		%ThisBuildingValue.text = str(_building.get_expected_produce_value())
-		%AllBuildingsValue.text = str(_building.colony.get_expected_produce_value_by_building_type(_building.building_type))
-		%StockpileValue.text    = str(_building.colony.bank.get_resource_value(_building.make_resource_type))
+		%ThisBuildingValue.text = str(make_building.get_expected_produce_value())
+		%AllBuildingsValue.text = str(make_building.colony.get_expected_produce_value_by_building_type(make_building.building_type))
+		%StockpileValue.text    = str(make_building.colony.bank.get_resource_value(make_building.make_resource_type))
 	
 	# Modifier
 	refresh_modifier()

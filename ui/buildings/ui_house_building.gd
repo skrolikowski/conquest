@@ -13,23 +13,21 @@ func _ready() -> void:
 func _set_building(_building: Building) -> void:
 	super._set_building(_building)
 
-
-	# -- House Building Data
-	building = building as HouseBuilding
-
-	%ThisBuildingValue.text    = str(building.get_population_capacity_value())
-	%AllBuildingsValue.text    = str(building.colony.get_total_population_capacity_value(Term.BuildingType.HOUSING))
-	%TotalPopulationValue.text = str(building.colony.get_total_population())
-
-	recruit_settler.disabled = not building.can_recruit_settler()
+	# --
+	refresh_ui()
 
 
 func refresh_ui() -> void:
 	super.refresh_ui()
-	
-	# building = building as HouseBuilding
-	
-	recruit_settler.disabled = not building.can_recruit_settler()
+
+	# -- House Building Data
+	var house_building : HouseBuilding = building as HouseBuilding
+
+	%ThisBuildingValue.text    = str(house_building.get_population_capacity_value())
+	%AllBuildingsValue.text    = str(house_building.colony.get_total_population_capacity_value(Term.BuildingType.HOUSING))
+	%TotalPopulationValue.text = str(house_building.colony.get_total_population())
+
+	recruit_settler.disabled = not house_building.can_recruit_settler()
 
 
 func _on_recruit_settler_toggled(toggled_on : bool) -> void:
