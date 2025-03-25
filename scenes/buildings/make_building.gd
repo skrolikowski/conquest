@@ -11,12 +11,12 @@ var make_resource_type : Term.ResourceType
 func get_expected_produce_value() -> int:
 	var make  : Transaction = get_make()
 	var value : int = make.resources[make_resource_type]
-	var mod   : float = get_total_production_modifier()
+	var mod   : int = get_total_production_modifier()
 	
 	# -- Modifier..
-	if mod > 0.0:
+	if mod > 0:
 		# increase original make by modifier..
-		value += ceil(value * mod)
+		value += ceil(value * mod * 0.01)
 		
 	return value
 

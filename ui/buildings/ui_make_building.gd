@@ -1,6 +1,9 @@
 extends UIBuilding
 class_name UIMakeBuilding
 
+@onready var action_container     := %ActionContainer as HBoxContainer
+@onready var production_container := %Production as VBoxContainer
+
 
 func _set_building(_building: Building) -> void:
 	super._set_building(_building)
@@ -10,9 +13,11 @@ func _set_building(_building: Building) -> void:
 	_building = _building as MakeBuilding
 	
 	if _building.building_state == Term.BuildingState.NEW:
-		%Production.hide()
+		production_container.hide()
+		action_container.hide()
 	else:
-		%Production.show()
+		production_container.show()
+		action_container.show()
 
 		%ThisBuildingValue.text = str(_building.get_expected_produce_value())
 		%AllBuildingsValue.text = str(_building.colony.get_expected_produce_value_by_building_type(_building.building_type))

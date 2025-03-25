@@ -4,9 +4,9 @@
 [ext_resource type="Script" uid="uid://dr13002he8cpk" path="res://ui/buildings/ui_farm_building.gd" id="1_umm0g"]
 
 [node name="UIFarmBuilding" type="PanelContainer"]
-custom_minimum_size = Vector2(256, 256)
-offset_right = 240.0
-offset_bottom = 256.0
+custom_minimum_size = Vector2(256, 160)
+offset_right = 256.0
+offset_bottom = 248.0
 size_flags_vertical = 0
 theme = ExtResource("1_4llwi")
 script = ExtResource("1_umm0g")
@@ -51,6 +51,7 @@ text = "Level: 0"
 horizontal_alignment = 1
 
 [node name="ActionContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="BuildingDemolish" type="CheckBox" parent="MarginContainer/VBoxContainer/ActionContainer"]
@@ -127,6 +128,7 @@ horizontal_alignment = 1
 
 [node name="Modifier" type="Label" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_vertical = 10
 text = "Modifier: +0% [+0%] (+0%)"

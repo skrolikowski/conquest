@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cn0hh5jpvd0f0" path="res://ui/buildings/ui_mine_building.gd" id="1_uexj5"]
 
 [node name="UIMineBuilding" type="PanelContainer"]
-custom_minimum_size = Vector2(256, 272)
+custom_minimum_size = Vector2(256, 160)
 offset_right = 40.0
 offset_bottom = 40.0
 size_flags_vertical = 0
@@ -51,6 +51,7 @@ text = "Level: 0"
 horizontal_alignment = 1
 
 [node name="ActionContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="BuildingDemolish" type="CheckBox" parent="MarginContainer/VBoxContainer/ActionContainer"]
