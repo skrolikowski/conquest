@@ -231,7 +231,7 @@ func _on_end_turn() -> void:
 	unselect_all()
 
 	# combat_manager.begin_turn()
-	#player.begin_turn()
+	player.begin_turn()
 	
 #endregion
 

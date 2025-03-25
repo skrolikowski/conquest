@@ -1,8 +1,8 @@
 extends Building
 class_name MakeBuilding
 
-@export_range(0, 1.5, 0.01) var terrain_modifier  : float = 0.0
-@export_range(0, 0.5, 0.01) var artifact_modifier : float = 0.0
+# @export_range(0, 1.5, 0.01) var terrain_modifier  : float = 0.0
+# @export_range(0, 0.5, 0.01) var artifact_modifier : float = 0.0
 
 var make_industry_type : Term.IndustryType
 var make_resource_type : Term.ResourceType
@@ -57,10 +57,19 @@ func get_specialized_industry_modifier() -> float:
 	return 0.0
 
 
+func get_terrain_modifier() -> float:
+	var source_tile      : Vector2i = get_tile()
+	var terrain_modifier : int = Def.get_world_map().get_terrain_modifier_value(source_tile, make_resource_type)
+	return terrain_modifier * 0.01
+
+
+func get_artifact_modifier() -> float:
+	#TODO: get artifact modifier
+	return 0.0
+
+
 func get_total_production_modifier() -> float:
-	var value : float = terrain_modifier + artifact_modifier
-	value += get_specialized_industry_modifier()
-	return value
+	return get_terrain_modifier() + get_artifact_modifier() + get_specialized_industry_modifier()
 
 
 #region STATUS INFORMATION

@@ -208,6 +208,13 @@ func get_random_shore_tile() -> Vector2i:
 	var shore_tiles : Array[Vector2i] = get_shore_tiles()
 	return shore_tiles[randi() % shore_tiles.size()]
 
+
+func get_terrain_modifier_value(_tile:Vector2i, _resource_type:Term.ResourceType) -> int:
+	if terrain_modifier.has(_tile):
+		var source : Transaction = terrain_modifier[_tile]
+		return source.get_resource_amount(_resource_type)
+	return 0
+
 #endregion
 
 
@@ -323,7 +330,7 @@ func generate_industry_modifier(_industry_type:Term.IndustryType) -> void:
 	
 	for source: Vector2i in data:
 		var resource_type : Term.ResourceType = data[source].resource_type
-		var bonus         : int = data[source].bonus
+		var bonus : int = data[source].bonus
 
 		# -- add modifier to source tile..
 		add_terrain_modifier(source, resource_type, bonus)

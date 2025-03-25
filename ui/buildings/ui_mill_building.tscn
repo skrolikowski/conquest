@@ -73,6 +73,7 @@ text = "Halt Construction"
 
 [node name="Production" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -125,8 +126,11 @@ size_flags_horizontal = 3
 text = "--"
 horizontal_alignment = 1
 
-[node name="Modifier" type="Label" parent="MarginContainer/VBoxContainer/Production"]
+[node name="Modifier" type="Label" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
+size_flags_vertical = 10
 text = "Modifier: +0% [+0%] (+0%)"
 horizontal_alignment = 1
+vertical_alignment = 1
