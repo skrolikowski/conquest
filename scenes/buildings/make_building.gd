@@ -39,36 +39,38 @@ func get_consumption_need_value_by_resource_type(_resource_type:Term.ResourceTyp
 	return value
 
 
-func get_specialization_points() -> float:
-	if building_size == Term.BuildingSize.LARGE:
+func get_specialization_points() -> int:
+	if make_industry_type == Term.IndustryType.FARM:
+		# Note: there will be less farms in a colony hence a higher value..
 		return level * 4
-	elif building_size == Term.BuildingSize.SMALL:
+	elif make_industry_type == Term.IndustryType.MILL:
 		return level * 1
+	elif make_industry_type == Term.IndustryType.MINE:
+		return level * 1
+	return 0
 
-	return 0.0
 
-
-func get_specialized_industry_modifier() -> float:
+func get_specialized_industry_modifier() -> int:
 	# #TODO: cache this expensive operation (per turn)
 	var bonus:Dictionary = colony.calculate_specialization_bonus()
 	if bonus["industry"] == make_industry_type:
 		if bonus["value"] > 0:
-			return bonus["value"] * 0.01
-	return 0.0
+			return bonus["value"]
+	return 0
 
 
-func get_terrain_modifier() -> float:
+func get_terrain_modifier() -> int:
 	var source_tile      : Vector2i = get_tile()
 	var terrain_modifier : int = Def.get_world_map().get_terrain_modifier_value(source_tile, make_resource_type)
-	return terrain_modifier * 0.01
+	return terrain_modifier
 
 
-func get_artifact_modifier() -> float:
+func get_artifact_modifier() -> int:
 	#TODO: get artifact modifier
-	return 0.0
+	return 0
 
 
-func get_total_production_modifier() -> float:
+func get_total_production_modifier() -> int:
 	return get_terrain_modifier() + get_artifact_modifier() + get_specialized_industry_modifier()
 
 

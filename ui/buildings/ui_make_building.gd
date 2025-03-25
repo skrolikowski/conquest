@@ -26,17 +26,17 @@ func refresh_modifier() -> void:
 	var make_building : MakeBuilding = building as MakeBuilding
 
 	# -- Modifier
-	var total_modifier : float = make_building.get_terrain_modifier()
-	if total_modifier > 0.0:
-		%Modifier.text = "Modifier: " + str(int(total_modifier * 100)) + "%"
+	var total_modifier : int = make_building.get_total_production_modifier()
+	if total_modifier > 0:
+		%Modifier.text = "Modifier: " + str(total_modifier) + "%"
 		
-		var special_modifier  : float = make_building.get_specialized_industry_modifier()
-		var artifact_modifier : float = make_building.get_artifact_modifier()
+		var special_modifier  : int = make_building.get_specialized_industry_modifier()
+		var artifact_modifier : int = make_building.get_artifact_modifier()
 		
-		if special_modifier > 0.0:
-			%Modifier.text += " (+" + str(int(special_modifier * 100)) + "%)"
+		if special_modifier > 0:
+			%Modifier.text += " (+" + str(special_modifier) + "%)"
 			
-		if artifact_modifier > 0.0:
-			%Modifier.text += " [+" + str(int(artifact_modifier * 100)) + "%]"
+		if artifact_modifier > 0:
+			%Modifier.text += " [+" + str(artifact_modifier) + "%]"
 	else:
 		%Modifier.text = "Modifier: None"

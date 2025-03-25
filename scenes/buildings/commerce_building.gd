@@ -28,6 +28,6 @@ func get_expected_produce_value() -> int:
 
 
 #override.. MakeBuilding
-func get_total_production_modifier() -> float:
+func get_total_production_modifier() -> int:
 	# No modifier for Commerce..
 	return 0

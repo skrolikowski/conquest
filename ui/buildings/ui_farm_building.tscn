@@ -21,15 +21,15 @@ theme_override_constants/margin_bottom = 8
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="TitleContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="BtnClose" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="BtnClose" type="Button" parent="MarginContainer/VBoxContainer/TitleContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "X"
 
-[node name="BuildingTitle" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="BuildingTitle" type="Label" parent="MarginContainer/VBoxContainer/TitleContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(2.08165e-12, 24)
 layout_mode = 2
@@ -50,16 +50,16 @@ layout_mode = 2
 text = "Level: 0"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ActionContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="BuildingDemolish" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="BuildingDemolish" type="CheckBox" parent="MarginContainer/VBoxContainer/ActionContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "Demolish"
 
-[node name="BuildingUpgrade" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="BuildingUpgrade" type="CheckBox" parent="MarginContainer/VBoxContainer/ActionContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
@@ -125,9 +125,10 @@ size_flags_horizontal = 3
 text = "--"
 horizontal_alignment = 1
 
-[node name="Modifier" type="Label" parent="MarginContainer/VBoxContainer/Production"]
+[node name="Modifier" type="Label" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 10
 text = "Modifier: +0% [+0%] (+0%)"
 horizontal_alignment = 1
 vertical_alignment = 1
