@@ -44,8 +44,9 @@ func debug() -> void:
 	# var start_tile  : Vector2i = coast_tiles.pick_random()
 	
 	var ship       : UnitStats = UnitStats.New_Unit(Term.UnitType.SHIP, 1)
-	var shore_tile : Vector2i = Def.get_world_map().get_random_shore_tile()
-	var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(shore_tile)
+	# var shore_tile : Vector2i = Def.get_world_map().get_random_shore_tile()
+	# var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(shore_tile)
+	var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(4, 5))
 	var ship_unit  : Unit = create_unit(ship, ship_pos)
 	Def.get_world().camera.position = ship_unit.position
 	

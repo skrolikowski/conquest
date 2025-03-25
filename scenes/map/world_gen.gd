@@ -49,6 +49,15 @@ enum NavLayer
 	WATER,
 }
 
+enum NoiseGenLayer
+{
+	WATER,
+	LAND,
+	SWAMP,
+	FOREST,
+	MOUNTAINS,
+}
+
 const TILE_CURSOR     : Vector2i = Vector2i(5, 7)   # TEMP
 const TILE_FOG_OF_WAR : Vector2i = Vector2i(13, 14) # TEMP
 
@@ -58,15 +67,22 @@ const TILE_FOG_OF_WAR : Vector2i = Vector2i(13, 14) # TEMP
 @onready var map_renderer := $TilemapGaeaRenderer as TilemapGaeaRenderer
 @onready var tilemap_layers : Array[TileMapLayer]
 
+# --
 var is_map_loaded     : bool = false
-var river_tiles       : Array[Vector2i] = []
 var terrain_modifier  : Dictionary = {}
 var artifact_modifier : Dictionary = {}
+
+# --
+var river_tiles       : Array[Vector2i] = []
+var tile_heights 	  : Dictionary = {}
+var highest_height    : float
+var avg_land_height   : float
 
 
 func _ready() -> void:
 	tilemap_layers = map_renderer.tile_map_layers
-	%NoiseGenerator.connect("generation_finished", _on_noise_generation_finished)
+	
+	noise_gen.connect("generation_finished", _on_noise_generation_finished)
 
 
 func fix_water_navigation() -> void:
@@ -74,15 +90,32 @@ func fix_water_navigation() -> void:
 		tilemap_layers[MapLayer.WATER].set_cell(tile, 2, Vector2i(9, 12))
 
 
+func set_tile_data() -> void:
+	var land_tiles   : Array[Vector2i] = get_land_tiles()
+	var max_height   : float = 0.0
+	var total_height : float = 0.0
+
+	for tile: Vector2i in land_tiles:
+		tile_heights[tile] = get_tile_height(tile)
+		total_height += tile_heights[tile]
+
+		if tile_heights[tile] > max_height:
+			max_height = tile_heights[tile]
+
+	avg_land_height = total_height / land_tiles.size()
+	highest_height  = max_height
+
+
 func _on_noise_generation_finished() -> void:
 	print("Noise Generation Finished")
 
+	call_deferred("set_tile_data")
 	call_deferred("fix_water_navigation")
 
 	if rivers_enabled:
 		call_deferred("generate_rivers")
 
-	# call_deferred("generate_terrain_modifiers")
+	call_deferred("generate_terrain_modifiers")
 	# call_deferred("generate_artifacts")
 
 
@@ -126,7 +159,7 @@ func is_river_tile(_tile: Vector2i) -> bool:
 
 
 func is_sea_tile(_tile: Vector2i) -> bool:
-	return get_tile_height(_tile) < 0.0
+	return tile_heights[_tile] < 0.0
 
 
 func is_water_tile(_tile: Vector2i) -> bool:
@@ -143,8 +176,8 @@ func is_land_tile(_tile: Vector2i) -> bool:
 
 func get_tile_height(_tile: Vector2i) -> float:
 	var noise : float = noise_gen.settings.noise.get_noise_2d(_tile.x, _tile.y)
-	#if noise_gen.settings.falloff_enabled and noise_gen.settings.falloff_map and not noise_gen.settings.infinite:
-		#noise = ((noise + 1) * noise_gen.settings.falloff_map.get_value(_tile)) - 1.0
+	if noise_gen.settings.falloff_enabled and noise_gen.settings.falloff_map and not noise_gen.settings.infinite:
+		noise = ((noise + 1) * noise_gen.settings.falloff_map.get_value(_tile)) - 1.0
 	return noise
 
 
@@ -183,12 +216,15 @@ func get_random_shore_tile() -> Vector2i:
 #region RIVERS
 func get_river_sources() -> Array[Vector2i]:
 	var tiles : Array[Vector2i] = []
-	var min_height : float = 0.45
-	var max_height : float = 0.48
+	
+	var min_height   : float = avg_land_height + 0.13
+	var max_height   : float = avg_land_height + 0.18
+	var river_chance : float = 0.25
+	print("River Height Range: %.2f - %.2f" % [min_height, max_height])
 	
 	for tile: Vector2i in get_biome_tiles():
 		var height : float = get_tile_height(tile)
-		if height >= min_height and height <= max_height and randf() > 0.65:
+		if height >= min_height and height <= max_height and randf() < river_chance:
 			tiles.append(Vector2i(tile.x, tile.y))
 
 	return tiles
@@ -297,7 +333,8 @@ func generate_industry_modifier(_industry_type:Term.IndustryType) -> void:
 		# -- ..and to surrounding tiles
 		var tiles : Array[Vector2i] = tilemap_layers[MapLayer.LAND].get_surrounding_cells(source)
 		for tile : Vector2i in tiles:
-			add_terrain_modifier(tile, resource_type, floor(bonus * 0.5))
+			if bonus > 0:
+				add_terrain_modifier(tile, resource_type, floor(bonus * 0.5))
 
 
 func add_terrain_modifier(_tile:Vector2i, _resource_type:Term.ResourceType, _bonus:float) -> void:
@@ -354,45 +391,75 @@ func get_source_tiles_by_industry_type(_industry_type: Term.IndustryType) -> Dic
 	"""
 	Returns a list of tiles that are suitable for a given industry type
 	"""
-	var tiles : Dictionary = {}
+	var tiles          : Dictionary = {}
+	var rng            : RandomNumberGenerator = RandomNumberGenerator.new()
+	var swamp_biome    : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.SWAMP]
+	var forest_biome   : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.FOREST]
+	var mountain_biome : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.MOUNTAINS]
 	
 	for tile: Vector2i in get_land_tiles():
-		var height : float = get_tile_height(tile)
+		var height : float = tile_heights[tile]
 
 		if _industry_type == Term.IndustryType.MINE:
-			if height > 0.00 and height <= 0.45 and randf() < 0.25:
-				tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": -2 }
-			elif height > 0.35 and height <= 0.45 and randf() < 0.95:
-				tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": 5 }
-			elif height > 0.45 and height <= 0.50 and randf() < 0.95:
-				tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": 10 }
-			elif height > 0.50 and height <= 0.60 and randf() < 0.90:
-				tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": 15 }
-			elif height > 0.60 and height <= 0.70 and randf() < 0.90:
-				tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": 20 }
-			elif height > 0.70 and randf() < 0.75:
-				tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": 25 }
+			
+			# Threshold: SWAMP-
+			if height < swamp_biome.max:
+				tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": 0 }
+
+			# Threshold: MOUNTAINS-
+			elif height < mountain_biome.min:
+				if randf() > 0.75:
+					tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": rng.randi_range(0, 5) }
+				else:
+					tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": 0 }
+
+			# Threshold: MOUNTAINS
+			elif height >= mountain_biome.min and height <= mountain_biome.max:
+				if randf() > 0.75:
+					tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": rng.randi_range(35, 65) }
+				else:
+					tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": rng.randi_range(10, 35) }
+
+				#TODO: boost if next to river tile
 
 		elif _industry_type == Term.IndustryType.MILL:
-			# Threshold: Forest [0.25 - 0.45]
-			if   height > 0.25 and height <= 0.30 and randf() < 0.90:
-				tiles[tile] = { "resource_type": Term.ResourceType.WOOD, "bonus": 5 }
-			elif height > 0.30 and height <= 0.40 and randf() < 0.95:
-				tiles[tile] = { "resource_type": Term.ResourceType.WOOD, "bonus": 10 }
-			elif height > 0.40 and height <= 0.45 and randf() < 0.90:
-				tiles[tile] = { "resource_type": Term.ResourceType.WOOD, "bonus": 5 }
-			elif height > 0.70 and randf() < 0.8:
-				tiles[tile] = { "resource_type": Term.ResourceType.WOOD, "bonus": -2 }
+
+			# Threshold: FOREST-
+			if height > 0 and height < forest_biome.min:
+				tiles[tile] = { "resource_type": Term.ResourceType.WOOD, "bonus": rng.randi_range(5, 25) }
+
+			# Threshold: FOREST
+			elif height >= forest_biome.min and height <= forest_biome.max:
+				if randf() > 0.75:
+					tiles[tile] = { "resource_type": Term.ResourceType.WOOD, "bonus": rng.randi_range(35, 50) }
+				else:
+					tiles[tile] = { "resource_type": Term.ResourceType.WOOD, "bonus": rng.randi_range(25, 35) }
+
+			# Threshold: FOREST+
+			elif height > forest_biome.min:
+				tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": rng.randi_range(0, 25) }
 
 		elif _industry_type == Term.IndustryType.FARM:
-			# Threshold: Grassland [0.00 - 0.25]
-			if height > 0.00 and height <= 0.25 and randf() < 0.98:
-				tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": 15 }
-			elif height > 0.25 and height <= 0.30 and randf() < 0.95:
-				tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": 5 }
-			elif height > 0.30 and height <= 0.45 and randf() < 0.25:
-				tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": -2 }
+
+			# Threshold: SWAMP
+			if height >= swamp_biome.min and height <= swamp_biome.max:
+				if randf() > 0.75:
+					tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": rng.randi_range(35, 50) }
+				else:
+					tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": rng.randi_range(25, 35) }
 			
+			# Threshold: Swamp / Forest
+			elif height > swamp_biome.max and height < forest_biome.min:
+				tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": rng.randi_range(5, 25) }
+
+			# Threshold: FOREST
+			elif height >= forest_biome.min and height <= forest_biome.max:
+				tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": rng.randi_range(0, 15) }
+
+			# Threshold: FOREST+
+			elif height > forest_biome.min:
+				tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": -100 }
+
 	return tiles
 
 #endregion

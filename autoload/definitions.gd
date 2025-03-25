@@ -164,7 +164,6 @@ func get_world() -> WorldManager:
 
 func get_world_map() -> WorldGen:
 	return get_world().world_gen
-	#return get_world().world_map
 
 
 func get_world_tile_map() -> TileMapLayer:
