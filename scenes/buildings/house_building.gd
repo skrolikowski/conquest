@@ -7,6 +7,8 @@ var recruit_settler : bool
 func _ready() -> void:
 	super._ready()
 	
+	title = "Housing"
+
 	building_type = Term.BuildingType.HOUSING
 	building_size = Term.BuildingSize.SMALL
 

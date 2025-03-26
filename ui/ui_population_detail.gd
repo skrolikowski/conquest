@@ -41,28 +41,28 @@ func _set_colony(_building : CenterBuilding) -> void:
 	elif immigration < 0:
 		%ImmigrationValue.text = "(" + str(immigration) + ")"
 	else:
-		%ImmigrationValue.text = "0"
+		%ImmigrationValue.text = "(+0)"
 	
 	if next_unit_population > 0:
 		%UnitPopulationNextValue.text = "(+" + str(next_unit_population) + ")"
 	elif next_unit_population < 0:
 		%UnitPopulationNextValue.text = "(" + str(next_unit_population) + ")"
 	else:
-		%UnitPopulationNextValue.text = "0"
+		%UnitPopulationNextValue.text = "(+0)"
 	
 	if next_max_population > 0:
 		%MaxPopulationNextValue.text  = "(+" + str(next_max_population) + ")"
 	elif next_max_population < 0:
 		%MaxPopulationNextValue.text  = "(" + str(next_max_population) + ")"
 	else:
-		%MaxPopulationNextValue.text  = "0"
+		%MaxPopulationNextValue.text  = "(+0)"
 
 	if next_labor_demand > 0:
 		%LaborDemandNextValue.text = "(+" + str(next_labor_demand) + ")"
 	elif next_labor_demand < 0:
 		%LaborDemandNextValue.text = "(" + str(next_labor_demand) + ")"
 	else:
-		%LaborDemandNextValue.text = "0"
+		%LaborDemandNextValue.text = "(+0)"
 	
 	# -- Crops needed..
 	var crops_needed : int = colony.get_crops_needed()
@@ -72,17 +72,15 @@ func _set_colony(_building : CenterBuilding) -> void:
 	if colony.is_starving():
 		%ColonyMessage.text = "Colony is starving!"
 	elif base_population > max_population:
-		%ColonyMessage.text = "Housing Shortage"
+		%ColonyMessage.text = "Housing Shortage."
 	elif colony.is_at_max_population():
 		%ColonyMessage.text = "Colony at maximum capacity."
 
 	# elif:
 	# 	%ColonyMessage.text = "Church Immigration Bonus: "
 	else:
-		%ColonyMessage.text = "Colony Immigration Normal"
+		%ColonyMessage.text = "Colony Immigration Normal."
 
 
 func _on_close_pressed() -> void:
 	Def.get_world_canvas().close_sub_ui(self)
-
-

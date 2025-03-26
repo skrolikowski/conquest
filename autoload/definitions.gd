@@ -394,11 +394,8 @@ func get_base_population_growth_rate() -> float:
 	"""
 	According to this wiki: https://gamefaqs.gamespot.com/pc/196975-conquest-of-the-new-world/faqs/2038
 	TODO: 8% of current population + 10 per Church level
-	return 0.08
 	"""
-
-	# Let's go with 10% for now..
-	return 0.1
+	return 0.08
 
 
 func get_crops_consumption_rate() -> float:

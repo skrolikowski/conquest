@@ -50,6 +50,7 @@ text = "Level: 0"
 horizontal_alignment = 1
 
 [node name="ActionContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="BtnDemolish" type="CheckBox" parent="MarginContainer/VBoxContainer/ActionContainer"]

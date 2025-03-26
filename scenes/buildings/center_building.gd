@@ -198,7 +198,7 @@ func get_immigration() -> int:
 	if is_at_max_population():
 		# -- Calculate Emigration
 		var max_population : int = get_max_population()
-		immigration = floor((max_population - population) * growth_rate)
+		immigration = floor((max_population - population) * 0.1)
 	else:
 		# -- Calculate immigration..
 		immigration = floor(population * growth_rate)
