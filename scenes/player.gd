@@ -28,7 +28,7 @@ func debug() -> void:
 	"""
 	Create colony
 	"""
-	cm.found_colony(Vector2i(26, 8), Vector2(0, 0), 1)
+	cm.found_colony(Vector2i(27, 8), Vector2(0, 0), 1)
 	cm.create_colony()
 	Def.get_world().camera.position = cm.get_colonies()[0].global_position
 

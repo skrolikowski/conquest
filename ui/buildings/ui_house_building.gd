@@ -24,7 +24,8 @@ func refresh_ui() -> void:
 	var house_building : HouseBuilding = building as HouseBuilding
 
 	%ThisBuildingValue.text    = str(house_building.get_population_capacity_value())
-	%AllBuildingsValue.text    = str(house_building.colony.get_total_population_capacity_value(Term.BuildingType.HOUSING))
+	%AllBuildingsValue.text    = str(house_building.colony.get_max_population())
+	#%AllBuildingsValue.text    = str(house_building.colony.get_total_population_capacity_value(Term.BuildingType.HOUSING))
 	%TotalPopulationValue.text = str(house_building.colony.get_total_population())
 
 	recruit_settler.disabled = not house_building.can_recruit_settler()

@@ -68,12 +68,11 @@ theme_override_font_sizes/font_size = 15
 text = "Consuming"
 horizontal_alignment = 1
 
-[node name="Trading" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+[node name="NetTrade" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 15
-text = "Trading
-"
+text = "Net Trade"
 horizontal_alignment = 1
 
 [node name="Total" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
@@ -126,8 +125,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
-text = "Metal
-"
+text = "Metal"
 horizontal_alignment = 1
 
 [node name="MetalProducing" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
@@ -166,8 +164,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
-text = "Wood
-"
+text = "Wood"
 horizontal_alignment = 1
 
 [node name="WoodProducing" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]

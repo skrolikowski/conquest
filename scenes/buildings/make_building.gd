@@ -9,6 +9,10 @@ var make_resource_type : Term.ResourceType
 
 
 func get_expected_produce_value() -> int:
+	if building_state == Term.BuildingState.NEW:
+		return 0
+
+	# --
 	var make  : Transaction = get_make()
 	var value : int = make.resources[make_resource_type]
 	var mod   : int = get_total_production_modifier()

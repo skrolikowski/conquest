@@ -36,11 +36,13 @@ func _set_building(_building: Building) -> void:
 	
 	%BuildingTitle.text = building.title
 	%ColonyTitle.text   = "Colony: " + building.colony.title
-	%BuildingLevel.text = "Level: " + str(building.level)
+	
 	
 	if building_state == Term.BuildingState.NEW:
+		%BuildingLevel.text = "Level: 0"
 		btn_refund.show()
 	else:
+		%BuildingLevel.text = "Level: " + str(building.level)
 		btn_refund.hide()
 
 	refresh_ui()

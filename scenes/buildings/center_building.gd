@@ -445,7 +445,7 @@ func get_expected_produce_value_by_building_type(_building_type:Term.BuildingTyp
 	"""
 	var total : int = 0
 	for building:Building in bm.get_buildings():
-		if building.building_type == _building_type:
+		if building.building_type == _building_type and building.building_state == Term.BuildingState.ACTIVE:
 			total += building.get_expected_produce_value()
 	return total
 
