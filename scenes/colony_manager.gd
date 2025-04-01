@@ -1,6 +1,8 @@
 extends Node2D
 class_name ColonyManager
 
+@onready var colony_list : Node = $ColonyList
+
 @export var player : Player
 
 var settler_position : Vector2
@@ -9,6 +11,8 @@ var settler_level	 : int
 var placing_colony   : CenterBuilding
 var placing_tile     : Vector2i
 var placing_tiles    : Dictionary
+
+var colonies : Array[CenterBuilding] = []
 
 
 func _draw() -> void:
@@ -19,23 +23,35 @@ func _draw() -> void:
 
 
 #region COLONY MANAGEMENT
-func get_colonies() -> Array[Node]:
-	return $ColonyList.get_children() as Array[Node]
+func get_colonies() -> Array[CenterBuilding]:
+	return colonies
+
+
+func add_colony(_building: CenterBuilding) -> void:
+	colonies.append(_building)
+	colony_list.add_child(_building)
+
+
+func remove_colony(_building: CenterBuilding) -> void:
+	#TODO: some validation
+	#TODO: removes any buildings owned by this colony
 	
-func remove_building(_building: Building) -> void:
-	$ColonyList.remove_child(_building)
+	colonies.remove_at(colonies.find(_building))
+
+	colony_list.remove_child(_building)
+	_building.queue_free()
 
 
-func undo_create_colony(_building:CenterBuilding) -> void:
+func undo_create_colony(_building: CenterBuilding) -> void:
 	if _building.building_state == Term.BuildingState.NEW:
 		
 		# -- Create settler..
-		var settler  : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, _building.placing_level)
-		player.create_unit(settler, _building.global_position)
+		var settler  : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, settler_level)
+		var settler_pos : Vector2 = _building.global_position - Vector2(Def.TILE_SIZE.x * 0.25, Def.TILE_SIZE.y * 0.25)
+		player.create_unit(settler, settler_pos)
 
 		# -- Remove colony..
-		remove_building(_building)
-		#TODO: removes any buildings owned by this colony
+		remove_colony(_building)
 
 		Def.get_world_canvas().close_all_ui()
 
@@ -67,7 +83,7 @@ func found_colony(_tile: Vector2i, _position: Vector2, _level: int = 1) -> void:
 	placing_colony.player   = player
 	placing_colony.modulate = Color(1, 1, 1, 0.25)
 	
-	$ColonyList.add_child(placing_colony)
+	add_colony(placing_colony)
 
 	# -- save for undoing..
 	settler_position = _position
@@ -80,7 +96,7 @@ func found_colony(_tile: Vector2i, _position: Vector2, _level: int = 1) -> void:
 
 
 func cancel_found_colony() -> void:
-	remove_building(placing_colony)
+	remove_colony(placing_colony)
 
 	# -- create settler..
 	var settler  : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, settler_level)
@@ -96,7 +112,6 @@ func create_colony() -> void:
 
 	# -- Set initial resources..
 	var settler_stat  : Dictionary = Def.get_unit_stat(Term.UnitType.SETTLER, settler_level)
-	placing_colony.placing_level = settler_level
 	placing_colony.set_init_resources(settler_stat.resources)
 	placing_colony.refresh_bank()
 	#placing_colony.begin_turn()
@@ -124,7 +139,6 @@ func _refresh_colony_tiles(_tile: Vector2i) -> void:
 		var build_radius_4 : float = Def.get_building_stat(Term.BuildingType.CENTER, 4).build_radius * tile_size.x
 	
 		var bounds : Array[Dictionary] = [
-			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, 8), "color" : Color.BLUE },
 			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, build_radius_1), "color" : Color(Color.WHITE, 0.50) },
 			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, build_radius_2), "color" : Color(Color.BLUE, 0.25) },
 			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, build_radius_3), "color" : Color(Color.WHITE, 0.50) },
@@ -142,5 +156,38 @@ func _refresh_colony_tiles(_tile: Vector2i) -> void:
 	
 	# --
 	queue_redraw()
+
+#endregion
+
+
+#region GAME PERSISTENCE
+func on_save_data() -> Dictionary:
+
+	# -- Package colonies..
+	var colony_data : Array[Dictionary] = []
+	for colony: CenterBuilding in get_colonies():
+		colony_data.append(colony.on_save_data())
+	
+	return {
+		"colonies"         : colony_data,
+		"settler_position" : settler_position,
+		"settler_level"    : settler_level,
+	}
+
+
+func on_load_data(_data: Dictionary) -> void:
+
+	# -- Load settler data (if applicable)..
+	settler_position = _data["settler_position"]
+	settler_level    = _data["settler_level"]
+
+	# -- Load colonies..
+	for colony_data: Dictionary in _data["colonies"]:
+		var building_scene : PackedScene = Def.get_building_scene_by_type(Term.BuildingType.CENTER)
+		var colony         : CenterBuilding = building_scene.instantiate() as CenterBuilding
+		add_colony(colony)
+		
+		colony.on_load_data(colony_data)
+		colony.player = player
 
 #endregion

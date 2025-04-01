@@ -133,3 +133,41 @@ static func New_Unit(_unit_type : Term.UnitType, _level : int = 1) -> UnitStats:
 	return unit_stats
 
 #endregion
+
+
+#region GAME PERSISTENCE
+func on_save_data() -> Dictionary:
+	return {
+		"title": title,
+		"unit_name": unit_name,
+		"unit_type": unit_type,
+		"unit_state": unit_state,
+		"unit_category": unit_category,
+		"level": level,
+		"health": health,
+		"stat_points": stat_points,
+		"stat_props": stat_props,
+		"combat_stats": combat_stats,
+		"attached_units": attached_units.map(func(u:UnitStats) -> Dictionary: return u.on_save_data())
+	}
+
+
+func on_load_data(_data: Dictionary) -> void:
+	title 		  = _data["title"]
+	unit_name 	  = _data["unit_name"]
+	unit_type 	  = _data["unit_type"]
+	unit_state 	  = _data["unit_state"]
+	unit_category = _data["unit_category"]
+	level 		  = _data["level"]
+	health 		  = _data["health"]
+	stat_points   = _data["stat_points"]
+	stat_props    = _data["stat_props"]
+	combat_stats  = _data["combat_stats"]
+
+	for unit_data:Dictionary in _data["attached_units"]:
+		var unit : UnitStats = UnitStats.new()
+		unit.on_load_data(unit_data)
+		unit.player = player
+		attached_units.append(unit)
+
+#endregion

@@ -1,16 +1,17 @@
 extends Area2D
 class_name BuildingManager
 
+@onready var build_list : Node2D = $BuildingList
 @onready var ghost_timer : Timer = $GhostTimer as Timer
-@onready var build_shape := $BuildShape as CollisionShape2D
 
 @export var colony : CenterBuilding
 
 var placing_building : Building
 var placing_tile     : Vector2i
 
-var build_tiles      : Dictionary
-var occupy_tiles     : Array[Vector2i]
+var build_tiles  : Dictionary
+var occupy_tiles : Array[Vector2i]
+var buildings    : Array[Building] = []
 	
 
 func _ready() -> void:
@@ -41,20 +42,29 @@ func _draw() -> void:
 
 
 #region BUILDING MANAGEMENT
-func get_buildings() -> Array[Node]:
-	return $BuildingList.get_children() as Array[Node]
-
-
-func get_buildings_sorted_by_building_type() -> Array[Node]:
-	var buildings : Array[Node] = get_buildings()
-	buildings.sort_custom(func(a:Building, b:Building) -> bool: return a.building_type < b.building_type)
+func get_buildings() -> Array[Building]:
 	return buildings
 
 
+func add_building(_building: Building) -> void:
+	buildings.append(_building)
+	build_list.add_child(_building)
+
+#TODO: need more efficient way to do this without affecting the original list
+# func get_buildings_sorted_by_building_type() -> Array[Building]:
+# 	var buildings : Array[Building] = buildings
+# 	buildings.sort_custom(func(a:Building, b:Building) -> bool: return a.building_type < b.building_type)
+# 	return buildings
+
+
 func remove_building(_building: Building) -> void:
+	#TODO: some validation
 	_remove_from_occupied_tiles(_building.get_tile(), _building.get_tile_end())
 	
-	$BuildingList.remove_child(_building)
+	buildings.remove_at(buildings.find(_building))
+
+	build_list.remove_child(_building)
+	_building.queue_free()
 
 #endregion
 
@@ -65,7 +75,7 @@ func add_temp_building(_building: Building) -> void:
 
 	Def.get_world().map_set_focus_node(placing_building)
 	
-	$BuildingList.add_child(_building)
+	add_building(_building)
 	
 	queue_redraw()
 
@@ -172,7 +182,6 @@ func _refresh_build_tiles() -> void:
 	"""
 	NOTE: Should be called once per building level change
 	"""
-	# var build_radius   : float = (build_shape.shape as CircleShape2D).radius
 	var build_radius   : float = Def.get_building_stat(Term.BuildingType.CENTER, colony.level).build_radius * Def.TILE_SIZE.x
 	var tiles_in_range : Array[Vector2i] = Def.get_world_map().get_tiles_in_radius(global_position, build_radius)
 	var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
@@ -181,7 +190,7 @@ func _refresh_build_tiles() -> void:
 	
 	for tile : Vector2i in tiles_in_range:
 		build_tiles[tile] = tile_map_layer.get_cell_tile_data(tile)
-	print("Building Tiles: ", build_tiles.size())
+	# print("Building Tiles: ", build_tiles.size())
 
 
 func _add_to_occupied_tiles(_start: Vector2i, _end: Vector2i) -> void:
@@ -207,3 +216,32 @@ func _unhandled_input(_event: InputEvent) -> void:
 		var mouse_event : InputEventMouseButton = _event as InputEventMouseButton
 		if mouse_event.button_index == 1 and mouse_event.pressed and placing_building != null:
 			_place_temp_building()
+
+
+
+#region GAME PERSISTENCE
+func on_save_data() -> Dictionary:
+
+	# -- Package buildings..
+	var building_data : Array[Dictionary] = []
+	for building: Building in get_buildings():
+		building_data.append(building.on_save_data())
+	
+	return {
+		"buildings" : building_data,
+	}
+
+
+func on_load_data(_data: Dictionary) -> void:
+
+	# -- Load buildings..
+	for building_data: Dictionary in _data["buildings"]:
+		var building_scene : PackedScene = Def.get_building_scene_by_type(building_data.building_type)
+		var building       : Building = building_scene.instantiate() as Building
+		add_building(building)
+		
+		building.on_load_data(building_data)
+		building.colony = colony
+		building.player = colony.player
+
+#endregion

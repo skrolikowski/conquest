@@ -1,14 +1,15 @@
 extends Node2D
 class_name WorldManager
 
-@onready var camera         := $Camera2D as Camera2D
+@onready var world_camera   := %WorldCamera as WorldCamera
 @onready var world_gen      := %WorldGen as WorldGen
 @onready var world_canvas   := %WorldCanvas as CanvasLayer
 @onready var player         := $Player as Player
 
 # --
-var focus_tile : Vector2i
-var focus_node : Node
+var focus_tile  : Vector2i
+var focus_node  : Node
+var turn_number : int = 0
 
 # -- Selection (for Unit/Building)
 var selection_tween : Tween
@@ -21,27 +22,18 @@ var drag_end    : Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
-	camera.position = Vector2(0, 0)
-	camera.zoom = Vector2(camera_zoom, camera_zoom)
-	
-	world_gen.connect("map_loaded", _on_map_loaded)
-	
+	world_camera.reset()
+
 	world_canvas.connect("end_turn", _on_end_turn)
-	world_canvas.connect("camera_zoom", _on_camera_zoom)
+	world_canvas.connect("camera_zoom", world_camera.change_zoom)
 
-
-func _process(_delta:float) -> void:
-	if Input.is_action_just_pressed("zoom_in"):
-		_camera_zoom(1)
-	elif Input.is_action_just_pressed("zoom_out"):
-		_camera_zoom(-1)
-	
 	# --
-	var x : float = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
-	var y : float  = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
-	var movement : Vector2 = Vector2(x, y).normalized()
+	# print("[WorldManager] New Game")
+	# Persistence.new_game()
+	# print("[WorldManager] Load Game")
+	Persistence.load_game()
 	
-	camera.position += movement * camera_move_speed * _delta
+	# call_deferred("begin_turn")
 
 
 func _draw() -> void:
@@ -103,9 +95,6 @@ func _unhandled_input(_event:InputEvent) -> void:
 			Mouse Button - Dragging
 			"""
 			drag_unit_update(world_position)
-
-	elif _event is InputEventPanGesture:
-		camera.position += _event.delta * camera_move_speed * 0.01
 
 
 	# --
@@ -199,40 +188,6 @@ func map_set_focus_node(_node: Node) -> void:
 	focus_node = _node
 	map_refresh_status()
 
-#endregion
-
-
-#region CAMERA
-var camera_move_speed : float = 600.0
-var camera_zoom       : float = 1.00
-var camera_zoom_min   : float = 0.25
-var camera_zoom_max   : float = 1.50
-var camera_zoom_step  : float = 0.25
-
-func _on_camera_zoom(_direction:int) -> void:
-	_camera_zoom(_direction)
-
-func _camera_zoom(_direction:int) -> void:
-	camera_zoom = clamp(camera_zoom + camera_zoom_step * _direction, camera_zoom_min, camera_zoom_max)
-	camera.zoom = Vector2(camera_zoom, camera_zoom)
-	
-#endregion
-
-
-#region TURN MANAGEMENT
-func _on_map_loaded() -> void:
-	print("[NOTE] World Map Loaded")
-
-
-func _on_end_turn() -> void:
-	print("[NOTE] Turn Ended")
-
-	Def.get_world_canvas().close_all_ui()
-	unselect_all()
-
-	# combat_manager.begin_turn()
-	player.begin_turn()
-	
 #endregion
 
 
@@ -339,5 +294,40 @@ func drag_unit_end(_position: Vector2) -> void:
 func draw_drag_unit_line() -> void:
 	if is_dragging:
 		draw_line(drag_start, drag_end, Color.LIGHT_GRAY, 2)
+
+#endregion
+
+
+#region TURN MANAGEMENT
+func begin_turn() -> void:
+	print("[WorldManager] Begin Turn")
+
+	# -- Update canvas..
+	world_canvas.turn_number = turn_number
+	world_canvas.refresh_current_ui()
+
+	player.begin_turn()
+
+
+func _on_end_turn() -> void:
+	print("[NOTE] End Turn")
+
+	Def.get_world_canvas().close_all_ui()
+	unselect_all()
+
+	turn_number += 1
+	
+#endregion
+
+
+#region GAME PERSISTENCE
+func on_save_data() -> Dictionary:
+	return {
+		"turn_number": turn_number,
+	}
+
+
+func on_load_data(_data: Dictionary) -> void:
+	turn_number = _data["turn_number"]
 
 #endregion

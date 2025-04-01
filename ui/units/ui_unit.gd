@@ -20,7 +20,10 @@ func _process(_delta:float) -> void:
 
 
 func refresh_ui() -> void:
+	%UnitDisband.set_pressed_no_signal(unit.stat.unit_state == Term.UnitState.DISBAND)
 	%UnitDisband.disabled = not unit.can_disband()
+
+	%UnitPersistent.set_pressed_no_signal(unit.is_persistent)
 	%UnitPersistent.disabled  = not unit.can_persist()
 
 	#TODO: get max move points
@@ -38,19 +41,19 @@ func _set_unit(_unit: Unit) -> void:
 	refresh_ui()
 	
 	
-func _on_unit_disband_toggled(toggled_on:bool) -> void:
-	if toggled_on:
+func _on_unit_disband_toggled(_toggled_on: bool) -> void:
+	if _toggled_on:
 		unit.stat.unit_state = Term.UnitState.DISBAND
 	else:
-		unit.stat.unit_state = unit_state
+		if unit_state == Term.UnitState.DISBAND:
+			unit.stat.unit_state = Term.UnitState.IDLE
+		else:
+			unit.stat.unit_state = unit_state
 	
 	refresh_ui()
 
 
-func _on_unit_persistent_toggled(toggled_on:bool) -> void:
-	if toggled_on:
-		unit.stat.unit_state = Term.UnitState.EXPLORE
-	else:
-		unit.stat.unit_state = unit_state
+func _on_unit_persistent_toggled(_toggled_on: bool) -> void:
+	unit.is_persistent = _toggled_on
 		
 	refresh_ui()

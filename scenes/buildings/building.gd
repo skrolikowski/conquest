@@ -176,3 +176,22 @@ func get_status_information_production(_tile:Vector2i) -> String:
 	return "Industry: " + ", ".join(mod_text)
 
 #endregion
+
+
+#region GAME PERSISTENCE
+func on_save_data() -> Dictionary:
+	return {
+		"building_type" : building_type,
+		"building_size" : building_size,
+		"level"         : level,
+		"building_state": building_state,
+		"position"      : global_position,
+	}
+
+
+func on_load_data(_data: Dictionary) -> void:
+	building_type   = _data["building_type"]
+	building_size   = _data["building_size"]
+	level           = _data["level"]
+	building_state  = _data["building_state"]
+	global_position = _data["position"]

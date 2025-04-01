@@ -16,10 +16,10 @@ func can_settle() -> bool:
 
 
 func settle() -> void:
-	Def.get_world().player.found_colony(get_tile(), global_position, stat.level)
-	Def.get_world().unselect_all()
+	stat.player.found_colony(get_tile(), global_position, stat.level)
+	stat.player.disband_unit(self)
 
-	queue_free()
+	Def.get_world().unselect_all()
 
 #endregion
 

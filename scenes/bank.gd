@@ -117,9 +117,11 @@ func get_trading_value(resource_type: Term.ResourceType) -> int:
 
 func set_trading_value(resource_type: Term.ResourceType, value: int) -> void:
 	trading[resource_type] = value
+
 #endregion
 
 
+#region TRANSACTIONS
 func resource_purchase(transaction: Transaction) -> void:
 	# if Def.WEALTH_MODE_ENABLED:
 	# 	return
@@ -146,3 +148,23 @@ func commit() -> void:
 		resources[type] += next_resources[type]
 		consuming[type] = 0
 		trading[type]   = 0
+
+#endregion
+
+
+#region GAME PERSISTENCE
+func on_save_data() -> Dictionary:
+	return {
+		"resources" : resources,
+		"consuming" : consuming,
+		"trading"   : trading,
+		"next_resources" : next_resources,
+	}
+
+func on_load_data(_data: Dictionary) -> void:
+	resources = _data["resources"]
+	consuming = _data["consuming"]
+	trading = _data["trading"]
+	next_resources = _data["next_resources"]
+
+#endregion

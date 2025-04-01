@@ -10,9 +10,14 @@ func _ready() -> void:
 	btn_save_game.connect("pressed", _on_save_game)
 
 
+func _on_new_game() -> void:
+	Persistence.new_game()
+
+
 func _on_save_exit() -> void:
-	pass
+	Persistence.save_game()
+	get_tree().quit()
 
 
 func _on_save_game() -> void:
-	pass
+	Persistence.save_game()

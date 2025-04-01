@@ -10,7 +10,7 @@ script = ExtResource("1_bmdt2")
 unique_name_in_owner = true
 player = NodePath("..")
 
-[node name="Units" type="Node2D" parent="."]
+[node name="UnitList" type="Node2D" parent="."]
 unique_name_in_owner = true
 
 [node name="Timer" type="Timer" parent="."]

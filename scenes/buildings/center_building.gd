@@ -6,7 +6,6 @@ class_name CenterBuilding
 
 @export var population : int = 0
 
-var placing_level     : int = 1  # Resource level; for undoing found colony
 var military_research : Dictionary = {}  #TODO: Move to Player?
 var attached_units    : Array[UnitStats] = []
 
@@ -31,13 +30,13 @@ func _ready() -> void:
 	# Init military research..
 	init_military_research()
 
-	# -- TEMP: Colony contents for testing..
-	#var u1 : UnitStats = UnitStats.New_Unit(Term.UnitType.LEADER, 1)
-	#u1.max_attached_units = 10
-	#attached_units.append(u1)
-	#attached_units.append(UnitStats.New_Unit(Term.UnitType.CALVARY, 1))
-	#attached_units.append(UnitStats.New_Unit(Term.UnitType.CALVARY, 2))
-	#attached_units.append(UnitStats.New_Unit(Term.UnitType.CALVARY, 3))
+	# -- DEBUG: Colony contents for testing..
+	# var u1 : UnitStats = UnitStats.New_Unit(Term.UnitType.LEADER, 1)
+	# u1.max_attached_units = 10
+	# attached_units.append(u1)
+	# attached_units.append(UnitStats.New_Unit(Term.UnitType.CALVARY, 1))
+	# attached_units.append(UnitStats.New_Unit(Term.UnitType.CALVARY, 2))
+	# attached_units.append(UnitStats.New_Unit(Term.UnitType.CALVARY, 3))
 	
 	# Take first turn..
 	#begin_turn()
@@ -68,41 +67,6 @@ func refresh_bank() -> void:
 		# -- Predicted Value
 		var next_value : int = get_total_value_by_resource_type(type)
 		bank.set_next_resource_value(type, next_value)
-
-
-#region TURN MANAGEMENT
-func begin_turn() -> void:
-
-	# -- Update population details..
-	population = population + get_immigration()
-
-	# BUILDING ACTIONS
-	for building:Building in bm.get_buildings():
-		if building.building_state == Term.BuildingState.SELL:
-			sell_building(building)
-		elif building.building_state == Term.BuildingState.NEW:
-			build_building(building)
-		elif building.building_state == Term.BuildingState.UPGRADE:
-			upgrade_building(building)
-
-	# -- Leader Commission
-	if commission_leader:
-		create_leader_unit()
-
-	# -- Resource Management
-	bank.commit()
-	refresh_bank()
-
-
-func end_turn() -> void:
-	
-	# -- Military Research
-	commit_military_research()
-
-	# -- Immigration..
-	population += get_immigration()
-
-#endregion
 
 
 #region POPULATION/LABOR
@@ -317,12 +281,12 @@ func train_military_research(_research_type:Term.MilitaryResearch, _unit_type:Te
 		military_research[_research_type][_unit_type]["exp"] = prev_exp + _gold
 
 
-func get_colony_military_units() -> Array[Node]:
+func get_military_units() -> Array[Unit]:
 	return player.get_military_units_by_colony(self)
 
 
 func get_military_unit_count() -> int:
-	return get_colony_military_units().size()
+	return get_military_units().size()
 
 
 func get_max_military_unit_count() -> int:
@@ -335,7 +299,7 @@ func get_max_military_unit_count() -> int:
 
 
 #region SHIPS
-func get_player_ships() -> Array[Node]:
+func get_player_ships() -> Array[ShipUnit]:
 	return player.get_ships()
 
 
@@ -353,7 +317,7 @@ func get_max_ship_unit_count() -> int:
 
 func get_military_unit_level_count_by_unit_type(_unit_type: Term.UnitType) -> Dictionary:
 	var value : Dictionary = {}
-	var units : Array[Node] = get_colony_military_units() as Array[Node]
+	var units : Array[Unit] = get_military_units() as Array[Unit]
 	
 	for i in range(4):
 		value[i + 1] = 0
@@ -606,11 +570,82 @@ func can_commission_leader() -> bool:
 #endregion
 
 
-# func _on_input_event(_viewport: Node, _event: InputEvent, _shape_idx: int) -> void:
-# 	if _event is InputEventMouseButton:
-# 		var mouse_event : InputEventMouseButton = _event as InputEventMouseButton
-# 		if mouse_event.button_index == 1:
-# 			if mouse_event.double_click:
-# 				Def.get_world_canvas().open_building_menu(self)
-# 			elif mouse_event.pressed:
-# 				Def.get_world().select_building(self)
+#region TURN MANAGEMENT
+func begin_turn() -> void:
+
+	# -- Update population details..
+	population = population + get_immigration()
+
+	# BUILDING ACTIONS
+	for building:Building in bm.get_buildings():
+		if building.building_state == Term.BuildingState.SELL:
+			sell_building(building)
+		elif building.building_state == Term.BuildingState.NEW:
+			build_building(building)
+		elif building.building_state == Term.BuildingState.UPGRADE:
+			upgrade_building(building)
+
+	# -- Leader Commission
+	if commission_leader:
+		create_leader_unit()
+
+	# -- Resource Management
+	bank.commit()
+	refresh_bank()
+
+
+func end_turn() -> void:
+	
+	# -- Military Research
+	commit_military_research()
+
+	# -- Immigration..
+	population += get_immigration()
+
+#endregion
+
+
+#region GAME PERSISTENCE
+func on_save_data() -> Dictionary:
+	var data  : Dictionary = super.on_save_data()
+	data["population"] = population
+	data["bank"] = bank.on_save_data()
+	data["building_manager"] = bm.on_save_data()
+
+	# -- Attached units..
+	var attached_units_data : Array[Dictionary] = []
+	for unit: UnitStats in attached_units:
+		attached_units_data.append(unit.on_save_data())
+	data["attached_units"] = attached_units_data
+
+	# -- Commissioned leader..
+	if commission_leader:
+		data["commission_leader"] = commission_leader
+		data["commission_leader_unit"] = commission_leader_unit.on_save_data()
+
+	return data
+
+
+func on_load_data(_data: Dictionary) -> void:
+	super.on_load_data(_data)
+
+	# -- Load colony data..
+	population = _data["population"]
+	bank.on_load_data(_data["bank"])
+
+	# -- Load building manager..
+	bm.on_load_data(_data["building_manager"])
+	bm.colony = self
+
+	if "commission_leader" in _data:
+		commission_leader = _data["commission_leader"]
+		commission_leader_unit.on_load_data(_data["commission_leader_unit"])
+
+	# -- Load attached units..
+	for unit_data : Dictionary in _data["attached_units"]:
+		var unit : UnitStats = UnitStats.New_Unit(unit_data.unit_type, unit_data.level)
+		unit.on_load_data(unit_data)
+		unit.player = player
+		attached_units.append(unit)
+
+#endregion

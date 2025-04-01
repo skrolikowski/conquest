@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cbisubxats4ra"]
+
+[ext_resource type="Script" uid="uid://uikrockfdcp7" path="res://scenes/camera/world_camera.gd" id="1_hbldj"]
+
+[node name="WorldCamera" type="Camera2D"]
+script = ExtResource("1_hbldj")

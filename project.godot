@@ -22,6 +22,7 @@ Preload="*res://autoload/preloads.tscn"
 Popups="*res://autoload/popups.tscn"
 Print="*res://autoload/print.tscn"
 NameGenerator="*res://autoload/name_generator.gd"
+Persistence="*res://autoload/persistence.gd"
 
 [debug]
 

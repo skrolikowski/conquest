@@ -10,6 +10,7 @@ class_name Unit
 
 # -- Movement..
 var is_moving       : bool = false
+var is_persistent   : bool = false
 var move_delta      : Vector2
 var move_points     : float = 64.0
 var max_move_points : float = 64.0
@@ -75,8 +76,11 @@ func can_attack() -> bool:
 	return stat.unit_type == Term.UnitType.LEADER and stat.unit_state == Term.UnitState.IDLE
 
 
+#region PERSISTENT MOVEMENT
 func can_persist() -> bool:
 	return true
+
+#endregion
 
 
 #region DISBANDING UNIT
@@ -125,7 +129,8 @@ func on_drag_release(_position: Vector2) -> void:
 			# # -- Are we on top of the `entering_node`..?
 			# if entering_node != null and over_node == entering_node:
 			# 	on_enter_node(over_node)
-		
+	else:
+		print("Target Not Reachable!")
 	
 func on_enter_node(_node: Node) -> void:
 	"""

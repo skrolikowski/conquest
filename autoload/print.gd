@@ -49,4 +49,3 @@ static func get_cost_text(_cost : Transaction) -> String:
 			text.append(str(resource_value) + " " + resource_name)
 	
 	return  (" " + Def.STATUS_SEP + " ").join(text)
-

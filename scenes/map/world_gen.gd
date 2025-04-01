@@ -12,8 +12,6 @@ func _add_inspector_buttons() -> Array:
 
 # ---
 
-signal map_loaded
-
 enum TerrainSet
 {
 	NONE = -1,
@@ -68,21 +66,27 @@ const TILE_FOG_OF_WAR : Vector2i = Vector2i(13, 14) # TEMP
 @onready var tilemap_layers : Array[TileMapLayer]
 
 # --
-var is_map_loaded     : bool = false
 var terrain_modifier  : Dictionary = {}
-var artifact_modifier : Dictionary = {}
+# var artifact_modifier : Dictionary = {}
 
-# --
-var river_tiles       : Array[Vector2i] = []
+# -- Tile Data
 var tile_heights 	  : Dictionary = {}
 var highest_height    : float
 var avg_land_height   : float
 
+# -- Rivers
+var river_sources : Array[Vector2i] = []
+var river_tiles   : Array[Vector2i] = []
+var rivers 	      : Array[Array] = []
 
+var is_new_game : bool = false
+
+
+# --
 func _ready() -> void:
 	tilemap_layers = map_renderer.tile_map_layers
 	
-	noise_gen.connect("generation_finished", _on_noise_generation_finished)
+	noise_gen.connect("generation_finished", _on_world_generated)
 
 
 func fix_water_navigation() -> void:
@@ -106,26 +110,88 @@ func set_tile_data() -> void:
 	highest_height  = max_height
 
 
-func _on_noise_generation_finished() -> void:
-	print("Noise Generation Finished")
+#region GAME PERSISTENCE
+func new_game() -> void:
+	print("[WorldGen] New Map")
+	is_new_game = true
+	noise_gen.generate()
 
-	call_deferred("set_tile_data")
-	call_deferred("fix_water_navigation")
 
+func on_save_data() -> Dictionary:
+	"""
+	Returns save data for WorldGen
+	"""
+	return {
+		"seed" : noise_gen.seed,
+		"terrain_modifier": terrain_modifier,
+		
+		# -- Rivers
+		"river_sources" : river_sources,
+		"river_tiles"   : river_tiles,
+		"rivers"        : rivers,
+	}
+
+
+func on_load_data(_data: Dictionary) -> void:
+	print("[WorldGen] Load Game")
+	noise_gen.seed = _data["seed"]
+	noise_gen.generate()
+
+	# -- Load Modifiers..
+	terrain_modifier = _data["terrain_modifier"]
+	
+	# -- Load Rivers..
+	river_sources = _data["river_sources"]
+	river_tiles = _data["river_tiles"]
+	rivers = _data["rivers"]
+
+#endregion
+
+
+#region WORLD GENERATION
+func _on_world_generated() -> void:
+	if is_new_game:
+		call_deferred("populate_new_world")
+		is_new_game = false
+	else:
+		call_deferred("populate_old_world")
+
+
+func populate_new_world() -> void:
+	set_tile_data()
+	fix_water_navigation()
+	
+	# -- Rivers..
 	if rivers_enabled:
-		call_deferred("generate_rivers")
-
-	call_deferred("generate_terrain_modifiers")
-	# call_deferred("generate_artifacts")
-
-
+		generate_rivers()
+	
+	# -- Modifiers..
+	generate_terrain_modifiers()
+	#generate_artifacts()
+	
 	# -- Fog of war..
 	# if Def.FOG_OF_WAR_ENABLED:
 	# 	generate_fog_of_war()
 
 	# --
-	is_map_loaded = true
-	map_loaded.emit()
+	print("[WorldGen] Map Loaded!")
+
+
+func populate_old_world() -> void:
+	set_tile_data()
+	fix_water_navigation()
+	
+	# -- Rivers..
+	if rivers_enabled:
+		add_rivers_to_map()
+
+	# -- Fog of War..
+	# TODO:
+	
+	# --
+	print("[WorldGen] Map Loaded!")
+
+#endregion
 
 
 #region HELPERS
@@ -221,8 +287,8 @@ func get_terrain_modifier_value(_tile:Vector2i, _resource_type:Term.ResourceType
 
 
 #region RIVERS
-func get_river_sources() -> Array[Vector2i]:
-	var tiles : Array[Vector2i] = []
+func generate_river_sources() -> void:
+	river_sources.clear()
 	
 	var min_height   : float = avg_land_height + 0.13
 	var max_height   : float = avg_land_height + 0.18
@@ -232,40 +298,47 @@ func get_river_sources() -> Array[Vector2i]:
 	for tile: Vector2i in get_biome_tiles():
 		var height : float = get_tile_height(tile)
 		if height >= min_height and height <= max_height and randf() < river_chance:
-			tiles.append(Vector2i(tile.x, tile.y))
-
-	return tiles
+			river_sources.append(Vector2i(tile.x, tile.y))
 
 
 func generate_rivers() -> void:
 	river_tiles.clear()
+	rivers.clear()
 
 	# --
-	var river_sources : Array[Vector2i] = get_river_sources()
+	generate_river_sources()
 	print("Generating %d river(s)..." % river_sources.size())
 	
 	# --
 	for source : Vector2i in river_sources:
-		generate_river(source)
+		rivers.append(generate_river(source))
 
+
+	add_rivers_to_map()
+
+
+func generate_river(_tile: Vector2i, _river : Array[Vector2i] = []) -> Array[Vector2i]:
+	if is_shore_tile(_tile):
+		return _river
+
+	var lowest_neighbor : Vector2i = _get_lowest_neighbor(_tile)
+	if lowest_neighbor in river_tiles:
+		return _river
+
+	# --
+	_river.append(_tile)
+	river_tiles.append(_tile)
+
+	# --
+	return generate_river(lowest_neighbor, _river)
+
+
+func add_rivers_to_map() -> void:
 	tilemap_layers[MapLayer.LAND].set_cells_terrain_connect(
 		river_tiles, TerrainSet.DEFAULT, LandTerrain.RIVER, true)
 
 	tilemap_layers[MapLayer.BIOME].set_cells_terrain_connect(
 		river_tiles, TerrainSet.DEFAULT, BiomeTerrain.NONE, true)
-	
-
-func generate_river(_tile: Vector2i) -> void:
-	if is_shore_tile(_tile):
-		return
-
-	var lowest_neighbor : Vector2i = _get_lowest_neighbor(_tile)
-	if lowest_neighbor in river_tiles:
-		return
-
-	# --
-	river_tiles.append(_tile)
-	generate_river(lowest_neighbor)
 
 
 func _get_lowest_neighbor(_tile:Vector2i) -> Vector2i:
