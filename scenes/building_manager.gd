@@ -86,8 +86,8 @@ func _update_temp_building(_tile: Vector2i) -> void:
 
 	placing_tile = _tile
 
-	# -- update placing building position..
-	var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
+	# -- set placing_building position..
+	var tile_map_layer : TileMapLayer = Def.get_world_map().get_land_layer()
 	var map_pos        : Vector2 = tile_map_layer.map_to_local(_tile)
 	placing_building.global_position = map_pos
 	
@@ -98,7 +98,7 @@ func _update_temp_building(_tile: Vector2i) -> void:
 
 	# -- verify placement..
 	if not _can_place_temp_building():
-		placing_building.modulate = Color(1, 0, 0, 0.5)
+		placing_building.modulate = Color(1, 0, 0, 0.75)
 	else:
 		placing_building.modulate = Color(1, 1, 1, 1)
 
@@ -129,8 +129,14 @@ func _can_place_temp_building() -> bool:
 			# Height checks..
 			if placing_building.is_water_building():
 				var is_shore_tile : bool = Def.get_world_map().is_shore_tile(tile)
-				if not is_shore_tile:
-					return false
+				if is_shore_tile:
+					return true
+				
+				var is_river_tile : bool = Def.get_world_map().is_river_tile(tile)
+				if is_river_tile:
+					return true
+					
+				return false
 			else:
 				# -- check if height too high..
 				var is_land_tile : bool = Def.get_world_map().is_land_tile(tile)
