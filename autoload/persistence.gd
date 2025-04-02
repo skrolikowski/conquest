@@ -13,8 +13,7 @@ const SECTION : Dictionary = {
 func new_game() -> void:
 	var world_manager : WorldManager = Def.get_world() as WorldManager
 	world_manager.world_gen.new_game()
-
-	world_manager.player.new_game()
+	world_manager.world_gen.connect("map_loaded", _on_new_map_loaded, CONNECT_ONE_SHOT)
 
 
 func save_game() -> void:
@@ -54,26 +53,50 @@ func load_game() -> void:
 		print("Error loading save file: " + str(err))
 		return
 
-	# -- Load Game Data..
-	var game_data : Dictionary = {}
-	for key in config.get_section_keys(SECTION.GAME):
-		game_data[key] = config.get_value(SECTION.GAME, key)
-	world_manager.on_load_data(game_data)
-
-	# -- Load Player Settings..
-	var player_data : Dictionary = {}
-	for key in config.get_section_keys(SECTION.PLAYER):
-		player_data[key] = config.get_value(SECTION.PLAYER, key)
-	world_manager.player.on_load_data(player_data)
-
-	# -- Load Camera Settings..
-	var camera_data : Dictionary = {}
-	for key in config.get_section_keys(SECTION.CAMERA):
-		camera_data[key] = config.get_value(SECTION.CAMERA, key)
-	world_manager.world_camera.on_load_data(camera_data)
-
 	# -- Load WorldGen..
 	var world_data : Dictionary = {}
 	for key in config.get_section_keys(SECTION.WORLD):
 		world_data[key] = config.get_value(SECTION.WORLD, key)
 	world_manager.world_gen.on_load_data(world_data)
+	world_manager.world_gen.connect("map_loaded", _on_old_map_loaded, CONNECT_ONE_SHOT)
+
+
+func _on_new_map_loaded() -> void:
+	"""
+	Game World was loaded, now continue..
+	"""
+	
+	# -- New player data..
+	var world_manager : WorldManager = Def.get_world() as WorldManager
+	world_manager.player.new_game()
+
+
+func _on_old_map_loaded() -> void:
+	"""
+	Game World was loaded, now load the rest of the game..
+	"""
+	var world_manager : WorldManager = Def.get_world() as WorldManager
+	var config : ConfigFile = ConfigFile.new()
+	
+	var err : Error = config.load(SAVE_PATH)
+	if err != OK:
+		print("Error loading save file: " + str(err))
+		return
+	
+	# -- Load Game data..
+	var game_data : Dictionary = {}
+	for key in config.get_section_keys(SECTION.GAME):
+		game_data[key] = config.get_value(SECTION.GAME, key)
+	world_manager.on_load_data(game_data)
+
+	# -- Load Camera data..
+	var camera_data : Dictionary = {}
+	for key in config.get_section_keys(SECTION.CAMERA):
+		camera_data[key] = config.get_value(SECTION.CAMERA, key)
+	world_manager.world_camera.on_load_data(camera_data)
+
+	# -- Load Player data..
+	var player_data : Dictionary = {}
+	for key in config.get_section_keys(SECTION.PLAYER):
+		player_data[key] = config.get_value(SECTION.PLAYER, key)
+	world_manager.player.on_load_data(player_data)

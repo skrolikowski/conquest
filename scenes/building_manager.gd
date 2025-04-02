@@ -18,7 +18,7 @@ func _ready() -> void:
 	"""
 	Defer to allow for colony placement
 	"""
-	call_deferred("init_building_list")
+	call_deferred("_refresh_build_tiles")
 
 
 func _process(_delta: float) -> void:
@@ -59,8 +59,8 @@ func add_building(_building: Building) -> void:
 
 func remove_building(_building: Building) -> void:
 	#TODO: some validation
-	_remove_from_occupied_tiles(_building.get_tile(), _building.get_tile_end())
-	
+	remove_occupied_tiles(_building.get_tiles())
+
 	buildings.remove_at(buildings.find(_building))
 
 	build_list.remove_child(_building)
@@ -144,7 +144,9 @@ func _place_temp_building() -> void:
 	if not _can_place_temp_building():
 		remove_building(placing_building)
 	else:
-		_add_to_occupied_tiles(placing_tile, placing_building.get_tile_end())
+		add_occupied_tiles(placing_building.get_tiles())
+
+		# _add_to_occupied_tiles(placing_tile, placing_building.get_tile_end())
 		colony.purchase_building(placing_building)
 
 		#TODO: apply `terrain_modifier` if MakeBuilding
@@ -173,11 +175,6 @@ func _place_temp_building() -> void:
 #endregion
 
 
-func init_building_list() -> void:
-	_add_to_occupied_tiles(colony.get_tile(), colony.get_tile_end())
-	_refresh_build_tiles()
-
-
 func _refresh_build_tiles() -> void:
 	"""
 	NOTE: Should be called once per building level change
@@ -193,22 +190,47 @@ func _refresh_build_tiles() -> void:
 	# print("Building Tiles: ", build_tiles.size())
 
 
-func _add_to_occupied_tiles(_start: Vector2i, _end: Vector2i) -> void:
-	for x: int in range(_start.x, _end.x + 1):
-		for y: int in range(_start.y, _end.y + 1):
-			occupy_tiles.append(Vector2i(x, y))
+# func _add_to_occupied_tiles(_start: Vector2i, _end: Vector2i) -> void:
+# 	for x: int in range(_start.x, _end.x + 1):
+# 		for y: int in range(_start.y, _end.y + 1):
+# 			occupy_tiles.append(Vector2i(x, y))
+
+# 	# -- TERRAFORM: Remove forest..
+# 	Def.get_world_map().terraform_biome_tiles(occupy_tiles, WorldGen.BiomeTerrain.FOREST, WorldGen.BiomeTerrain.UNFOREST)
 
 
-func _remove_from_occupied_tiles(_start: Vector2i, _end: Vector2i) -> void:
-	for x: int in range(_start.x, _end.x + 1):
-		for y: int in range(_start.y, _end.y + 1):
-			occupy_tiles.erase(Vector2i(x, y))
+# func _remove_from_occupied_tiles(_start: Vector2i, _end: Vector2i) -> void:
+# 	for x: int in range(_start.x, _end.x + 1):
+# 		for y: int in range(_start.y, _end.y + 1):
+# 			occupy_tiles.erase(Vector2i(x, y))
+
+# 	# -- TERRAFORM: Restore forest..
+# 	Def.get_world_map().terraform_biome_tiles(occupy_tiles, WorldGen.BiomeTerrain.UNFOREST, WorldGen.BiomeTerrain.FOREST)
 
 
+func add_occupied_tiles(_tiles: Array[Vector2i]) -> void:
+	occupy_tiles.append_array(_tiles)
+
+	# -- TERRAFORM: Remove forest..
+	Def.get_world_map().terraform_biome_tiles(_tiles, WorldGen.BiomeTerrain.FOREST, WorldGen.BiomeTerrain.UNFOREST)
 
 
+func remove_occupied_tiles(_tiles: Array[Vector2i]) -> void:
+	for tile: Vector2i in _tiles:
+		occupy_tiles.erase(tile)
+
+	# -- TERRAFORM: Restore forest..
+	Def.get_world_map().terraform_biome_tiles(_tiles, WorldGen.BiomeTerrain.UNFOREST, WorldGen.BiomeTerrain.FOREST)
 
 
+func refresh_occupied_tiles() -> void:
+	occupy_tiles = colony.get_tiles()
+
+	for building: Building in get_buildings():
+		occupy_tiles.append_array(building.get_tiles())
+
+	# -- TERRAFORM: Remove forest..
+	Def.get_world_map().terraform_biome_tiles(occupy_tiles, WorldGen.BiomeTerrain.FOREST, WorldGen.BiomeTerrain.UNFOREST)
 
 
 func _unhandled_input(_event: InputEvent) -> void:
@@ -243,5 +265,7 @@ func on_load_data(_data: Dictionary) -> void:
 		building.on_load_data(building_data)
 		building.colony = colony
 		building.player = colony.player
+
+		# _add_to_occupied_tiles(building.get_tile(), building.get_tile_end())
 
 #endregion

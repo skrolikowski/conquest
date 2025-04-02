@@ -524,6 +524,10 @@ func upgrade_building(_building : Building) -> void:
 func get_buildings_sorted_by_building_type() -> Array[Node]:
 	return bm.get_buildings_sorted_by_building_type()
 
+
+func refresh_occupied_tiles() -> void:
+	pass
+
 #endregion
 
 

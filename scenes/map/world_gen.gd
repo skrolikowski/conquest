@@ -2,6 +2,8 @@
 extends Node2D
 class_name WorldGen
 
+signal map_loaded
+
 func _add_inspector_buttons() -> Array:
 	var buttons : Array = []
 	buttons.push_back({
@@ -31,6 +33,7 @@ enum BiomeTerrain
 	FOREST,
 	MOUNTAINS,
 	NONE,
+	UNFOREST,
 }
 
 enum MapLayer
@@ -175,6 +178,7 @@ func populate_new_world() -> void:
 
 	# --
 	print("[WorldGen] Map Loaded!")
+	map_loaded.emit()
 
 
 func populate_old_world() -> void:
@@ -190,6 +194,7 @@ func populate_old_world() -> void:
 	
 	# --
 	print("[WorldGen] Map Loaded!")
+	map_loaded.emit()
 
 #endregion
 
@@ -211,6 +216,9 @@ func get_land_tiles() -> Array[Vector2i]:
 func get_shore_tiles() -> Array[Vector2i]:
 	return tilemap_layers[MapLayer.SHORE].get_used_cells()
 
+
+func get_biome_layer() -> TileMapLayer:
+	return tilemap_layers[MapLayer.BIOME]
 
 func get_biome_tiles() -> Array[Vector2i]:
 	return tilemap_layers[MapLayer.BIOME].get_used_cells()
@@ -385,6 +393,23 @@ func reveal_fog_of_war(_pos: Vector2, _radius: float = 1) -> void:
 		#for _tile: Vector2i in tiles:
 			#tile_map.set_cell(MapLayer.FOGOFWAR, _tile, SourceID.NONE)
 	pass
+
+#endregion
+
+
+#region TERRAFORMING
+func terraform_biome_tiles(_tiles: Array[Vector2i], _from_terrain: BiomeTerrain, _to_terrain: BiomeTerrain) -> void:
+	var clear_tiles : Array[Vector2i] = []
+
+	for tile: Vector2i in _tiles:
+		var tile_data : TileData = get_biome_layer().get_cell_tile_data(tile)
+		if tile_data != null:
+			if tile_data.terrain == _from_terrain:
+				clear_tiles.append(tile)
+
+	# --
+	get_biome_layer().set_cells_terrain_connect(
+		clear_tiles, TerrainSet.DEFAULT, _to_terrain, true)
 
 #endregion
 

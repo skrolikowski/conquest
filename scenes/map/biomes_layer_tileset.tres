@@ -1,8 +1,9 @@
-[gd_resource type="TileSet" load_steps=7 format=3 uid="uid://dp14aksyru2yj"]
+[gd_resource type="TileSet" load_steps=9 format=3 uid="uid://dp14aksyru2yj"]
 
 [ext_resource type="Texture2D" uid="uid://dbsh7onpi02s6" path="res://assets/maps/WinLu_Fantasy_World/WinLu_Fantasy_Swamp.png" id="1_1nl0a"]
 [ext_resource type="Texture2D" uid="uid://b86oqly6inc3m" path="res://assets/maps/WinLu_Fantasy_World/WinLu_Fantasy_Trees.png" id="2_j6emn"]
 [ext_resource type="Texture2D" uid="uid://duxj31ihn0sk8" path="res://assets/maps/WinLu_Fantasy_World/WinLu_Fantasy_Mountains.png" id="3_3u5lv"]
+[ext_resource type="Texture2D" uid="uid://cqb83f4rypbye" path="res://assets/maps/WinLu_Fantasy_World/Fantasy_World_vegetation.png" id="4_c330p"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_iohc0"]
 texture = ExtResource("1_1nl0a")
@@ -1006,6 +1007,16 @@ texture_region_size = Vector2i(48, 48)
 11:3/0/terrains_peering_bit/top_left_corner = 2
 11:3/0/terrains_peering_bit/top_side = 2
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1lkk8"]
+texture = ExtResource("4_c330p")
+texture_region_size = Vector2i(48, 48)
+15:13/0 = 0
+15:13/0/terrain_set = 0
+15:12/0 = 0
+15:12/0/terrain_set = 0
+15:12/0/terrain = 4
+14:13/0 = 0
+
 [resource]
 tile_size = Vector2i(48, 48)
 terrain_set_0/mode = 0
@@ -1017,6 +1028,9 @@ terrain_set_0/terrain_2/name = "Mountains"
 terrain_set_0/terrain_2/color = Color(0.784314, 0.501961, 0.25098, 1)
 terrain_set_0/terrain_3/name = "None"
 terrain_set_0/terrain_3/color = Color(0.376471, 0.184314, 0.25098, 1)
+terrain_set_0/terrain_4/name = "Unforest"
+terrain_set_0/terrain_4/color = Color(0.28125, 0.5, 0.25, 1)
 sources/0 = SubResource("TileSetAtlasSource_iohc0")
 sources/1 = SubResource("TileSetAtlasSource_3u5lv")
 sources/2 = SubResource("TileSetAtlasSource_c330p")
+sources/3 = SubResource("TileSetAtlasSource_1lkk8")

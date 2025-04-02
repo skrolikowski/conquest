@@ -24,6 +24,8 @@ var drag_end    : Vector2 = Vector2.ZERO
 func _ready() -> void:
 	world_camera.reset()
 
+	world_gen.connect("map_loaded", _on_map_loaded)
+
 	world_canvas.connect("end_turn", _on_end_turn)
 	world_canvas.connect("camera_zoom", world_camera.change_zoom)
 
@@ -42,6 +44,9 @@ func _draw() -> void:
 		unit.move_delta = drag_end - drag_start
 		unit.queue_redraw()
 
+
+func _on_map_loaded() -> void:
+	pass
 
 
 func _unhandled_input(_event:InputEvent) -> void:
