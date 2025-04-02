@@ -80,7 +80,7 @@ var avg_land_height   : float
 # -- Rivers
 var river_sources : Array[Vector2i] = []
 var river_tiles   : Array[Vector2i] = []
-var rivers 	      : Array[Array] = []
+var rivers 	      : Array[River] = []
 
 var is_new_game : bool = false
 
@@ -325,13 +325,14 @@ func generate_rivers() -> void:
 	add_rivers_to_map()
 
 
-func generate_river(_tile: Vector2i, _river : Array[Vector2i] = []) -> Array[Vector2i]:
+func generate_river(_tile: Vector2i, _river : Array[Vector2i] = []) -> River:
 	if is_shore_tile(_tile):
-		return _river
+		return River.create(_river, true)
 
 	var lowest_neighbor : Vector2i = _get_lowest_neighbor(_tile)
 	if lowest_neighbor in river_tiles:
-		return _river
+		#TODO: cycle through rivers and check `access_to_sea`
+		return River.create(_river, false)
 
 	# --
 	_river.append(_tile)
