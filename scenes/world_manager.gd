@@ -31,9 +31,9 @@ func _ready() -> void:
 
 	# --
 	# print("[WorldManager] New Game")
-	Persistence.new_game()
+	# Persistence.new_game()
 	# print("[WorldManager] Load Game")
-	# Persistence.load_game()
+	Persistence.load_game()
 	
 	# call_deferred("begin_turn")
 
@@ -46,6 +46,7 @@ func _draw() -> void:
 
 
 func _on_map_loaded() -> void:
+	print("[WorldManager] Map Loaded")
 	pass
 
 
@@ -175,38 +176,38 @@ func map_refresh_tile_status() -> void:
 	var tile_status : PackedStringArray = PackedStringArray()
 
 	# -- Tile index..
-	var _cd : String = ""
-	if world_gen.is_water_tile(focus_tile):
-		_cd += "W"
-	else:
-		_cd += "L"
-	if world_gen.is_ocean_tile(focus_tile):
-		_cd += "O"
-	elif world_gen.is_river_tile(focus_tile):
-		_cd += "R"
-	else:
-		_cd += "-"
-	if world_gen.is_shore_tile(focus_tile):
-		_cd += "S"
-	else:
-		_cd += "-"
-	if world_gen.has_ocean_access_tile(focus_tile):
-		_cd += "A"
-	else:
-		_cd += "-"
-	tile_status.append("Tile: " + str(focus_tile) + " " + str(_cd))
+	# var _cd : String = ""
+	# if world_gen.is_water_tile(focus_tile):
+	# 	_cd += "W"
+	# else:
+	# 	_cd += "L"
+	# if world_gen.is_ocean_tile(focus_tile):
+	# 	_cd += "O"
+	# elif world_gen.is_river_tile(focus_tile):
+	# 	_cd += "R"
+	# else:
+	# 	_cd += "-"
+	# if world_gen.is_shore_tile(focus_tile):
+	# 	_cd += "S"
+	# else:
+	# 	_cd += "-"
+	# if world_gen.has_ocean_access_tile(focus_tile):
+	# 	_cd += "A"
+	# else:
+	# 	_cd += "-"
+	tile_status.append("Tile: " + str(focus_tile))# + " " + str(_cd))
 
 	# -- Tile height..
 	var tile_height : float = world_gen.get_tile_height(focus_tile)
 	tile_status.append("Height: " + str(snapped(tile_height, 0.01)))
 
 	# -- Industry modifiers..
-	# var mod_data : Dictionary = world_gen.get_terrain_modifier_by_industry_type(focus_tile)
-	# var mod_text : PackedStringArray = PackedStringArray()
-	# mod_text.append("Farm: " + str(mod_data[Term.IndustryType.FARM]) + "%")
-	# mod_text.append("Mill: " + str(mod_data[Term.IndustryType.MILL]) + "%")
-	# mod_text.append("Mine: " + str(mod_data[Term.IndustryType.MINE]) + "%")
-	# tile_status.append("Industry: " + ", ".join(mod_text))
+	var mod_data : Dictionary = world_gen.get_terrain_modifier_by_industry_type(focus_tile)
+	var mod_text : PackedStringArray = PackedStringArray()
+	mod_text.append("Farm: " + str(mod_data[Term.IndustryType.FARM]) + "%")
+	mod_text.append("Mill: " + str(mod_data[Term.IndustryType.MILL]) + "%")
+	mod_text.append("Mine: " + str(mod_data[Term.IndustryType.MINE]) + "%")
+	tile_status.append("Industry: " + ", ".join(mod_text))
 
 	world_canvas.update_tile_status(Def.STATUS_SEP.join(tile_status))
 

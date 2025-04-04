@@ -57,8 +57,9 @@ func load_game() -> void:
 	var world_data : Dictionary = {}
 	for key in config.get_section_keys(SECTION.WORLD):
 		world_data[key] = config.get_value(SECTION.WORLD, key)
-	world_manager.world_gen.on_load_data(world_data)
+		
 	world_manager.world_gen.connect("map_loaded", _on_old_map_loaded, CONNECT_ONE_SHOT)
+	world_manager.world_gen.on_load_data(world_data)
 
 
 func _on_new_map_loaded() -> void:

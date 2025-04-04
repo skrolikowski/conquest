@@ -70,3 +70,13 @@ func add_resources(_resources: Dictionary) -> void:
 			#resources[resource_type] += resource_amount
 		#else:
 			#resources[resource_type] = resource_amount
+
+
+#region GAME PERSISTENCE
+func on_save_data() -> Dictionary:
+	return resources
+
+func on_load_data(_data: Dictionary) -> void:
+	resources = _data
+
+#endregion

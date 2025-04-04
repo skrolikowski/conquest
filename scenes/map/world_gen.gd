@@ -8,7 +8,7 @@ func _add_inspector_buttons() -> Array:
 	var buttons : Array = []
 	buttons.push_back({
 		"name": "Generate Rivers",
-		"pressed": generate_rivers
+		"pressed": _generate_rivers
 	})
 	return buttons
 
@@ -59,20 +59,16 @@ enum NoiseGenLayer
 	MOUNTAINS,
 }
 
-const TILE_CURSOR     : Vector2i = Vector2i(5, 7)   # TEMP
-const TILE_FOG_OF_WAR : Vector2i = Vector2i(13, 14) # TEMP
+# const TILE_CURSOR     : Vector2i = Vector2i(5, 7)   # TEMP
+# const TILE_FOG_OF_WAR : Vector2i = Vector2i(13, 14) # TEMP
 
 @export var rivers_enabled : bool = true
 
 @onready var noise_gen    := $NoiseGenerator as NoiseGenerator
 @onready var map_renderer := $TilemapGaeaRenderer as TilemapGaeaRenderer
-@onready var tilemap_layers : Array[TileMapLayer]
-
-# --
-var terrain_modifier  : Dictionary = {}
-# var artifact_modifier : Dictionary = {}
 
 # -- Tile Data
+var tilemap_layers  : Array[TileMapLayer]
 var tile_heights 	: Dictionary = {}
 var highest_height  : float
 var avg_land_height : float
@@ -82,6 +78,10 @@ var tile_cols       : int
 # -- Rivers
 var rivers           : Array[River] = []
 var tile_custom_data : Dictionary = {}
+
+# -- Modifiers
+var terrain_modifier  : Dictionary = {}
+# var artifact_modifier : Dictionary = {}
 
 
 func _ready() -> void:
@@ -99,89 +99,95 @@ func on_save_data() -> Dictionary:
 	"""
 	Returns save data for WorldGen
 	"""
+
+	# -- Package tile custom data..
+	var _tile_custom_data : Dictionary = {}
+	for tile: Vector2i in tile_custom_data:
+		var tile_custom_datum : TileCustomData = tile_custom_data[tile]
+		_tile_custom_data[tile] = tile_custom_datum.on_save_data()
+
+	# -- Package rivers..
+	var _rivers : Array[Dictionary] = []
+	for river: River in rivers:
+		_rivers.append(river.on_save_data())
+
+	# -- Package terrain modifiers..
+	var _terrain_modifier : Dictionary = {}
+	for tile: Vector2i in terrain_modifier:
+		var transaction : Transaction = terrain_modifier[tile]
+		_terrain_modifier[tile] = transaction.on_save_data()
+
+	# --
 	return {
 		"water_layer" : get_water_layer().tile_map_data,
 		"land_layer" : get_land_layer().tile_map_data,
 		"shore_layer" : get_shore_layer().tile_map_data,
 		"biome_layer" : get_biome_layer().tile_map_data,
 		# --
-		"tile_custom_data" : tile_custom_data,
-		# --
-		# "seed" : noise_gen.seed,
-		# "terrain_modifier": terrain_modifier,
-		
-		# -- Rivers
-		# "rivers" : rivers,
+		"tile_custom_data" : _tile_custom_data,
+		"terrain_modifier" : _terrain_modifier,
+		"rivers" : _rivers,
 	}
 
 
 func on_load_data(_data: Dictionary) -> void:
 	print("[WorldGen] Load Game")
-	# noise_gen.seed = _data["seed"]
-	# noise_gen.connect("generation_finished", _on_old_world_generated, CONNECT_ONE_SHOT)
-	# noise_gen.generate()
 
-	# -- Load Modifiers..
-	# terrain_modifier = _data["terrain_modifier"]
-	
-	# -- Load Rivers..
-	# rivers = _data["rivers"]
-	
 	# -- Load tilemaplayer data..
 	get_water_layer().tile_map_data = _data["water_layer"]
 	get_land_layer().tile_map_data = _data["land_layer"]
 	get_shore_layer().tile_map_data = _data["shore_layer"]
 	get_biome_layer().tile_map_data = _data["biome_layer"]
 
-	populate_old_world()
+	# -- Load tile custom data..
+	for tile: Vector2i in _data["tile_custom_data"]:
+		tile_custom_data[tile] = TileCustomData.new()
+		tile_custom_data[tile].on_load_data(_data["tile_custom_data"][tile])
+
+	# -- Load rivers..
+	for river_data: Dictionary in _data["rivers"]:
+		var river : River = River.new()
+		river.on_load_data(river_data)
+		rivers.append(river)
+
+	# -- Load Modifiers..
+	for tile: Vector2i in _data["terrain_modifier"]:
+		terrain_modifier[tile] = Transaction.new()
+		terrain_modifier[tile].on_load_data(_data["terrain_modifier"][tile])
+		
+	# --
+	set_map_data()
+
+	# --
+	map_loaded.emit()
 
 #endregion
 
 
 #region WORLD GENERATION
 func _on_new_world_generated() -> void:
-	call_deferred("populate_new_world")
+	#HACK: delay to allow tilemap layers to be generated
+	call_deferred("on_new_world_generated")
 
-
-func _on_old_world_generated() -> void:
-	call_deferred("populate_old_world")
-
-
-func populate_new_world() -> void:
+func on_new_world_generated() -> void:
 	set_map_data()
 	refresh_water_navigation()
 	init_tile_custom_data()
 	
 	# -- Rivers..
 	if rivers_enabled:
-		generate_rivers()
+		_generate_rivers()
+		_generate_ocean_access_tiles()
+		_add_rivers_to_map()
 	
 	# -- Modifiers..
-	# generate_terrain_modifiers()
-	#generate_artifacts()
+	generate_terrain_modifiers()
 	
 	# -- Fog of war..
 	# if Def.FOG_OF_WAR_ENABLED:
 	# 	generate_fog_of_war()
 
 	# --
-	print("[WorldGen] Map Loaded!")
-	map_loaded.emit()
-
-
-func populate_old_world() -> void:
-	set_map_data()
-	
-	# -- Rivers..
-	# if rivers_enabled:
-	# 	add_rivers_to_map()
-
-	# -- Fog of War..
-	# TODO:
-
-
-	# --
-	print("[WorldGen] Map Loaded!")
 	map_loaded.emit()
 
 
@@ -362,7 +368,44 @@ func get_terrain_modifier_value(_tile:Vector2i, _resource_type:Term.ResourceType
 
 
 #region RIVERS
-func generate_river_sources() -> Array[Vector2i]:
+func _generate_rivers() -> void:
+	rivers.clear()
+
+	# --
+	var river_sources : Array[Vector2i] = _generate_river_sources()
+	print("Generating %d river(s)..." % river_sources.size())
+	
+	# --
+	for source: Vector2i in river_sources:
+		rivers.append(_generate_river(source))
+
+
+func _add_rivers_to_map() -> void:
+	for river : River in rivers:
+		get_land_layer().set_cells_terrain_path(river.tiles, TerrainSet.DEFAULT, LandTerrain.RIVER, true)
+		get_biome_layer().set_cells_terrain_path(river.tiles, TerrainSet.DEFAULT, BiomeTerrain.NONE, true)
+
+
+func _generate_river(_tile: Vector2i, _river : Array[Vector2i] = []) -> River:
+	if is_water_tile(_tile):
+		return River.create(self, _river)
+
+	var lowest_neighbor : Vector2i = _get_lowest_neighbor(_tile)
+	if lowest_neighbor == null:
+		return River.create(self, _river)
+
+	# --
+	_river.append(_tile)
+
+	# -- update tile_custom_data[_tile]..
+	tile_custom_data[_tile].is_water = true
+	tile_custom_data[_tile].is_river = true
+
+	# --
+	return _generate_river(lowest_neighbor, _river)
+
+
+func _generate_river_sources() -> Array[Vector2i]:
 	var river_sources : Array[Vector2i] = []
 
 	var min_height   : float = avg_land_height + 0.13
@@ -378,23 +421,7 @@ func generate_river_sources() -> Array[Vector2i]:
 	return river_sources
 
 
-func generate_rivers() -> void:
-	rivers.clear()
-
-	# --
-	var river_sources : Array[Vector2i] = generate_river_sources()
-	print("Generating %d river(s)..." % river_sources.size())
-	
-	# --
-	for source: Vector2i in river_sources:
-		rivers.append(generate_river(source))
-
-	# --
-	for river : River in rivers:
-		get_land_layer().set_cells_terrain_path(river.tiles, TerrainSet.DEFAULT, LandTerrain.RIVER, true)
-		get_biome_layer().set_cells_terrain_path(river.tiles, TerrainSet.DEFAULT, BiomeTerrain.NONE, true)
-
-	# -- Ocean Access..
+func _generate_ocean_access_tiles() -> void:
 	for tile : Vector2i in get_shore_tiles():
 		if is_ocean_tile(tile):
 			for neighbor : Vector2i in get_water_layer().get_surrounding_cells(tile):
@@ -415,25 +442,6 @@ func _flood_fill_ocean_access_tiles(_tile: Vector2i) -> void:
 		for neighbor : Vector2i in get_water_layer().get_surrounding_cells(tile):
 			if not visited.has(neighbor) and is_water_tile(neighbor) and not is_ocean_tile(neighbor):
 				queue.append(neighbor)
-
-
-func generate_river(_tile: Vector2i, _river : Array[Vector2i] = []) -> River:
-	if is_water_tile(_tile):
-		return River.create(self, _river)
-
-	var lowest_neighbor : Vector2i = _get_lowest_neighbor(_tile)
-	if lowest_neighbor == null:
-		return River.create(self, _river)
-
-	# --
-	_river.append(_tile)
-
-	# -- update tile_custom_data[_tile]..
-	tile_custom_data[_tile].is_water = true
-	tile_custom_data[_tile].is_river = true
-
-	# --
-	return generate_river(lowest_neighbor, _river)
 
 
 func _get_lowest_neighbor(_tile:Vector2i) -> Vector2i:
