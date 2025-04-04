@@ -188,10 +188,6 @@ func debug() -> void:
 	# center.bm._update_temp_building(Vector2i(5, 11))
 	# center.bm._place_temp_building()
 
-	# -- Starting Ship
-	#var coast_tiles : Array[Vector2i] = Def.get_world_map().get_coast_tiles()
-	#var start_tile  : Vector2i = coast_tiles.pick_random()
-
 	# -- Just a Settler..
 	#var settler       : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, 1)
 	#var settler_pos   : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(26, 8))

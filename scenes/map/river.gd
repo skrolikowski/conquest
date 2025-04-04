@@ -1,14 +1,17 @@
 extends RefCounted
 class_name River
 
-var tiles : Array[Vector2i] = []
 var map   : WorldGen
-var access_to_sea : bool
+var tiles : Array[Vector2i] = []
 
 
-static func create(_tiles: Array[Vector2i], _access_to_sea:bool = false) -> River:
-    var river : River = River.new()
-    river.tiles = _tiles
-    river.access_to_sea = _access_to_sea
+static func create(_map: WorldGen, _tiles: Array[Vector2i]) -> River:
+	var river : River = River.new()
+	river.map = _map
+	river.tiles = _tiles
+	
+	# --
+	for tile: Vector2i in _tiles:
+		_map.tile_custom_data[tile].is_river = true
 
-    return river
+	return river
