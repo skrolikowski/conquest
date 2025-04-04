@@ -19,6 +19,7 @@ var selection  : Node : set = _set_selection
 var is_dragging : bool = false
 var drag_start  : Vector2 = Vector2.ZERO
 var drag_end    : Vector2 = Vector2.ZERO
+var drag_offset : Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
@@ -80,27 +81,28 @@ func _unhandled_input(_event:InputEvent) -> void:
 				attempt_select_area2D(world_position)
 				
 				if selection is Unit:
+					drag_offset = world_position - selection.global_position
 					drag_unit_start(world_position)
 
 			elif is_dragging and is_valid_drag():
 				"""
 				Mouse Button - Release
 				"""
-				drag_unit_end(world_position)
+				drag_unit_end(world_position + drag_offset)
 				
 				if selection is Unit:
 					var unit : Unit = selection as Unit
 					unit.on_drag_release(world_position)
 
 	elif _event is InputEventMouseMotion and is_dragging:
-		var mouse_event    : InputEventMouseMotion = _event as InputEventMouseMotion
-		var world_position : Vector2 = get_global_mouse_position()
+		var mouse_event   : InputEventMouseMotion = _event as InputEventMouseMotion
+		var drag_position : Vector2 = get_global_mouse_position() + drag_offset
 		
 		if mouse_event.button_mask == 1:
 			"""
 			Mouse Button - Dragging
 			"""
-			drag_unit_update(world_position)
+			drag_unit_update(drag_position)
 
 
 	# --
