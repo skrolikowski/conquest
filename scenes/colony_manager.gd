@@ -34,7 +34,10 @@ func add_colony(_building: CenterBuilding) -> void:
 
 func remove_colony(_colony: CenterBuilding) -> void:
 	#TODO: some validation
-	#TODO: removes any buildings owned by this colony
+
+	# -- Removes any buildings owned by this colony..
+	for building: Building in _colony.bm.get_buildings().duplicate():
+		_colony.bm.remove_building(building)
 	
 	colonies.remove_at(colonies.find(_colony))
 	colony_list.remove_child(_colony)

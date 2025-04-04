@@ -305,6 +305,11 @@ func is_water_tile(_tile: Vector2i) -> bool:
 		return tile_custom_data[_tile].is_water
 	return false
 
+func is_land_tile(_tile: Vector2i) -> bool:
+	if tile_custom_data.has(_tile):
+		return not tile_custom_data[_tile].is_water
+	return false
+
 func is_ocean_tile(_tile: Vector2i) -> bool:
 	if tile_custom_data.has(_tile):
 		return tile_custom_data[_tile].is_ocean
