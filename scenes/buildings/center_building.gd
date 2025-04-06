@@ -172,14 +172,15 @@ func get_immigration() -> int:
 		#emigration
 		return immigration * -1
 
-	# -- Immigration bonus.. (e.g. Church)
-	var immigration_bonus : int = 0
+	return immigration + get_immigration_bonus()
 
+
+func get_immigration_bonus() -> int:
+	var value : int = 0
 	for building: Building in bm.get_buildings():
 		if building.building_type == Term.BuildingType.CHURCH:
-			immigration_bonus += Def.get_building_stat(building.building_type, building.level).immigration
-	
-	return immigration + immigration_bonus
+			value += Def.get_building_stat(building.building_type, building.level).immigration
+	return value
 
 
 func get_crops_needed() -> int:

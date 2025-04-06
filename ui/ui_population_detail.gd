@@ -76,10 +76,13 @@ func _set_colony(_building : CenterBuilding) -> void:
 	elif colony.is_at_max_population():
 		%ColonyMessage.text = "Colony at maximum capacity."
 
-	# elif:
-	# 	%ColonyMessage.text = "Church Immigration Bonus: "
 	else:
-		%ColonyMessage.text = "Colony Immigration Normal."
+		# -- Immigration message..
+		var immigration_bonus : int = colony.get_immigration_bonus()
+		if immigration_bonus > 0:
+			%ColonyMessage.text = "Church Immigration Bonus: " + str(immigration_bonus)
+		else:
+			%ColonyMessage.text = "Colony Immigration Normal."
 
 
 func _on_close_pressed() -> void:
