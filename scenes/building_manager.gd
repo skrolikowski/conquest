@@ -219,6 +219,7 @@ func add_occupied_tiles(_tiles: Array[Vector2i]) -> void:
 
 	# -- TERRAFORM: Remove forest..
 	Def.get_world_map().terraform_biome_tiles(_tiles, WorldGen.BiomeTerrain.FOREST, WorldGen.BiomeTerrain.UNFOREST)
+	Def.get_world_map().terraform_biome_tiles(_tiles, WorldGen.BiomeTerrain.MOUNTAINS, WorldGen.BiomeTerrain.UNMOUNTAIN)
 
 
 func remove_occupied_tiles(_tiles: Array[Vector2i]) -> void:
@@ -226,7 +227,8 @@ func remove_occupied_tiles(_tiles: Array[Vector2i]) -> void:
 		occupy_tiles.erase(tile)
 
 	# -- TERRAFORM: Restore forest..
-	Def.get_world_map().terraform_biome_tiles(_tiles, WorldGen.BiomeTerrain.UNFOREST, WorldGen.BiomeTerrain.FOREST)
+	Def.get_world_map().terraform_biome_tiles(occupy_tiles, WorldGen.BiomeTerrain.UNFOREST, WorldGen.BiomeTerrain.FOREST)
+	Def.get_world_map().terraform_biome_tiles(occupy_tiles, WorldGen.BiomeTerrain.UNMOUNTAIN, WorldGen.BiomeTerrain.MOUNTAINS)
 
 
 func refresh_occupied_tiles() -> void:
@@ -237,6 +239,7 @@ func refresh_occupied_tiles() -> void:
 
 	# -- TERRAFORM: Remove forest..
 	Def.get_world_map().terraform_biome_tiles(occupy_tiles, WorldGen.BiomeTerrain.FOREST, WorldGen.BiomeTerrain.UNFOREST)
+	Def.get_world_map().terraform_biome_tiles(occupy_tiles, WorldGen.BiomeTerrain.MOUNTAINS, WorldGen.BiomeTerrain.UNMOUNTAIN)
 
 
 func _unhandled_input(_event: InputEvent) -> void:

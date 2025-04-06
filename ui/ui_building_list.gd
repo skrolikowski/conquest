@@ -17,13 +17,20 @@ func _set_colony(_building: CenterBuilding) -> void:
 	
 	# -- Building List
 	var root : TreeItem = %BuildingList.create_item()
-	%BuildingList.hide_root = true
 	# root.set_text(0, "Buildings")
+	%BuildingList.hide_root = true
+	%BuildingList.columns = 2
+	%BuildingList.set_column_custom_minimum_width(0, 150)
 
 	var nodes : Array[Building] = colony.get_buildings_sorted_by_building_type()
 	for node : Building in nodes:
 		var child : TreeItem = %BuildingList.create_item(root)
 		child.set_text(0, node.title)
+
+		if node.building_state == Term.BuildingState.NEW:
+			child.set_text(1, "+")
+		elif node.building_state == Term.BuildingState.UPGRADE:
+			child.set_text(1, "^")
 
 
 func _on_close_pressed() -> void:

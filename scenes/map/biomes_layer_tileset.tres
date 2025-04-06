@@ -1016,6 +1016,13 @@ texture_region_size = Vector2i(48, 48)
 15:12/0/terrain_set = 0
 15:12/0/terrain = 4
 14:13/0 = 0
+4:5/0 = 0
+4:5/0/terrain_set = 0
+4:5/0/terrain = 5
+8:1/0 = 0
+8:1/0/terrain_set = 0
+7:9/0 = 0
+7:9/0/terrain_set = 0
 
 [resource]
 tile_size = Vector2i(48, 48)
@@ -1030,6 +1037,8 @@ terrain_set_0/terrain_3/name = "None"
 terrain_set_0/terrain_3/color = Color(0.376471, 0.184314, 0.25098, 1)
 terrain_set_0/terrain_4/name = "Unforest"
 terrain_set_0/terrain_4/color = Color(0.28125, 0.5, 0.25, 1)
+terrain_set_0/terrain_5/name = "Unmountain"
+terrain_set_0/terrain_5/color = Color(0.25, 0.5, 0.3125, 1)
 sources/0 = SubResource("TileSetAtlasSource_iohc0")
 sources/1 = SubResource("TileSetAtlasSource_3u5lv")
 sources/2 = SubResource("TileSetAtlasSource_c330p")

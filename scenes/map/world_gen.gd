@@ -34,6 +34,7 @@ enum BiomeTerrain
 	MOUNTAINS,
 	NONE,
 	UNFOREST,
+	UNMOUNTAIN,
 }
 
 enum MapLayer
@@ -535,10 +536,21 @@ func generate_industry_modifier(_industry_type:Term.IndustryType) -> void:
 			terrain_modifier[source] = Transaction.new()
 
 		# -- ..and to surrounding tiles
-		var tiles : Array[Vector2i] = tilemap_layers[MapLayer.LAND].get_surrounding_cells(source)
+		var tiles : Array[Vector2i] = get_land_layer().get_surrounding_cells(source)
 		for tile : Vector2i in tiles:
 			if bonus > 0:
 				add_terrain_modifier(tile, resource_type, floor(bonus * 0.5))
+
+	# -- Rivers.. enrich surrounding land tiles
+	for river : River in rivers:
+		for river_tile : Vector2i in river.tiles:
+			for tile : Vector2i in get_land_layer().get_surrounding_cells(river_tile):
+				if not tile_custom_data[tile].is_water and not tile_custom_data[tile].is_river_enriched:
+					var rng : RandomNumberGenerator = RandomNumberGenerator.new()
+					add_terrain_modifier(tile, Term.ResourceType.CROPS, rng.randi_range(0, 5))
+					add_terrain_modifier(tile, Term.ResourceType.WOOD, rng.randi_range(0, 5))
+					add_terrain_modifier(tile, Term.ResourceType.METAL, rng.randi_range(0, 5))
+					tile_custom_data[tile].is_river_enriched = true
 
 
 func add_terrain_modifier(_tile:Vector2i, _resource_type:Term.ResourceType, _bonus:float) -> void:
@@ -625,6 +637,7 @@ func get_source_tiles_by_industry_type(_industry_type: Term.IndustryType) -> Dic
 					tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": rng.randi_range(10, 35) }
 
 				#TODO: boost if next to river tile
+			
 
 		elif _industry_type == Term.IndustryType.MILL:
 

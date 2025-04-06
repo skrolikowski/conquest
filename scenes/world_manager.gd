@@ -32,7 +32,7 @@ func _ready() -> void:
 
 	# --
 	# print("[WorldManager] New Game")
-	# Persistence.new_game()
+	#Persistence.new_game()
 	# print("[WorldManager] Load Game")
 	Persistence.load_game()
 

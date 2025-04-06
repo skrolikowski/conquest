@@ -11,6 +11,8 @@ static func create(_map: WorldGen, _tiles: Array[Vector2i]) -> River:
 	# --
 	for tile: Vector2i in _tiles:
 		_map.tile_custom_data[tile].is_river = true
+		
+		#TODO: reduce height of tile (does this really matter?)
 
 	return river
 
