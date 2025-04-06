@@ -35,8 +35,6 @@ func _ready() -> void:
 	# Persistence.new_game()
 	# print("[WorldManager] Load Game")
 	Persistence.load_game()
-	
-	# call_deferred("begin_turn")
 
 
 func _draw() -> void:
@@ -346,6 +344,9 @@ func _on_end_turn() -> void:
 	unselect_all()
 
 	turn_number += 1
+
+	# --
+	begin_turn()
 	
 #endregion
 

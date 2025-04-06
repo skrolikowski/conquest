@@ -50,11 +50,11 @@ func add_building(_building: Building) -> void:
 	buildings.append(_building)
 	build_list.add_child(_building)
 
-#TODO: need more efficient way to do this without affecting the original list
-# func get_buildings_sorted_by_building_type() -> Array[Building]:
-# 	var buildings : Array[Building] = buildings
-# 	buildings.sort_custom(func(a:Building, b:Building) -> bool: return a.building_type < b.building_type)
-# 	return buildings
+
+func get_buildings_sorted_by_building_type() -> Array[Building]:
+	var _buildings : Array[Building] = buildings.duplicate()
+	_buildings.sort_custom(func(a:Building, b:Building) -> bool: return a.building_type < b.building_type)
+	return _buildings
 
 
 func remove_building(_building: Building) -> void:

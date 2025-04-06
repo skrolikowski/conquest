@@ -7,7 +7,7 @@ var construct_ship : bool
 func _ready() -> void:
 	super._ready()
 
-	title = "Dock / Trading Post"
+	title = "Dock"
 	
 	building_type = Term.BuildingType.DOCK
 	building_size = Term.BuildingSize.SMALL

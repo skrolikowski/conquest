@@ -16,10 +16,10 @@ func _ready() -> void:
 
 
 #override.. MakeBuilding
-func get_expected_produce_value() -> int:
+func get_expected_produce_value() -> float:
 	var make  : Transaction = get_make()
 	var need  : Transaction = get_need()
-	var value : int = 0
+	var value : float = 0
 	
 	if colony.bank.can_afford_next_turn(need):
 		value = make.resources[make_resource_type]

@@ -8,31 +8,20 @@ var make_industry_type : Term.IndustryType
 var make_resource_type : Term.ResourceType
 
 
-func get_expected_produce_value() -> int:
+func get_expected_produce_value() -> float:
 	if building_state == Term.BuildingState.NEW:
 		return 0
 
 	# --
 	var make  : Transaction = get_make()
-	var value : int = make.resources[make_resource_type]
-	var mod   : int = get_total_production_modifier()
+	var value : float = make.resources[make_resource_type]
+	var mod   : float = get_total_production_modifier()
 	
 	# -- Modifier..
 	if mod > 0:
 		# increase original make by modifier..
-		value += ceil(value * mod * 0.01)
+		value += value * mod * 0.01
 		
-	return value
-
-
-func get_actual_produce_value() -> int:
-	var value : int = get_expected_produce_value()
-	
-	if colony:
-		# reduce make if labor shortage
-		if colony.has_labor_shortage():
-			value = ceil(value * 0.5)
-
 	return value
 
 

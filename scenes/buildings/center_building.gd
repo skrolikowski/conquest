@@ -332,7 +332,7 @@ func get_military_unit_level_count_by_unit_type(_unit_type: Term.UnitType) -> Di
 
 #region COMMODITY DETAILS
 func get_expected_produce_value_by_resource_type(_resource_type:Term.ResourceType) -> int:
-	var total : int = 0
+	var total : float = 0
 	if _resource_type == Term.ResourceType.GOLD:
 		for building:Building in bm.get_buildings():
 			if building.building_type == Term.BuildingType.GOLD_MINE:
@@ -353,32 +353,41 @@ func get_expected_produce_value_by_resource_type(_resource_type:Term.ResourceTyp
 		for building:Building in bm.get_buildings():
 			if building.building_type == Term.BuildingType.FARM:
 				total += building.get_expected_produce_value()
-	return total
+	return floor(total)
 
 
 func get_actual_produce_value_by_resource_type(_resource_type:Term.ResourceType) -> int:
-	var total : int = 0
+	var total : float = 0
 	if _resource_type == Term.ResourceType.GOLD:
 		for building:Building in bm.get_buildings():
 			if building.building_type == Term.BuildingType.GOLD_MINE:
-				total += building.get_actual_produce_value()
+				total += building.get_expected_produce_value()
 	elif _resource_type == Term.ResourceType.METAL:
 		for building:Building in bm.get_buildings():
 			if building.building_type == Term.BuildingType.METAL_MINE:
-				total += building.get_actual_produce_value()
+				total += building.get_expected_produce_value()
 	elif _resource_type == Term.ResourceType.WOOD:
 		for building:Building in bm.get_buildings():
 			if building.building_type == Term.BuildingType.MILL:
-				total += building.get_actual_produce_value()
+				total += building.get_expected_produce_value()
 	elif _resource_type == Term.ResourceType.GOODS:
 		for building:Building in bm.get_buildings():
 			if building.building_type == Term.BuildingType.COMMERCE:
-				total += building.get_actual_produce_value()
+				total += building.get_expected_produce_value()
 	elif _resource_type == Term.ResourceType.CROPS:
 		for building:Building in bm.get_buildings():
 			if building.building_type == Term.BuildingType.FARM:
-				total += building.get_actual_produce_value()
-	return total
+				total += building.get_expected_produce_value()
+
+	# reduce make if labor shortage
+	if has_labor_shortage():
+		# reduce total based on lost labor..
+		var free_labor     : float = float(abs(get_free_labor()))
+		var labor_demand   : float = float(get_labor_demand())
+		var lost_labor_pct : float = free_labor / labor_demand
+		total = total * (1 - lost_labor_pct)
+		
+	return floor(total)
 
 
 func get_consume_value_by_resource_type(_resource_type:Term.ResourceType) -> int:
@@ -521,7 +530,7 @@ func upgrade_building(_building : Building) -> void:
 	_building.building_state = Term.BuildingState.ACTIVE
 
 
-func get_buildings_sorted_by_building_type() -> Array[Node]:
+func get_buildings_sorted_by_building_type() -> Array[Building]:
 	return bm.get_buildings_sorted_by_building_type()
 
 
