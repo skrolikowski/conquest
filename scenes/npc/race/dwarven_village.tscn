@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://bt0rhwgnbxhmy"]
+
+[ext_resource type="Texture2D" uid="uid://dngpfwunemmqj" path="res://assets/maps/WinLu_Fantasy_World/Fantasy_World_Mountains.png" id="1_52723"]
+[ext_resource type="Texture2D" uid="uid://cqb83f4rypbye" path="res://assets/maps/WinLu_Fantasy_World/Fantasy_World_vegetation.png" id="2_4hdx8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3wjyd"]
+atlas = ExtResource("1_52723")
+region = Rect2(96, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_50tdx"]
+atlas = ExtResource("1_52723")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mqmuo"]
+atlas = ExtResource("2_4hdx8")
+region = Rect2(432, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lax7a"]
+atlas = ExtResource("2_4hdx8")
+region = Rect2(528, 600, 48, 48)
+
+[node name="DwarvenVillage" type="Node2D"]
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+position = Vector2(0, -24)
+texture = SubResource("AtlasTexture_3wjyd")
+
+[node name="Sprite2D4" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_50tdx")
+
+[node name="Sprite2D3" type="Sprite2D" parent="."]
+position = Vector2(0, 24)
+texture = SubResource("AtlasTexture_mqmuo")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(24, 28)
+texture = SubResource("AtlasTexture_lax7a")
+
+[node name="Sprite2D5" type="Sprite2D" parent="."]
+position = Vector2(-32, 28)
+texture = SubResource("AtlasTexture_lax7a")

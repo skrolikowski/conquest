@@ -1,0 +1,109 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxfl6sig6y564"]
+
+[ext_resource type="Script" uid="uid://sysosfbf6ysr" path="res://ui/npc/ui_village.gd" id="1_jgtlb"]
+[ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_n14ub"]
+
+[node name="UIVillage" type="PanelContainer"]
+custom_minimum_size = Vector2(256, 224)
+offset_right = 40.0
+offset_bottom = 40.0
+theme = ExtResource("1_n14ub")
+script = ExtResource("1_jgtlb")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TitleContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="BtnClose" type="Button" parent="MarginContainer/VBoxContainer/TitleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "x"
+
+[node name="VillageTitle" type="Label" parent="MarginContainer/VBoxContainer/TitleContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Elven Village"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Relationship" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Small"
+horizontal_alignment = 1
+
+[node name="InfoContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="InfoTitle" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+text = "Information"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/InfoContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="PopulationLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Population:"
+horizontal_alignment = 2
+
+[node name="PopulationValue" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "100"
+
+[node name="HealthLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Health:"
+horizontal_alignment = 2
+
+[node name="HealthValue" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Good"
+
+[node name="VillagesLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Villages:"
+horizontal_alignment = 2
+
+[node name="VillagesValue" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "2"
+
+[node name="ArmySizeLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Army Size:"
+horizontal_alignment = 2
+
+[node name="ArmySize" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "5"

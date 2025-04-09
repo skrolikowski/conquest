@@ -1,0 +1,82 @@
+[gd_scene load_steps=2 format=3 uid="uid://bs6x2og4uwm2d"]
+
+[ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_qjx02"]
+
+[node name="UINewTrade" type="PanelContainer"]
+custom_minimum_size = Vector2(480, 256)
+offset_right = 16.0
+offset_bottom = 16.0
+theme = ExtResource("1_qjx02")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TitleContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BtnClose" type="Button" parent="MarginContainer/VBoxContainer/TitleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "x"
+
+[node name="MenuTitle" type="Label" parent="MarginContainer/VBoxContainer/TitleContainer"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "New Trade"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="TradeOptions" type="OptionButton" parent="MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 5
+popup/item_0/text = "Buy from Mother Country"
+popup/item_0/id = 0
+popup/item_1/text = "Sell to Mother Country"
+popup/item_1/id = 1
+popup/item_2/text = "Demand Tribute from Player"
+popup/item_2/id = 3
+popup/item_3/text = "Give Tribute to Player"
+popup/item_3/id = 4
+popup/item_4/text = "Transfer to Colony"
+popup/item_4/id = 2
+
+[node name="PlayerOptions" type="OptionButton" parent="MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="BuyLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 9
+text = "Buy: --"
+horizontal_alignment = 2
+
+[node name="BuyOption" type="OptionButton" parent="MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+item_count = 2
+popup/item_0/text = "Gold"
+popup/item_0/id = 0
+popup/item_1/text = "Metal"
+popup/item_1/id = 1
+
+[node name="SellLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 9
+text = "for: --"
+horizontal_alignment = 2
+
+[node name="SellOption" type="OptionButton" parent="MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2

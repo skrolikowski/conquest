@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c21abdj5k6m20"]
+
+[ext_resource type="Script" uid="uid://dfsqbd72dkri7" path="res://scenes/npc/npc.gd" id="1_sspvn"]
+
+[node name="NPC" type="Node2D"]
+script = ExtResource("1_sspvn")
+
+[node name="VillageList" type="Node2D" parent="."]

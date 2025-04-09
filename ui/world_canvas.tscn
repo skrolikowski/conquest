@@ -54,13 +54,20 @@ custom_minimum_size = Vector2(24, 2.08165e-12)
 layout_mode = 2
 text = "X"
 
-[node name="UnitList" type="Button" parent="VBoxContainer/StatusBar/MarginContainer/HBoxContainer"]
+[node name="BtnDiplomacy" type="Button" parent="VBoxContainer/StatusBar/MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(108, 0)
+layout_mode = 2
+text = "Diplomacy"
+
+[node name="BtnUnitList" type="Button" parent="VBoxContainer/StatusBar/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(108, 2.08165e-12)
 layout_mode = 2
 text = "Unit List"
 
-[node name="Next" type="Button" parent="VBoxContainer/StatusBar/MarginContainer/HBoxContainer"]
+[node name="BtnNext" type="Button" parent="VBoxContainer/StatusBar/MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(108, 2.08165e-12)
 layout_mode = 2

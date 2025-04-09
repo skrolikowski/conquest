@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://rmwgcu4n5q1"]
 
-[ext_resource type="Script" uid="uid://168qu5dni434" path="res://scenes/player.gd" id="1_bmdt2"]
-[ext_resource type="PackedScene" uid="uid://b1uh7im15md52" path="res://scenes/colony_manager.tscn" id="2_n53cf"]
+[ext_resource type="Script" uid="uid://168qu5dni434" path="res://scenes/player/player.gd" id="1_bmdt2"]
+[ext_resource type="PackedScene" uid="uid://b1uh7im15md52" path="res://scenes/player/colony_manager.tscn" id="2_n53cf"]
 
 [node name="Player" type="Node2D"]
 script = ExtResource("1_bmdt2")

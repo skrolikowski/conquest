@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b1uh7im15md52"]
 
-[ext_resource type="Script" uid="uid://drpagbm3ibv8m" path="res://scenes/colony_manager.gd" id="1_k7cqv"]
+[ext_resource type="Script" uid="uid://drpagbm3ibv8m" path="res://scenes/player/colony_manager.gd" id="1_k7cqv"]
 
 [node name="ColonyManager" type="Node2D"]
 z_index = 1

@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cbisubxats4ra" path="res://scenes/camera/world_camera.tscn" id="2_bk1bu"]
 [ext_resource type="PackedScene" uid="uid://ror8c8gr62y8" path="res://scenes/map/world_gen.tscn" id="2_fa3fk"]
 [ext_resource type="PackedScene" uid="uid://de3t5875vnq06" path="res://ui/world_canvas.tscn" id="4_7jw07"]
-[ext_resource type="PackedScene" uid="uid://rmwgcu4n5q1" path="res://scenes/player.tscn" id="4_qscej"]
+[ext_resource type="PackedScene" uid="uid://ygorgf62tag4" path="res://scenes/player_manager.tscn" id="5_bk1bu"]
 
 [node name="WorldManager" type="Node2D" groups=["world"]]
 script = ExtResource("1_uhvwe")
@@ -18,4 +18,4 @@ unique_name_in_owner = true
 [node name="WorldCanvas" parent="." groups=["canvas_layer", "world_canvas"] instance=ExtResource("4_7jw07")]
 unique_name_in_owner = true
 
-[node name="Player" parent="." instance=ExtResource("4_qscej")]
+[node name="PlayerManager" parent="." instance=ExtResource("5_bk1bu")]

@@ -4,12 +4,15 @@ class_name WorldCanvas
 signal end_turn
 signal camera_zoom(_direction:int)
 
-@onready var confirm      := %ConfirmationDialog as ConfirmationDialog
-@onready var btn_close    := %BtnCloseUI as Button
-@onready var btn_zoom_in  := %BtnZoomIn as Button
-@onready var btn_zoom_out := %BtnZoomOut as Button
-@onready var btn_end_turn := %BtnEndTurn as Button
-@onready var btn_menu     := %BtnMenu as Button
+@onready var confirm       := %ConfirmationDialog as ConfirmationDialog
+@onready var btn_diplomacy := %BtnDiplomacy as Button
+@onready var btn_unit_list := %BtnUnitList as Button
+@onready var btn_next      := %BtnNext as Button
+@onready var btn_close     := %BtnCloseUI as Button
+@onready var btn_zoom_in   := %BtnZoomIn as Button
+@onready var btn_zoom_out  := %BtnZoomOut as Button
+@onready var btn_end_turn  := %BtnEndTurn as Button
+@onready var btn_menu      := %BtnMenu as Button
 
 var current_ui     : PanelContainer
 var current_sub_ui : Array[PanelContainer] = []
@@ -24,18 +27,20 @@ func _ready() -> void:
 	# btn_close.connect("pressed", _on_close_ui_pressed)
 	btn_menu.connect("pressed", _on_menu_pressed)
 	
+	btn_diplomacy.connect("pressed", _on_diplomacy_pressed)
+	
 	if Def.CONFIRM_END_TURN_ENABLED:
 		btn_end_turn.connect("pressed", _on_end_turn_pressed)
 	else:
 		btn_end_turn.connect("pressed", _on_end_turn_confirmed)
 	
 	#TODO:
-	%UnitList.disabled = true
-	#%UnitList.connect("pressed", _on_unit_list_pressed)
+	btn_unit_list.disabled = true
+	#btn_unit_list.connect("pressed", _on_unit_list_pressed)
 	
 	#TODO:
-	%Next.disabled = true
-	#%Next.connect("pressed", _on_next_pressed)
+	btn_next.disabled = true
+	#btn_next.connect("pressed", _on_next_pressed)
 
 
 func _set_turn_number(_value: int) -> void:
@@ -44,6 +49,10 @@ func _set_turn_number(_value: int) -> void:
 
 #func _process(_delta: float) -> void:
 	#close_btn.visible = current_ui.size() > 0
+
+
+func _on_diplomacy_pressed() -> void:
+	open_diplomacy_menu()
 
 
 func _on_end_turn_confirmed() -> void:
@@ -219,6 +228,40 @@ func open_found_colony_menu(_cm: ColonyManager) -> void:
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 
+	current_ui = ui
+
+#endregion
+
+
+#region NPC MENUS
+func open_village_menu(_village: Village) -> void:
+	# [MAIN UI]
+	# --
+	close_all_ui()
+
+	var scene : PackedScene = Preload.ui_village_scene
+	var ui    : PanelContainer = scene.instantiate() as PanelContainer
+	
+	%Panels.add_child(ui)
+	%Panels.move_child(ui, 0)
+	
+	ui.village = _village
+	current_ui = ui
+#endregion
+
+
+#region DIPLOMACY MENUS
+func open_diplomacy_menu() -> void:
+	# [MAIN UI]
+	# --
+	close_all_ui()
+
+	var scene : PackedScene = Preload.ui_diplomacy_scene
+	var ui    : PanelContainer = scene.instantiate() as PanelContainer
+	
+	%Panels.add_child(ui)
+	%Panels.move_child(ui, 0)
+	
 	current_ui = ui
 
 #endregion

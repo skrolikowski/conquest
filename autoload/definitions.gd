@@ -166,8 +166,12 @@ func get_world_map() -> WorldGen:
 	return get_world().world_gen
 
 
+func get_player_manager() -> PlayerManager:
+	return get_world().player_manager
+
+
 func get_world_tile_map() -> TileMapLayer:
-	return get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
+	return get_world_map().get_land_layer()
 
 
 func get_building_scene_by_type(_building_type: Term.BuildingType) -> PackedScene:

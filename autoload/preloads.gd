@@ -2,7 +2,13 @@ extends Node
 class_name PreloadsRef
 
 
-const player : PackedScene = preload("res://scenes/player.tscn")
+const player_scene       : PackedScene = preload("res://scenes/player/player.tscn")
+const ui_diplomacy_scene : PackedScene = preload("res://ui/ui_diplomacy.tscn")
+
+# NPC
+const npc_scene        : PackedScene = preload("res://scenes/npc/npc.tscn")
+const village_scene    : PackedScene = preload("res://scenes/npc/village.tscn")
+const ui_village_scene : PackedScene = preload("res://ui/npc/ui_village.tscn")
 
 # BUILDINGS
 const center_building_scene      : PackedScene = preload("res://scenes/buildings/center_building.tscn")
@@ -18,14 +24,14 @@ const mill_building_scene        : PackedScene = preload("res://scenes/buildings
 const war_college_building_scene : PackedScene = preload("res://scenes/buildings/war_college_building.tscn")
 const tavern_building_scene      : PackedScene = preload("res://scenes/buildings/tavern_building.tscn")
 
-const ui_found_colony_scene       : PackedScene = preload("res://ui/ui_found_colony.tscn")
+const ui_found_colony_scene       : PackedScene = preload("res://ui/player/ui_found_colony.tscn")
 const ui_center_building_scene    : PackedScene = preload("res://ui/buildings/ui_center_building.tscn")
-const ui_build_building_scene     : PackedScene = preload("res://ui/ui_build_building.tscn")
-const ui_building_list_scene      : PackedScene = preload("res://ui/ui_building_list.tscn")
-const ui_building_unit_list_scene : PackedScene = preload("res://ui/ui_building_unit_list.tscn")
-const ui_carrier_unit_list_scene  : PackedScene = preload("res://ui/ui_carrier_unit_list.tscn")
-const ui_pop_detail_scene         : PackedScene = preload("res://ui/ui_population_detail.tscn")
-const ui_commodity_detail_scene   : PackedScene = preload("res://ui/ui_commodity_details.tscn")
+const ui_build_building_scene     : PackedScene = preload("res://ui/player/ui_build_building.tscn")
+const ui_building_list_scene      : PackedScene = preload("res://ui/player/ui_building_list.tscn")
+const ui_building_unit_list_scene : PackedScene = preload("res://ui/player/ui_building_unit_list.tscn")
+const ui_carrier_unit_list_scene  : PackedScene = preload("res://ui/player/ui_carrier_unit_list.tscn")
+const ui_pop_detail_scene         : PackedScene = preload("res://ui/player/ui_population_detail.tscn")
+const ui_commodity_detail_scene   : PackedScene = preload("res://ui/player/ui_commodity_details.tscn")
 
 const ui_church_scene      : PackedScene = preload("res://ui/buildings/ui_church_building.tscn")
 const ui_commerce_scene    : PackedScene = preload("res://ui/buildings/ui_commerce_building.tscn")

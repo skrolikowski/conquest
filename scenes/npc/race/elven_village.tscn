@@ -1,0 +1,61 @@
+[gd_scene load_steps=10 format=3 uid="uid://dcrsnmxu8a3ai"]
+
+[ext_resource type="Texture2D" uid="uid://cqb83f4rypbye" path="res://assets/maps/WinLu_Fantasy_World/Fantasy_World_vegetation.png" id="1_ffy2p"]
+[ext_resource type="Texture2D" uid="uid://dnv38mdwarq5t" path="res://assets/maps/WinLu_Fantasy_World/WinLu_Fantasy_World_Buildings.png" id="2_784i4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jc1bv"]
+atlas = ExtResource("1_ffy2p")
+region = Rect2(48, 240, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oa243"]
+atlas = ExtResource("2_784i4")
+region = Rect2(432, 240, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sgavf"]
+atlas = ExtResource("2_784i4")
+region = Rect2(288, 528, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i34da"]
+atlas = ExtResource("2_784i4")
+region = Rect2(144, 696, 48, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qecw8"]
+atlas = ExtResource("1_ffy2p")
+region = Rect2(240, 0, 48, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1g3ua"]
+atlas = ExtResource("2_784i4")
+region = Rect2(384, 264, 48, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5dtb0"]
+atlas = ExtResource("1_ffy2p")
+region = Rect2(336, 0, 48, 48)
+
+[node name="ElvenVillage" type="Node2D"]
+
+[node name="Pond" type="Sprite2D" parent="."]
+position = Vector2(24, 24)
+texture = SubResource("AtlasTexture_jc1bv")
+
+[node name="Fence" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_oa243")
+
+[node name="Building" type="Sprite2D" parent="."]
+position = Vector2(24, -24)
+texture = SubResource("AtlasTexture_sgavf")
+
+[node name="Colony" type="Sprite2D" parent="."]
+position = Vector2(-12, -12)
+texture = SubResource("AtlasTexture_i34da")
+
+[node name="Trees" type="Sprite2D" parent="."]
+position = Vector2(-24, 12)
+texture = SubResource("AtlasTexture_qecw8")
+
+[node name="FrontGate" type="Sprite2D" parent="."]
+position = Vector2(0, 36)
+texture = SubResource("AtlasTexture_1g3ua")
+
+[node name="Tree" type="Sprite2D" parent="."]
+position = Vector2(-36, -24)
+texture = SubResource("AtlasTexture_5dtb0")

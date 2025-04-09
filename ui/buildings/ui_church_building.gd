@@ -1,5 +1,5 @@
 extends UIBuilding
-class_name UIChurcBuilding
+class_name UIChurchBuilding
 
 @onready var production_container := %Production as VBoxContainer
 

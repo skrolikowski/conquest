@@ -362,6 +362,15 @@ func get_random_shore_tile() -> Vector2i:
 	return shore_tiles[randi() % shore_tiles.size()]
 
 
+func get_random_height_range_tile(_min_height:float, _max_height:float) -> Vector2i:
+	var select_tiles : Array[Vector2i] = []
+	for tile:Vector2i in get_land_tiles():
+		var height : float = get_tile_height(tile)
+		if height >= _min_height and height <= _max_height:
+			select_tiles.append(tile)
+	return select_tiles[randi() % select_tiles.size()]
+
+
 func get_terrain_modifier_value(_tile:Vector2i, _resource_type:Term.ResourceType) -> int:
 	if terrain_modifier.has(_tile):
 		var source : Transaction = terrain_modifier[_tile]

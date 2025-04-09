@@ -1,0 +1,52 @@
+[gd_scene load_steps=3 format=3 uid="uid://cew34dwib458j"]
+
+[ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_th8h2"]
+[ext_resource type="Script" uid="uid://ds3e24vx826yw" path="res://ui/ui_diplomacy.gd" id="2_nyw62"]
+
+[node name="UIDiplomacy" type="PanelContainer"]
+custom_minimum_size = Vector2(488, 208)
+offset_right = 320.0
+offset_bottom = 224.0
+theme = ExtResource("1_th8h2")
+script = ExtResource("2_nyw62")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TitleContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BtnClose" type="Button" parent="MarginContainer/VBoxContainer/TitleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "x"
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TitleContainer"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Diplomacy"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PlayerColumn" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Player"
+horizontal_alignment = 1
+
+[node name="DiplomacyColumn" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Relationship"
+horizontal_alignment = 1

@@ -5,14 +5,11 @@ class_name Player
 @onready var timer     := $Timer as Timer
 @onready var cm        := $ColonyManager as ColonyManager
 
-@export var is_human : bool = true
-@export var is_turn  : bool = true
-
 var units : Array[Unit] = []
 
 
 func _ready() -> void:
-	if Def.FOG_OF_WAR_ENABLED and is_human:
+	if Def.FOG_OF_WAR_ENABLED:
 		timer.connect("timeout", _on_timer_timeout)
 		timer.wait_time = 1.0
 		timer.start()
@@ -25,19 +22,17 @@ func _on_timer_timeout() -> void:
 #region TURN MANAGEMENT
 func begin_turn() -> void:
 	print("[NOTE] Begin Turn - Player")
-	is_turn = true
 
 	# -- Colony management..
 	if Def.get_world().turn_number > 0:
 		begin_turn_for_colonies()
 
-	# -- 
-	if is_human:
-		reveal_fog_of_war_for_units()
+	# -- Fog of war..
+	# reveal_fog_of_war_for_units()
 		
 
 func end_turn() -> void:
-	is_turn = false
+	pass
 
 #endregion
 
@@ -196,8 +191,8 @@ func debug() -> void:
 	
 	var ship       : UnitStats = UnitStats.New_Unit(Term.UnitType.SHIP, 1)
 	var shore_tile : Vector2i = Def.get_world_map().get_random_shore_tile()
-	var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(shore_tile)
-	# var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(24, 6))
+	# var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(shore_tile)
+	var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(43, 32))
 	var ship_unit  : Unit = create_unit(ship, ship_pos)
 	Def.get_world().world_camera.position = ship_unit.position
 	

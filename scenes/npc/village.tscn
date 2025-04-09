@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://dh1m2eopwv51f"]
+
+[ext_resource type="Script" uid="uid://bieeu2p5vh4xx" path="res://scenes/npc/village.gd" id="1_f2tid"]
+[ext_resource type="PackedScene" uid="uid://dcrsnmxu8a3ai" path="res://scenes/npc/race/elven_village.tscn" id="2_8wfn1"]
+[ext_resource type="PackedScene" uid="uid://bt0rhwgnbxhmy" path="res://scenes/npc/race/dwarven_village.tscn" id="3_8wfn1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_srghp"]
+size = Vector2(96, 96)
+
+[node name="Village" type="Area2D"]
+script = ExtResource("1_f2tid")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_srghp")
+
+[node name="ElvenVillage" parent="." instance=ExtResource("2_8wfn1")]
+visible = false
+
+[node name="DwarvenVillage" parent="." instance=ExtResource("3_8wfn1")]

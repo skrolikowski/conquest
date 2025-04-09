@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cr72g8u847qti"]
 
-[ext_resource type="Script" uid="uid://da1qxo6jr4gln" path="res://ui/ui_building_unit_list.gd" id="1_74rql"]
+[ext_resource type="Script" uid="uid://da1qxo6jr4gln" path="res://ui/player/ui_building_unit_list.gd" id="1_74rql"]
 
 [sub_resource type="Resource" id="Resource_t4hfl"]
 metadata/__load_path__ = "res://ui/ui_carrier_unit_list_tree.gd"

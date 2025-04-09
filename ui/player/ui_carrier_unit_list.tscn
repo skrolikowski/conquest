@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bc2ko1qfai4o2"]
 
-[ext_resource type="Script" uid="uid://dpg7txhxgassp" path="res://ui/ui_carrier_unit_list.gd" id="1_l4d8n"]
-[ext_resource type="Script" uid="uid://bdyiw17wd3ebn" path="res://ui/ui_unit_list_tree.gd" id="1_sk7ne"]
+[ext_resource type="Script" uid="uid://dpg7txhxgassp" path="res://ui/player/ui_carrier_unit_list.gd" id="1_l4d8n"]
+[ext_resource type="Script" uid="uid://bdyiw17wd3ebn" path="res://ui/player/ui_unit_list_tree.gd" id="1_sk7ne"]
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_w12ya"]
 
 [node name="UICarrierUnitList" type="PanelContainer"]
