@@ -3,6 +3,7 @@ class_name UICenterBuilding
 
 @onready var btn_close : Button = %BtnClose as Button
 @onready var btn_build : Button = %BuildBuilding as Button
+@onready var btn_trade : Button = %BtnTrade as Button
 @onready var btn_pop_details : Button = %PopulationDetails as Button
 @onready var btn_com_details : Button = %CommodityDetails as Button
 @onready var btn_build_list : Button = %BuildingList as Button
@@ -19,6 +20,7 @@ var building_state : Term.BuildingState
 func _ready() -> void:
 	btn_close.connect("pressed", _on_close_pressed)
 	btn_build.connect("pressed", _on_build_building_pressed)
+	btn_trade.connect("pressed", _on_trade_pressed)
 	btn_pop_details.connect("pressed", _on_population_details_pressed)
 	btn_com_details.connect("pressed", _on_commodity_details_pressed)
 	btn_build_list.connect("pressed", _on_building_list_pressed)
@@ -157,6 +159,10 @@ func _on_build_building_pressed() -> void:
 	Def.get_world_canvas().open_colony_build_building_menu(building)
 
 
+func _on_trade_pressed() -> void:
+	Def.get_world_canvas().open_trade_menu(building)
+
+
 func _on_population_details_pressed() -> void:
 	Def.get_world_canvas().open_colony_population_detail(building)
 
@@ -182,7 +188,7 @@ func _on_building_list_pressed() -> void:
 
 
 func _on_undo_found_colony_pressed() -> void:
-	Def.get_world().player.undo_found_colony(building)
+	Def.get_player_manager().player.undo_found_colony(building)
 	Def.get_world().unselect_all()
 	
 	queue_free()

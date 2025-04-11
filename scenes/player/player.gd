@@ -5,7 +5,8 @@ class_name Player
 @onready var timer     := $Timer as Timer
 @onready var cm        := $ColonyManager as ColonyManager
 
-var units : Array[Unit] = []
+var units  : Array[Unit] = []
+var trades : Array[Trade] = []
 
 
 func _ready() -> void:

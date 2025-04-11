@@ -11,7 +11,7 @@ func _ready() -> void:
 
 #region SETTLER ACTIONS
 func can_settle() -> bool:
-	var colony_mgmt : ColonyManager = Def.get_world().player.cm
+	var colony_mgmt : ColonyManager = Def.get_player_manager().player.cm
 	return colony_mgmt.can_settle(get_tile())
 
 

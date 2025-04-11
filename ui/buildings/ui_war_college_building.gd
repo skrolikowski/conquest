@@ -77,4 +77,3 @@ func _on_gold_status_selected(_index: int, _research_type: Term.MilitaryResearch
 		building.gold_values[_research_type][_unit_type]["status"] = _index + 1
 	else:
 		building.gold_values[_research_type][_unit_type]["status"] = Term.ResearchStatus.NONE
-

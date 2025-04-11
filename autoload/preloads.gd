@@ -4,6 +4,8 @@ class_name PreloadsRef
 
 const player_scene       : PackedScene = preload("res://scenes/player/player.tscn")
 const ui_diplomacy_scene : PackedScene = preload("res://ui/ui_diplomacy.tscn")
+const ui_trade_scene     : PackedScene = preload("res://ui/trade/ui_trade.tscn")
+const ui_new_trade_scene : PackedScene = preload("res://ui/trade/ui_new_trade.tscn")
 
 # NPC
 const npc_scene        : PackedScene = preload("res://scenes/npc/npc.tscn")

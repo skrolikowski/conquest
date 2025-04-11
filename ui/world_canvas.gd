@@ -267,6 +267,41 @@ func open_diplomacy_menu() -> void:
 #endregion
 
 
+#region TRADE MENUS
+func open_trade_menu(_colony:CenterBuilding) -> void:
+	# [MAIN UI]
+	# --
+	close_all_sub_ui()
+
+	var scene : PackedScene = Preload.ui_trade_scene
+	var ui    : PanelContainer = scene.instantiate() as PanelContainer
+	
+	%Panels.add_child(ui)
+	%Panels.move_child(ui, 0)
+	
+	ui.player = Def.get_player_manager().player
+	ui.colony = _colony
+	current_sub_ui.append(ui)
+
+
+func open_new_trade_menu(_colony:CenterBuilding) -> void:
+	# [SUB UI]
+	# --
+	# close_all_sub_ui()
+
+	var scene : PackedScene = Preload.ui_new_trade_scene
+	var ui    : PanelContainer = scene.instantiate() as PanelContainer
+	
+	%Panels.add_child(ui)
+	%Panels.move_child(ui, 0)
+	
+	ui.player = Def.get_player_manager().player
+	ui.colony = _colony
+	current_sub_ui.append(ui)
+
+#endregion
+
+
 #region BUILDING MENUS
 func open_building_menu(_building: Building) -> void:
 	# [MAIN UI]

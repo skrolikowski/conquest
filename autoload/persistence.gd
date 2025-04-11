@@ -20,6 +20,7 @@ func new_game() -> void:
 
 func save_game() -> void:
 	var world_manager : WorldManager = Def.get_world() as WorldManager
+	var player_manager : PlayerManager = Def.get_player_manager() as PlayerManager
 	var config : ConfigFile = ConfigFile.new()
 
 	var game_data : Dictionary = world_manager.on_save_data()
@@ -34,7 +35,7 @@ func save_game() -> void:
 	for key: String in world_data:
 		config.set_value(SECTION.WORLD, key, world_data[key])
 
-	var player_data : Dictionary = world_manager.player.on_save_data()
+	var player_data : Dictionary = player_manager.on_save_data()
 	for key: String in player_data:
 		config.set_value(SECTION.PLAYER, key, player_data[key])
 

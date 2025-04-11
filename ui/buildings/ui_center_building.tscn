@@ -200,7 +200,8 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Community Details"
 
-[node name="TradeButton" type="Button" parent="MarginContainer/VBoxContainer/ActionButtons"]
+[node name="BtnTrade" type="Button" parent="MarginContainer/VBoxContainer/ActionButtons"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Trade"
 

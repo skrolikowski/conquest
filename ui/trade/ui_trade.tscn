@@ -1,12 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://c8s1kpoy6t8in"]
+[gd_scene load_steps=3 format=3 uid="uid://c8s1kpoy6t8in"]
 
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_7p051"]
+[ext_resource type="Script" uid="uid://b1xic4fd0oasd" path="res://ui/trade/ui_trade.gd" id="2_jkvpq"]
 
 [node name="UITrade" type="PanelContainer"]
-custom_minimum_size = Vector2(320, 256)
-offset_right = 320.0
-offset_bottom = 256.0
+custom_minimum_size = Vector2(384, 192)
+offset_right = 384.0
+offset_bottom = 192.0
+size_flags_vertical = 0
 theme = ExtResource("1_7p051")
+script = ExtResource("2_jkvpq")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2

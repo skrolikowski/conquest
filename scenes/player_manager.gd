@@ -60,7 +60,6 @@ func on_save_data() -> Dictionary:
 
 
 func on_load_data(_data: Dictionary) -> void:
-	diplomacy = _data["diplomacy"]
 
 	# -- Load player..
 	player.on_load_data(_data["player"])
@@ -71,7 +70,7 @@ func on_load_data(_data: Dictionary) -> void:
 
 	# -- Load NPCs..
 	for npc_data: Dictionary in _data["npcs"]:
-		var npc_scene : PackedScene = Preload.npc
+		var npc_scene : PackedScene = Preload.npc_scene as PackedScene
 		var npc       : NPC = npc_scene.instantiate() as NPC
 		add_child(npc)
 

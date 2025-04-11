@@ -1,12 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://bs6x2og4uwm2d"]
+[gd_scene load_steps=4 format=3 uid="uid://bs6x2og4uwm2d"]
 
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_qjx02"]
+[ext_resource type="Script" uid="uid://dpbe2f1cyaeus" path="res://ui/trade/ui_new_trade.gd" id="2_lk4kv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qjx02"]
 
 [node name="UINewTrade" type="PanelContainer"]
-custom_minimum_size = Vector2(480, 256)
+custom_minimum_size = Vector2(384, 256)
 offset_right = 16.0
 offset_bottom = 16.0
+size_flags_vertical = 0
 theme = ExtResource("1_qjx02")
+script = ExtResource("2_lk4kv")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -34,49 +39,114 @@ text = "New Trade"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-columns = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_right = 16
 
-[node name="TradeOptions" type="OptionButton" parent="MarginContainer/VBoxContainer/GridContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="PlayerContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="OptTrade" type="OptionButton" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/PlayerContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-item_count = 5
-popup/item_0/text = "Buy from Mother Country"
+size_flags_horizontal = 3
+item_count = 6
+popup/item_0/text = "Buy from Motherland"
 popup/item_0/id = 0
-popup/item_1/text = "Sell to Mother Country"
+popup/item_1/text = "Sell to Motherland"
 popup/item_1/id = 1
-popup/item_2/text = "Demand Tribute from Player"
+popup/item_2/text = "Demand from Player"
 popup/item_2/id = 3
-popup/item_3/text = "Give Tribute to Player"
+popup/item_3/text = "Give to Player"
 popup/item_3/id = 4
-popup/item_4/text = "Transfer to Colony"
-popup/item_4/id = 2
+popup/item_4/text = "Barter with Player"
+popup/item_4/id = 5
+popup/item_5/text = "Transfer to Colony"
+popup/item_5/id = 2
 
-[node name="PlayerOptions" type="OptionButton" parent="MarginContainer/VBoxContainer/GridContainer"]
+[node name="OptReceiver" type="OptionButton" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/PlayerContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BuyContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/BuyContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ActionLabel" type="Label" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/BuyContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Buy:"
+
+[node name="BtnActionAmt" type="SpinBox" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/BuyContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BuyLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+[node name="OptActionResource" type="OptionButton" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/BuyContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 9
-text = "Buy: --"
-horizontal_alignment = 2
+size_flags_horizontal = 2
 
-[node name="BuyOption" type="OptionButton" parent="MarginContainer/VBoxContainer/GridContainer"]
+[node name="TradeContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
-item_count = 2
-popup/item_0/text = "Gold"
-popup/item_0/id = 0
-popup/item_1/text = "Metal"
-popup/item_1/id = 1
 
-[node name="SellLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/TradeContainer"]
 layout_mode = 2
-size_flags_horizontal = 9
-text = "for: --"
-horizontal_alignment = 2
+size_flags_horizontal = 3
 
-[node name="SellOption" type="OptionButton" parent="MarginContainer/VBoxContainer/GridContainer"]
+[node name="TradeLabel" type="Label" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/TradeContainer/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 10
+text = "for:"
+
+[node name="BtnTradeAmt" type="SpinBox" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/TradeContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="OptTradeResource" type="OptionButton" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/TradeContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="Container" type="PanelContainer" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_qjx02")
+
+[node name="TradeMessage" type="Label" parent="MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "~ Trade Message ~"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+alignment = 2
+
+[node name="BtnPersistent" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Persistent"
+
+[node name="BtnAccept" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Accept"
+
+[node name="BtnCancel" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Cancel"
