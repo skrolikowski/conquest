@@ -14,6 +14,16 @@ func _add_inspector_buttons() -> Array:
 
 # ---
 
+enum TileCategory
+{
+	OCEAN,
+	RIVER,
+	GRASS,
+	FOREST,
+	SWAMP,
+	MOUNTAIN,
+}
+
 enum TerrainSet
 {
 	NONE = -1,
@@ -80,10 +90,6 @@ var tile_cols       : int
 var rivers           : Array[River] = []
 var tile_custom_data : Dictionary = {}
 
-# -- Modifiers
-var terrain_modifier  : Dictionary = {}
-# var artifact_modifier : Dictionary = {}
-
 
 func _ready() -> void:
 	tilemap_layers = map_renderer.tile_map_layers
@@ -112,12 +118,6 @@ func on_save_data() -> Dictionary:
 	for river: River in rivers:
 		_rivers.append(river.on_save_data())
 
-	# -- Package terrain modifiers..
-	var _terrain_modifier : Dictionary = {}
-	for tile: Vector2i in terrain_modifier:
-		var transaction : Transaction = terrain_modifier[tile]
-		_terrain_modifier[tile] = transaction.on_save_data()
-
 	# --
 	return {
 		"water_layer" : get_water_layer().tile_map_data,
@@ -126,7 +126,6 @@ func on_save_data() -> Dictionary:
 		"biome_layer" : get_biome_layer().tile_map_data,
 		# --
 		"tile_custom_data" : _tile_custom_data,
-		"terrain_modifier" : _terrain_modifier,
 		"rivers" : _rivers,
 	}
 
@@ -150,11 +149,6 @@ func on_load_data(_data: Dictionary) -> void:
 		var river : River = River.new()
 		river.on_load_data(river_data)
 		rivers.append(river)
-
-	# -- Load Modifiers..
-	for tile: Vector2i in _data["terrain_modifier"]:
-		terrain_modifier[tile] = Transaction.new()
-		terrain_modifier[tile].on_load_data(_data["terrain_modifier"][tile])
 		
 	# --
 	set_map_data()
@@ -182,7 +176,8 @@ func on_new_world_generated() -> void:
 		_add_rivers_to_map()
 	
 	# -- Modifiers..
-	generate_terrain_modifiers()
+	# generate_terrain_modifiers()
+	set_terrain_modifiers()
 	
 	# -- Fog of war..
 	# if Def.FOG_OF_WAR_ENABLED:
@@ -225,19 +220,35 @@ func init_tile_custom_data() -> void:
 	"""
 	tile_custom_data.clear()
 
-	for tile : Vector2i in get_water_tiles():
-		tile_custom_data[tile] = TileCustomData.new()
-
 	"""
 	1) Sets water tile custom data (e.g. is_water = true)
 	2) Sets water tiles covered by land (e.g. is_water = false)
 	"""
-	for tile: Vector2i in get_water_tiles():
+	for tile : Vector2i in get_water_tiles():
+		tile_custom_data[tile] = TileCustomData.new()
 		tile_custom_data[tile].is_water = true
+		tile_custom_data[tile].biome = TileCategory.OCEAN
 
+	# -- Land tiles..
 	for tile: Vector2i in get_land_tiles():
 		tile_custom_data[tile].is_water = false
 
+		# -- Set tile biome..
+		var swamp_biome    : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.SWAMP]
+		var forest_biome   : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.FOREST]
+		var mountain_biome : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.MOUNTAINS]
+		var height : float = tile_heights[tile]
+		
+		if height >= mountain_biome.min and height <= mountain_biome.max:
+			tile_custom_data[tile].biome = TileCategory.MOUNTAIN
+		elif height >= forest_biome.min and height <= forest_biome.max:
+			tile_custom_data[tile].biome = TileCategory.FOREST
+		elif height >= swamp_biome.min and height <= swamp_biome.max:
+			tile_custom_data[tile].biome = TileCategory.SWAMP
+		else:
+			tile_custom_data[tile].biome = TileCategory.GRASS
+
+	# -- Shore tiles..
 	for tile: Vector2i in get_shore_tiles():
 		tile_custom_data[tile].is_shore = true
 
@@ -334,26 +345,41 @@ func get_tile_height(_tile: Vector2i) -> float:
 	return noise
 
 
+func get_tiles_in_rect(_pos:Vector2, _size:Vector2) -> Array[Vector2i]:
+	var center_tile : Vector2i = get_water_layer().local_to_map(_pos)
+	var center_pos  : Vector2 = get_water_layer().map_to_local(center_tile)
+	# --
+	var first_tile : Vector2i = get_water_layer().local_to_map(center_pos - _size)
+	var last_tile  : Vector2i = get_water_layer().local_to_map(center_pos + _size)
+	var tiles      : Array[Vector2i] = []
+	
+	for x: int in range(first_tile.x, last_tile.x + 1):
+		for y: int in range(first_tile.y, last_tile.y + 1):
+			tiles.append(Vector2i(x, y))
+
+	return tiles
+
+
 func get_tiles_in_radius(_pos:Vector2, _radius:float) -> Array[Vector2i]:
 	"""
 	Returns a list of tiles within a given radius from a given local position
 	"""
-	var center_tile : Vector2i = tilemap_layers[MapLayer.LAND].local_to_map(_pos)
-	var center_pos  : Vector2 = tilemap_layers[MapLayer.LAND].map_to_local(center_tile)
+	var center_tile : Vector2i = get_water_layer().local_to_map(_pos)
+	var center_pos  : Vector2 = get_water_layer().map_to_local(center_tile)
 	# --
 	var area_size  : Vector2 = Vector2(_radius, _radius)
-	var first_tile : Vector2i = tilemap_layers[MapLayer.LAND].local_to_map(center_pos - area_size)
-	var last_tile  : Vector2i = tilemap_layers[MapLayer.LAND].local_to_map(center_pos + area_size)
+	var first_tile : Vector2i = get_water_layer().local_to_map(center_pos - area_size)
+	var last_tile  : Vector2i = get_water_layer().local_to_map(center_pos + area_size)
 	var tiles      : Array[Vector2i] = []
 	
 	for x: int in range(first_tile.x, last_tile.x + 1):
 		for y: int in range(first_tile.y, last_tile.y + 1):
 			var tile     : Vector2i = Vector2i(x, y)
-			var tile_pos : Vector2 = tilemap_layers[MapLayer.LAND].map_to_local(tile)
+			var tile_pos : Vector2 = get_water_layer().map_to_local(tile)
 			
 			if _pos.distance_to(tile_pos) <= _radius:
 				tiles.append(tile)
-
+				
 	return tiles
 
 
@@ -371,15 +397,12 @@ func get_random_height_range_tile(_min_height:float, _max_height:float) -> Vecto
 	return select_tiles[randi() % select_tiles.size()]
 
 
-func get_terrain_modifier_value(_tile:Vector2i, _resource_type:Term.ResourceType) -> int:
-	if terrain_modifier.has(_tile):
-		var source : Transaction = terrain_modifier[_tile]
-		return source.get_resource_amount(_resource_type)
+func get_terrain_modifier_value_by_industry_type(_tile:Vector2i, _industry_type:Term.IndustryType) -> int:
+	if tile_custom_data.has(_tile):
+		return tile_custom_data[_tile].terrain_modifier[_industry_type]
 	return 0
 
 #endregion
-
-
 
 
 #region RIVERS
@@ -415,6 +438,7 @@ func _generate_river(_tile: Vector2i, _river : Array[Vector2i] = []) -> River:
 	# -- update tile_custom_data[_tile]..
 	tile_custom_data[_tile].is_water = true
 	tile_custom_data[_tile].is_river = true
+	tile_custom_data[_tile].biome = TileCategory.RIVER
 
 	# --
 	return _generate_river(lowest_neighbor, _river)
@@ -523,7 +547,36 @@ func terraform_biome_tiles(_tiles: Array[Vector2i], _from_terrain: BiomeTerrain,
 #endregion
 
 
-#region RESOURCES
+#region TERRAIN MODIFIERS
+func set_terrain_modifiers() -> void:
+	for tile: Vector2i in get_land_tiles():
+		if not tile_custom_data[tile].is_river:
+			var tile_pos : Vector2 = get_water_layer().map_to_local(tile)
+
+			# -- For farm productivity..
+			if tile_custom_data[tile].biome == TileCategory.MOUNTAIN:
+				pass
+			else:
+				for tile_in_range : Vector2i in get_tiles_in_rect(tile_pos, Def.TILE_SIZE * 1.5):
+					if tile_custom_data.has(tile_in_range):
+						var industry_modifiers : Dictionary = tile_custom_data[tile_in_range].industry_modifiers
+						tile_custom_data[tile].add_terrain_modifier(Term.IndustryType.FARM, industry_modifiers[Term.IndustryType.FARM])
+				
+			# -- For mill/mine productivity..
+			tile_pos = get_water_layer().map_to_local(tile)
+			for tile_in_range : Vector2i in get_tiles_in_rect(tile_pos, Def.TILE_SIZE * 2):
+				if tile_custom_data.has(tile_in_range):
+					var industry_modifiers : Dictionary = tile_custom_data[tile_in_range].industry_modifiers
+					tile_custom_data[tile].add_terrain_modifier(Term.IndustryType.MILL, industry_modifiers[Term.IndustryType.MILL])
+					tile_custom_data[tile].add_terrain_modifier(Term.IndustryType.MINE, industry_modifiers[Term.IndustryType.MINE])
+
+
+func get_terrain_modifier_by_industry_type(_tile: Vector2i) -> Dictionary:
+	if tile_custom_data.has(_tile):
+		return tile_custom_data[_tile].terrain_modifiers
+	return {}
+
+"""
 func generate_terrain_modifiers() -> void:
 
 	# -- Industry modifiers based on land height..
@@ -577,24 +630,6 @@ func get_terrain_modifier(_tile:Vector2i) -> Transaction:
 	return Transaction.new()
 
 
-func get_terrain_modifier_by_industry_type(_tile:Vector2i) -> Dictionary:
-	var source : Transaction = get_terrain_modifier(_tile)
-	var result : Dictionary = {}
-	
-	for i:String in Term.ResourceType:
-		var resource_type  : Term.ResourceType = Term.ResourceType[i]
-		var resource_value : int = source.get_resource_amount(resource_type)
-
-		if resource_type == Term.ResourceType.METAL:
-			result[Term.IndustryType.MINE] = resource_value
-		elif resource_type == Term.ResourceType.WOOD:
-			result[Term.IndustryType.MILL] = resource_value
-		elif resource_type == Term.ResourceType.CROPS:
-			result[Term.IndustryType.FARM] = resource_value
-	
-	return result
-
-
 func get_terrain_modifier_value_by_industry_type(_tile:Vector2i, _industry_type:Term.IndustryType) -> int:
 	if terrain_modifier.has(_tile):
 		var source : Transaction = terrain_modifier[_tile]
@@ -611,11 +646,24 @@ func get_terrain_modifier_value_by_industry_type(_tile:Vector2i, _industry_type:
 	
 	return 0
 
+func get_terrain_modifier_by_industry_type(_tile: Vector2i) -> Dictionary:}
+	 var source : Transaction = get_terrain_modifier(_tile)
+	 var result : Dictionary = {}
+	
+	 for i:String in Term.ResourceType:
+	 	var resource_type  : Term.ResourceType = Term.ResourceType[i]
+	 	var resource_value : int = source.get_resource_amount(resource_type)
+
+	 	if resource_type == Term.ResourceType.METAL:
+	 		result[Term.IndustryType.MINE] = resource_value
+	 	elif resource_type == Term.ResourceType.WOOD:
+	 		result[Term.IndustryType.MILL] = resource_value
+	 	elif resource_type == Term.ResourceType.CROPS:
+	 		result[Term.IndustryType.FARM] = resource_value
+	
+	 return result
 
 func get_source_tiles_by_industry_type(_industry_type: Term.IndustryType) -> Dictionary:
-	"""
-	Returns a list of tiles that are suitable for a given industry type
-	"""
 	var tiles          : Dictionary = {}
 	var rng            : RandomNumberGenerator = RandomNumberGenerator.new()
 	var swamp_biome    : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.SWAMP]
@@ -687,5 +735,5 @@ func get_source_tiles_by_industry_type(_industry_type: Term.IndustryType) -> Dic
 				tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": -100 }
 
 	return tiles
-
+"""
 #endregion

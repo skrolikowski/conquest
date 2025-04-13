@@ -196,24 +196,6 @@ func _refresh_build_tiles() -> void:
 	# print("Building Tiles: ", build_tiles.size())
 
 
-# func _add_to_occupied_tiles(_start: Vector2i, _end: Vector2i) -> void:
-# 	for x: int in range(_start.x, _end.x + 1):
-# 		for y: int in range(_start.y, _end.y + 1):
-# 			occupy_tiles.append(Vector2i(x, y))
-
-# 	# -- TERRAFORM: Remove forest..
-# 	Def.get_world_map().terraform_biome_tiles(occupy_tiles, WorldGen.BiomeTerrain.FOREST, WorldGen.BiomeTerrain.UNFOREST)
-
-
-# func _remove_from_occupied_tiles(_start: Vector2i, _end: Vector2i) -> void:
-# 	for x: int in range(_start.x, _end.x + 1):
-# 		for y: int in range(_start.y, _end.y + 1):
-# 			occupy_tiles.erase(Vector2i(x, y))
-
-# 	# -- TERRAFORM: Restore forest..
-# 	Def.get_world_map().terraform_biome_tiles(occupy_tiles, WorldGen.BiomeTerrain.UNFOREST, WorldGen.BiomeTerrain.FOREST)
-
-
 func add_occupied_tiles(_tiles: Array[Vector2i]) -> void:
 	occupy_tiles.append_array(_tiles)
 

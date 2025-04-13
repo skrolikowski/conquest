@@ -53,9 +53,7 @@ func get_specialized_industry_modifier() -> int:
 
 
 func get_terrain_modifier() -> int:
-	var source_tile      : Vector2i = get_tile()
-	var terrain_modifier : int = Def.get_world_map().get_terrain_modifier_value(source_tile, make_resource_type)
-	return terrain_modifier
+	return Def.get_world_map().get_terrain_modifier_value_by_industry_type(get_tile(), make_industry_type)
 
 
 func get_artifact_modifier() -> int:

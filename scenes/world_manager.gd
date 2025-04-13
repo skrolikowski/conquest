@@ -32,9 +32,9 @@ func _ready() -> void:
 
 	# --
 	# print("[WorldManager] New Game")
-	# Persistence.new_game()
+	Persistence.new_game()
 	# print("[WorldManager] Load Game")
-	Persistence.load_game()
+	# Persistence.load_game()
 
 
 func _draw() -> void:
@@ -221,11 +221,12 @@ func map_refresh_tile_status() -> void:
 
 	# -- Industry modifiers..
 	var mod_data : Dictionary = world_gen.get_terrain_modifier_by_industry_type(focus_tile)
-	var mod_text : PackedStringArray = PackedStringArray()
-	mod_text.append("Farm: " + str(mod_data[Term.IndustryType.FARM]) + "%")
-	mod_text.append("Mill: " + str(mod_data[Term.IndustryType.MILL]) + "%")
-	mod_text.append("Mine: " + str(mod_data[Term.IndustryType.MINE]) + "%")
-	tile_status.append(", ".join(mod_text))
+	if mod_data.size() > 0:
+		var mod_text : PackedStringArray = PackedStringArray()
+		mod_text.append("Farm: " + str(mod_data[Term.IndustryType.FARM]) + "%")
+		mod_text.append("Mill: " + str(mod_data[Term.IndustryType.MILL]) + "%")
+		mod_text.append("Mine: " + str(mod_data[Term.IndustryType.MINE]) + "%")
+		tile_status.append(", ".join(mod_text))
 
 	world_canvas.update_tile_status(Def.STATUS_SEP.join(tile_status))
 
