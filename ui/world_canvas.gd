@@ -295,8 +295,8 @@ func open_new_trade_menu(_colony:CenterBuilding) -> void:
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 	
-	ui.player = Def.get_player_manager().player
 	ui.colony = _colony
+	ui.player = Def.get_player_manager().player
 	current_sub_ui.append(ui)
 
 #endregion
