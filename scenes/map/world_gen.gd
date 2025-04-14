@@ -78,7 +78,7 @@ enum NoiseGenLayer
 @onready var noise_gen    := $NoiseGenerator as NoiseGenerator
 @onready var map_renderer := $TilemapGaeaRenderer as TilemapGaeaRenderer
 
-# -- Tile Data
+# -- Map Data
 var tilemap_layers  : Array[TileMapLayer]
 var tile_heights 	: Dictionary = {}
 var highest_height  : float
@@ -86,9 +86,14 @@ var avg_land_height : float
 var tile_rows       : int
 var tile_cols       : int
 
-# -- Rivers
-var rivers           : Array[River] = []
+# -- Tile Data
 var tile_custom_data : Dictionary = {}
+
+# -- Mountains
+var mountain_ranges : Array[MountainRange] = []
+
+# -- Rivers
+var rivers : Array[River] = []
 
 
 func _ready() -> void:
@@ -169,6 +174,10 @@ func on_new_world_generated() -> void:
 	refresh_water_navigation()
 	init_tile_custom_data()
 	
+	# -- Mountains..
+	_generate_mountains()
+	_add_mountains_to_map()
+
 	# -- Rivers..
 	if rivers_enabled:
 		_generate_rivers()
@@ -345,6 +354,19 @@ func get_tile_height(_tile: Vector2i) -> float:
 	return noise
 
 
+func _get_lowest_neighbor(_tile:Vector2i) -> Vector2i:
+	var lowest_neighbor : Vector2i
+	var lowest_height   : float = 1.0
+	
+	for neighbor : Vector2i in get_land_layer().get_surrounding_cells(_tile):
+		var neighbor_height : float = get_tile_height(neighbor)
+		if neighbor_height < lowest_height:
+			lowest_neighbor = neighbor
+			lowest_height   = neighbor_height
+
+	return lowest_neighbor
+
+
 func get_tiles_in_rect(_pos:Vector2, _size:Vector2) -> Array[Vector2i]:
 	var center_tile : Vector2i = get_water_layer().local_to_map(_pos)
 	var center_pos  : Vector2 = get_water_layer().map_to_local(center_tile)
@@ -405,6 +427,66 @@ func get_terrain_modifier_value_by_industry_type(_tile:Vector2i, _industry_type:
 #endregion
 
 
+#region MOUNTAINS / RANGES
+func _generate_mountains() -> void:
+	mountain_ranges.clear()
+
+	# --
+	var source_tiles : Array[Vector2i] = _generate_mountain_sources()
+	print("Generating %d mountain(s)..." % source_tiles.size())
+	
+	# --
+	for source: Vector2i in source_tiles:
+		mountain_ranges.append(_generate_mountain_range(source))
+
+
+func _add_mountains_to_map() -> void:
+	for mountain : MountainRange in mountain_ranges:
+		get_biome_layer().set_cells_terrain_connect(mountain.tiles, TerrainSet.DEFAULT, BiomeTerrain.MOUNTAINS, true)
+
+
+func _generate_mountain_sources() -> Array[Vector2i]:
+	var source_tiles : Array[Vector2i] = []
+
+	var min_height : float = highest_height - highest_height * 0.15
+	var max_height : float = highest_height
+	var gen_chance : float = 0.25
+	print("Mountain Height Range: %.2f - %.2f" % [min_height, max_height])
+	
+	for tile: Vector2i in get_biome_tiles():
+		var height : float = tile_heights[tile]
+		if height >= min_height and height <= max_height and randf() < gen_chance:
+			source_tiles.append(Vector2i(tile.x, tile.y))
+	
+	return source_tiles
+
+
+func _generate_mountain_range(_tile: Vector2i, _range : Array[Vector2i] = []) -> MountainRange:
+	var tile_data : TileCustomData = tile_custom_data[_tile]
+	
+	if tile_data.is_water or tile_data.biome == TileCategory.MOUNTAIN:
+		print("Mountain ended by.. water or mountain. Size: " + str(_range.size()))
+		return MountainRange.create(self, _range)
+	if tile_heights[_tile] <= highest_height - highest_height * 0.65:
+		print("Mountain ended by.. height " + str(highest_height - highest_height * 0.45) + ". Size: " + str(_range.size()))
+		return MountainRange.create(self, _range)
+	var lowest_neighbor : Vector2i = _get_lowest_neighbor(_tile)
+	if lowest_neighbor == null:
+		print("Mountain ended by.. no lowest neighbor. Size: " + str(_range.size()))
+		return MountainRange.create(self, _range)
+
+	# --
+	_range.append(_tile)
+
+	# -- update tile_custom_data[_tile]..
+	tile_custom_data[_tile].biome = TileCategory.MOUNTAIN
+
+	# --
+	return _generate_mountain_range(lowest_neighbor, _range)
+
+#endregion
+
+
 #region RIVERS
 func _generate_rivers() -> void:
 	rivers.clear()
@@ -437,7 +519,6 @@ func _generate_river(_tile: Vector2i, _river : Array[Vector2i] = []) -> River:
 
 	# -- update tile_custom_data[_tile]..
 	tile_custom_data[_tile].is_water = true
-	tile_custom_data[_tile].is_river = true
 	tile_custom_data[_tile].biome = TileCategory.RIVER
 
 	# --
@@ -446,10 +527,9 @@ func _generate_river(_tile: Vector2i, _river : Array[Vector2i] = []) -> River:
 
 func _generate_river_sources() -> Array[Vector2i]:
 	var river_sources : Array[Vector2i] = []
-
-	var min_height   : float = avg_land_height + 0.13
-	var max_height   : float = avg_land_height + 0.18
-	var river_chance : float = 0.25
+	var min_height    : float = highest_height - highest_height * 0.35
+	var max_height    : float = highest_height - highest_height * 0.32
+	var river_chance  : float = 0.25
 	print("River Height Range: %.2f - %.2f" % [min_height, max_height])
 	
 	for tile: Vector2i in get_biome_tiles():
@@ -481,19 +561,6 @@ func _flood_fill_ocean_access_tiles(_tile: Vector2i) -> void:
 		for neighbor : Vector2i in get_water_layer().get_surrounding_cells(tile):
 			if not visited.has(neighbor) and is_water_tile(neighbor) and not is_ocean_tile(neighbor):
 				queue.append(neighbor)
-
-
-func _get_lowest_neighbor(_tile:Vector2i) -> Vector2i:
-	var lowest_neighbor : Vector2i
-	var lowest_height   : float = 1.0
-	
-	for neighbor : Vector2i in get_land_layer().get_surrounding_cells(_tile):
-		var neighbor_height : float = get_tile_height(neighbor)
-		if neighbor_height < lowest_height:
-			lowest_neighbor = neighbor
-			lowest_height   = neighbor_height
-
-	return lowest_neighbor
 
 #endregion
 
@@ -562,12 +629,18 @@ func set_terrain_modifiers() -> void:
 						var industry_modifiers : Dictionary = tile_custom_data[tile_in_range].industry_modifiers
 						tile_custom_data[tile].add_terrain_modifier(Term.IndustryType.FARM, industry_modifiers[Term.IndustryType.FARM])
 				
-			# -- For mill/mine productivity..
+			# -- For mill productivity..
 			tile_pos = get_water_layer().map_to_local(tile)
 			for tile_in_range : Vector2i in get_tiles_in_rect(tile_pos, Def.TILE_SIZE * 2):
 				if tile_custom_data.has(tile_in_range):
 					var industry_modifiers : Dictionary = tile_custom_data[tile_in_range].industry_modifiers
 					tile_custom_data[tile].add_terrain_modifier(Term.IndustryType.MILL, industry_modifiers[Term.IndustryType.MILL])
+
+			# -- For mine productivity..
+			tile_pos = get_water_layer().map_to_local(tile)
+			for tile_in_range : Vector2i in get_tiles_in_rect(tile_pos, Def.TILE_SIZE * 2.5):
+				if tile_custom_data.has(tile_in_range):
+					var industry_modifiers : Dictionary = tile_custom_data[tile_in_range].industry_modifiers
 					tile_custom_data[tile].add_terrain_modifier(Term.IndustryType.MINE, industry_modifiers[Term.IndustryType.MINE])
 
 

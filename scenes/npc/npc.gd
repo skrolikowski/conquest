@@ -92,8 +92,8 @@ func end_turn() -> void:
 
 #region GAME PERSISTENCE
 func new_game() -> void:
-	# var rand_tile : Vector2i = Def.get_world_map().get_random_height_range_tile(0.3, 0.4)
-	var rand_tile : Vector2i = Vector2i(46, 32)
+	var rand_tile : Vector2i = Def.get_world_map().get_random_height_range_tile(0.3, 0.4)
+	# var rand_tile : Vector2i = Vector2i(46, 32)
 	create_village(rand_tile)
 
 

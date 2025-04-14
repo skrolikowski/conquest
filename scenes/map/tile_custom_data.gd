@@ -31,8 +31,8 @@ func _set_biome(_biome: WorldGen.TileCategory) -> void:
 		industry_modifiers[Term.IndustryType.MILL] = 0
 	elif biome == WorldGen.TileCategory.RIVER:
 		industry_modifiers[Term.IndustryType.FARM] = 8
-		industry_modifiers[Term.IndustryType.MINE] = 9
-		industry_modifiers[Term.IndustryType.MILL] = 9
+		industry_modifiers[Term.IndustryType.MINE] = 8
+		industry_modifiers[Term.IndustryType.MILL] = 8
 	elif biome == WorldGen.TileCategory.GRASS:
 		industry_modifiers[Term.IndustryType.FARM] = 4
 		industry_modifiers[Term.IndustryType.MINE] = 0
@@ -47,8 +47,8 @@ func _set_biome(_biome: WorldGen.TileCategory) -> void:
 		industry_modifiers[Term.IndustryType.MILL] = 4
 	elif biome == WorldGen.TileCategory.MOUNTAIN:
 		industry_modifiers[Term.IndustryType.FARM] = 0
-		industry_modifiers[Term.IndustryType.MINE] = 3
-		industry_modifiers[Term.IndustryType.MILL] = 3
+		industry_modifiers[Term.IndustryType.MINE] = 8
+		industry_modifiers[Term.IndustryType.MILL] = 2
 
 
 func add_terrain_modifier(_industry_type: Term.ResourceType, _value: int) -> void:
