@@ -196,8 +196,7 @@ func on_new_world_generated() -> void:
 	set_terrain_modifiers()
 	
 	# -- Fog of war..
-	if Def.FOG_OF_WAR_ENABLED:
-		generate_fog_of_war()
+	generate_fog_of_war()
 
 	# --
 	map_loaded.emit()
@@ -598,8 +597,11 @@ func clear_cursor_tiles() -> void:
 func generate_fog_of_war() -> void:
 	if Def.FOG_OF_WAR_ENABLED:
 		#TODO: eventually when we have multiple players we will want to store this per player..
-		get_fog_layer().set_cells_terrain_connect(
-			get_water_tiles(), TerrainSet.DEFAULT, FogTerrain.FOG, true)
+		
+		# get_fog_layer().set_cells_terrain_connect(
+		# 	get_water_tiles(), TerrainSet.DEFAULT, FogTerrain.FOG, true)
+		for tile : Vector2i in get_water_tiles():
+			get_fog_layer().set_cell(tile, 0, Vector2i(9, 2))
 
 
 func reveal_fog_of_war(_pos: Vector2, _radius: float = 48.0) -> void:
