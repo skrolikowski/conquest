@@ -54,6 +54,12 @@ enum UnitCategory {
 	MILITARY
 }
 
+enum UnitMovement {
+	EXPLORER,
+	SHIP,
+	OTHER,
+}
+
 enum UnitType {
 	NONE,
 	SETTLER,

@@ -9,6 +9,11 @@ var terrain_modifiers  : Dictionary = {
 	Term.IndustryType.MINE : 0,
 	Term.IndustryType.MILL : 0
 }
+var movement_modifiers : Dictionary = {
+	Term.UnitMovement.EXPLORER : 0,
+	Term.UnitMovement.SHIP     : 0,
+	Term.UnitMovement.OTHER    : 0
+}
 
 # -- Water
 var is_water : bool = false
@@ -29,26 +34,50 @@ func _set_biome(_biome: WorldGen.TileCategory) -> void:
 		industry_modifiers[Term.IndustryType.FARM] = 6
 		industry_modifiers[Term.IndustryType.MINE] = 0
 		industry_modifiers[Term.IndustryType.MILL] = 0
+
+		movement_modifiers[Term.UnitMovement.EXPLORER] = 0
+		movement_modifiers[Term.UnitMovement.SHIP]     = 4
+		movement_modifiers[Term.UnitMovement.OTHER]    = 0
 	elif biome == WorldGen.TileCategory.RIVER:
 		industry_modifiers[Term.IndustryType.FARM] = 8
 		industry_modifiers[Term.IndustryType.MINE] = 8
 		industry_modifiers[Term.IndustryType.MILL] = 8
+
+		movement_modifiers[Term.UnitMovement.EXPLORER] = 8
+		movement_modifiers[Term.UnitMovement.SHIP]     = 0
+		movement_modifiers[Term.UnitMovement.OTHER]    = 50
 	elif biome == WorldGen.TileCategory.GRASS:
 		industry_modifiers[Term.IndustryType.FARM] = 4
 		industry_modifiers[Term.IndustryType.MINE] = 0
 		industry_modifiers[Term.IndustryType.MILL] = -1
+
+		movement_modifiers[Term.UnitMovement.EXPLORER] = 8
+		movement_modifiers[Term.UnitMovement.SHIP]     = 0
+		movement_modifiers[Term.UnitMovement.OTHER]    = 10
 	elif biome == WorldGen.TileCategory.SWAMP:
 		industry_modifiers[Term.IndustryType.FARM] = 4
 		industry_modifiers[Term.IndustryType.MINE] = 0
 		industry_modifiers[Term.IndustryType.MILL] = 2
+
+		movement_modifiers[Term.UnitMovement.EXPLORER] = 10
+		movement_modifiers[Term.UnitMovement.SHIP]     = 0
+		movement_modifiers[Term.UnitMovement.OTHER]    = 14
 	elif biome == WorldGen.TileCategory.FOREST:
 		industry_modifiers[Term.IndustryType.FARM] = -2
 		industry_modifiers[Term.IndustryType.MINE] = 0
 		industry_modifiers[Term.IndustryType.MILL] = 4
+
+		movement_modifiers[Term.UnitMovement.EXPLORER] = 15
+		movement_modifiers[Term.UnitMovement.SHIP]     = 0
+		movement_modifiers[Term.UnitMovement.OTHER]    = 40
 	elif biome == WorldGen.TileCategory.MOUNTAIN:
 		industry_modifiers[Term.IndustryType.FARM] = 0
 		industry_modifiers[Term.IndustryType.MINE] = 8
 		industry_modifiers[Term.IndustryType.MILL] = 2
+
+		movement_modifiers[Term.UnitMovement.EXPLORER] = 18
+		movement_modifiers[Term.UnitMovement.SHIP]     = 0
+		movement_modifiers[Term.UnitMovement.OTHER]    = 60
 
 
 func add_terrain_modifier(_industry_type: Term.ResourceType, _value: int) -> void:
@@ -57,6 +86,15 @@ func add_terrain_modifier(_industry_type: Term.ResourceType, _value: int) -> voi
 
 func get_terrain_modifier(_industry_type: Term.ResourceType) -> int:
 	return terrain_modifiers[_industry_type]
+
+
+func get_movement_modifier_by_unit_type(_unit_type:Term.UnitType) -> int:
+	if _unit_type == Term.UnitType.SHIP:
+		return movement_modifiers[Term.UnitMovement.SHIP]
+	elif _unit_type == Term.UnitType.EXPLORER:
+		return movement_modifiers[Term.UnitMovement.EXPLORER]
+	else:
+		return movement_modifiers[Term.UnitMovement.OTHER]
 
 
 #region GAME PERSISTENCE

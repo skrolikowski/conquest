@@ -1,20 +1,14 @@
 extends Area2D
 class_name Unit
 
-# signal move_points_changed(_move_points:float, _max_move_points:float)
-
 @onready var nav_agent := $NavigationAgent2D as NavigationAgent2D
 @onready var shape     := $CollisionShape2D as CollisionShape2D
 
 @export var stat : UnitStats
 
 # -- Movement..
-var is_moving       : bool = false
-var is_persistent   : bool = false
-var move_delta      : Vector2
-var move_points     : float = 64.0
-var max_move_points : float = 64.0
-var move_speed      : float = 48.0 * 0.8
+var is_moving  : bool = false
+var move_delta : Vector2
 
 # -- Entering a "carrier node"..
 var entering_node : Node : set = _set_entering_node
@@ -24,31 +18,34 @@ var over_node     : Node : set = _set_over_node
 func _ready() -> void:
 	connect("area_entered", _on_area_entered)
 	connect("area_exited", _on_area_exited)
+	
+	nav_agent.connect("waypoint_reached", _on_waypoint_reached)
+
+
+func _on_waypoint_reached(_details: Dictionary) -> void:
+	Def.get_world_map().reveal_fog_of_war(global_position, stat.get_stat().fog_reveal)
 
 
 func _process(_delta: float) -> void:
-	if is_moving and move_points > 0:
+	if is_moving and stat.move_points > 0:
 		if not nav_agent.is_target_reached():
 			
-			# -- Get current tile data..
-			var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
-			var map_position   : Vector2 = tile_map_layer.local_to_map(global_position)
-			var tile_data      : TileData = tile_map_layer.get_cell_tile_data(map_position)
-			#TODO: set this, see: `world_map`
-			#var terrain_weight : float = tile_data.get_custom_data("weight")
-			var terrain_weight : float = 1
-			
+			# -- Get TileCustomData or current position..
+			var tile_map_layer    : TileMapLayer = Def.get_world_map().get_land_layer()
+			var map_position      : Vector2 = tile_map_layer.local_to_map(global_position)
+			var tile_custom_data  : TileCustomData = Def.get_world_map().get_tile_custom_data(map_position)
+			var movement_modifier : int = tile_custom_data.get_movement_modifier_by_unit_type(stat.unit_type)
+
 			# -- Movement..
+			var move_base_speed : float = 48.0
+			var move_speed     : float = move_base_speed * (stat.move_points / 100.0)
 			var move_target    : Vector2 = nav_agent.get_next_path_position()
 			var move_direction : Vector2 = (move_target - global_position).normalized()
-			var move_gain      : float = move_speed * terrain_weight * _delta
+			var move_gain      : float = move_speed * _delta
 			global_position += move_direction * move_gain
 
 			# -- move cost..
-			#move_points -= move_speed * _delta
-
-			# -- signal..
-			# move_points_changed.emit(move_points, max_move_points)s
+			stat.move_points -= movement_modifier * _delta
 				
 		else:
 			is_moving = false
@@ -208,4 +205,23 @@ func get_status_information(_tile: Vector2i) -> String:
 
 
 	return (" " + Def.STATUS_SEP + " ").join(text)
+#endregion
+
+
+#region TURN MANAGEMENT
+func begin_turn() -> void:
+
+	# -- Reset move points..
+	stat.move_points = stat.get_stat().move_points
+
+	# -- Reset unit state..
+	stat.unit_state = Term.UnitState.IDLE
+
+	# -- Reveal Fog of War..
+	Def.get_world_map().reveal_fog_of_war(global_position, stat.get_stat().fog_reveal)
+
+
+func end_turn() -> void:
+	pass
+
 #endregion

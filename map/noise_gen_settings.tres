@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="NoiseGeneratorSettings" load_steps=23 format=3 uid="uid://cro0s3mvoraer"]
+[gd_resource type="Resource" script_class="NoiseGeneratorSettings" load_steps=21 format=3 uid="uid://cro0s3mvoraer"]
 
 [ext_resource type="Script" uid="uid://cbb0ljhm51ypn" path="res://addons/gaea/others/falloff_map.gd" id="1_0vpj5"]
 [ext_resource type="Script" uid="uid://ditcl7kbi1u17" path="res://addons/gaea/modifiers/2D/modifier_2d.gd" id="1_nmdie"]
@@ -125,28 +125,10 @@ tile = SubResource("Resource_nbhkm")
 min = 0.3
 max = 0.8
 
-[sub_resource type="Resource" id="Resource_lw5jh"]
-script = ExtResource("4_pxdy5")
-type = 1
-tilemap_layer = 3
-terrain_set = 0
-terrain = 2
-id = ""
-layer = 2
-metadata/_custom_type_script = "uid://cpeeigoklgbik"
-
-[sub_resource type="Resource" id="Resource_lj1u8"]
-resource_name = "mountains"
-script = ExtResource("3_0vpj5")
-title = "mountains"
-tile = SubResource("Resource_lw5jh")
-min = 1.0
-max = 1.0
-
 [resource]
 resource_name = "Settings"
 script = ExtResource("2_pxdy5")
-tiles = Array[ExtResource("3_0vpj5")]([SubResource("Resource_8k6pl"), SubResource("Resource_akmxj"), SubResource("Resource_llrrj"), SubResource("Resource_e677s"), SubResource("Resource_lj1u8")])
+tiles = Array[ExtResource("3_0vpj5")]([SubResource("Resource_8k6pl"), SubResource("Resource_akmxj"), SubResource("Resource_llrrj"), SubResource("Resource_e677s")])
 noise = SubResource("FastNoiseLite_8k6pl")
 infinite = false
 world_size = Vector2i(64, 64)

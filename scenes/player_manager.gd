@@ -44,6 +44,9 @@ func new_game() -> void:
 		npc.new_game()
 		npcs.append(npc)
 
+	# --
+	begin_turn()
+
 
 func on_save_data() -> Dictionary:
 

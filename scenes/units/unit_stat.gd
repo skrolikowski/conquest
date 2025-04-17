@@ -9,10 +9,12 @@ signal health_changed(_health:int, _max_health:int)
 @export var unit_state    : Term.UnitState = Term.UnitState.IDLE
 @export var unit_category : Term.UnitCategory = Term.UnitCategory.NONE
 
-var player    : Player
-var level     : int = 1 : set = _set_level
-var max_level : int = 5
-var health    : int : set = _set_health
+var player      : Player
+var level       : int = 1 : set = _set_level
+var max_level   : int = 5
+var health      : int : set = _set_health
+var move_points   : float = 0
+var is_persistent : bool = false
 
 # -- Non-Leader Units only..
 var leader : UnitStats
@@ -145,6 +147,8 @@ func on_save_data() -> Dictionary:
 		"unit_category": unit_category,
 		"level": level,
 		"health": health,
+		"move_points": move_points,
+		"is_persistent" : is_persistent,
 		"stat_points": stat_points,
 		"stat_props": stat_props,
 		"combat_stats": combat_stats,
@@ -160,6 +164,8 @@ func on_load_data(_data: Dictionary) -> void:
 	unit_category = _data["unit_category"]
 	level 		  = _data["level"]
 	health 		  = _data["health"]
+	move_points   = _data["move_points"]
+	is_persistent = _data["is_persistent"]
 	stat_points   = _data["stat_points"]
 	stat_props    = _data["stat_props"]
 	combat_stats  = _data["combat_stats"]

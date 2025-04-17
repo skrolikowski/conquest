@@ -47,12 +47,19 @@ enum BiomeTerrain
 	UNMOUNTAIN,
 }
 
+enum FogTerrain
+{
+	NONE,
+	FOG,
+}
+
 enum MapLayer
 {
 	WATER,
 	LAND,
 	SHORE,
 	BIOME,
+	FOGOFWAR,
 }
 
 enum NavLayer
@@ -67,7 +74,7 @@ enum NoiseGenLayer
 	LAND,
 	SWAMP,
 	FOREST,
-	MOUNTAINS,
+	FOGOFWAR,
 }
 
 # const TILE_CURSOR     : Vector2i = Vector2i(5, 7)   # TEMP
@@ -189,8 +196,8 @@ func on_new_world_generated() -> void:
 	set_terrain_modifiers()
 	
 	# -- Fog of war..
-	# if Def.FOG_OF_WAR_ENABLED:
-	# 	generate_fog_of_war()
+	if Def.FOG_OF_WAR_ENABLED:
+		generate_fog_of_war()
 
 	# --
 	map_loaded.emit()
@@ -243,14 +250,11 @@ func init_tile_custom_data() -> void:
 		tile_custom_data[tile].is_water = false
 
 		# -- Set tile biome..
-		var swamp_biome    : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.SWAMP]
-		var forest_biome   : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.FOREST]
-		var mountain_biome : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.MOUNTAINS]
+		var swamp_biome  : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.SWAMP]
+		var forest_biome : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.FOREST]
 		var height : float = tile_heights[tile]
 		
-		if height >= mountain_biome.min and height <= mountain_biome.max:
-			tile_custom_data[tile].biome = TileCategory.MOUNTAIN
-		elif height >= forest_biome.min and height <= forest_biome.max:
+		if height >= forest_biome.min and height <= forest_biome.max:
 			tile_custom_data[tile].biome = TileCategory.FOREST
 		elif height >= swamp_biome.min and height <= swamp_biome.max:
 			tile_custom_data[tile].biome = TileCategory.SWAMP
@@ -312,10 +316,21 @@ func get_biome_layer() -> TileMapLayer:
 func get_biome_tiles() -> Array[Vector2i]:
 	return get_biome_layer().get_used_cells()
 
+func get_fog_layer() -> TileMapLayer:
+	return tilemap_layers[MapLayer.FOGOFWAR]
+
+func get_fog_tiles() -> Array[Vector2i]:
+	return get_fog_layer().get_used_cells()
+
 #endregion
 
 
 #region TILE DATA
+func get_tile_custom_data(_tile: Vector2i) -> TileCustomData:
+	if tile_custom_data.has(_tile):
+		return tile_custom_data[_tile]
+	return null
+
 func is_river_tile(_tile: Vector2i) -> bool:
 	if tile_custom_data.has(_tile):
 		return tile_custom_data[_tile].is_river
@@ -581,17 +596,17 @@ func clear_cursor_tiles() -> void:
 
 #region FOG OF WAR
 func generate_fog_of_war() -> void:
-	#for tile: Vector2i in tile_map.get_used_cells(MapLayer.LAND):
-		#tile_map.set_cell(MapLayer.FOGOFWAR, tile, SourceID.WATER, TILE_FOG_OF_WAR)
-	pass
+	if Def.FOG_OF_WAR_ENABLED:
+		#TODO: eventually when we have multiple players we will want to store this per player..
+		get_fog_layer().set_cells_terrain_connect(
+			get_water_tiles(), TerrainSet.DEFAULT, FogTerrain.FOG, true)
 
 
-func reveal_fog_of_war(_pos: Vector2, _radius: float = 1) -> void:
-	#var tile : Vector2i = tile_map.local_to_map(_pos)
-	#if tile_map.get_cell_source_id(MapLayer.FOGOFWAR, tile) != -1:
-		#var tiles : Array[Vector2i] = get_tiles_in_radius(_pos, _radius)
-		#for _tile: Vector2i in tiles:
-			#tile_map.set_cell(MapLayer.FOGOFWAR, _tile, SourceID.NONE)
+func reveal_fog_of_war(_pos: Vector2, _radius: float = 48.0) -> void:
+	if Def.FOG_OF_WAR_ENABLED:
+		var tiles_in_range : Array[Vector2i] = get_tiles_in_radius(_pos, _radius)
+		get_fog_layer().set_cells_terrain_connect(
+			tiles_in_range, TerrainSet.DEFAULT, FogTerrain.NONE, true)
 	pass
 
 #endregion

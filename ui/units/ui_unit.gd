@@ -23,11 +23,13 @@ func refresh_ui() -> void:
 	%UnitDisband.set_pressed_no_signal(unit.stat.unit_state == Term.UnitState.DISBAND)
 	%UnitDisband.disabled = not unit.can_disband()
 
-	%UnitPersistent.set_pressed_no_signal(unit.is_persistent)
+	%UnitPersistent.set_pressed_no_signal(unit.stat.is_persistent)
 	%UnitPersistent.disabled  = not unit.can_persist()
 
 	#TODO: get max move points
-	%MovementValue.value = unit.move_points / 64
+	var move_points     : float = unit.stat.move_points
+	var max_move_points : float = unit.stat.get_stat().move_points
+	%MovementValue.value = snapped(move_points / max_move_points, 0.01)
 
 
 func _set_unit(_unit: Unit) -> void:

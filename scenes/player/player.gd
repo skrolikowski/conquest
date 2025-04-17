@@ -9,17 +9,6 @@ var units  : Array[Unit] = []
 var trades : Array[Trade] = []
 
 
-func _ready() -> void:
-	if Def.FOG_OF_WAR_ENABLED:
-		timer.connect("timeout", _on_timer_timeout)
-		timer.wait_time = 1.0
-		timer.start()
-
-
-func _on_timer_timeout() -> void:
-	reveal_fog_of_war_for_units()
-
-
 #region TURN MANAGEMENT
 func begin_turn() -> void:
 	print("[NOTE] Begin Turn - Player")
@@ -28,12 +17,24 @@ func begin_turn() -> void:
 	if Def.get_world().turn_number > 0:
 		begin_turn_for_colonies()
 
-	# -- Fog of war..
-	# reveal_fog_of_war_for_units()
-		
+	# -- Units..
+	for unit: Unit in units:
+		unit.begin_turn()
+
+	# -- Fog of War..
+	reveal_fog_of_war()
+
 
 func end_turn() -> void:
 	pass
+
+#endregion
+
+
+#region FOG OF WAR
+func reveal_fog_of_war() -> void:
+	for unit: Unit in units:
+		Def.get_world_map().reveal_fog_of_war(unit.global_position, unit.stat.get_stat().fog_reveal)
 
 #endregion
 
@@ -65,15 +66,6 @@ func undo_found_colony(_building:CenterBuilding) -> void:
 
 
 #region UNITS
-func reveal_fog_of_war_for_units() -> void:
-	if not Def.FOG_OF_WAR_ENABLED:
-		return
-	
-	# --
-	for unit in units:
-		Def.get_world().world_map.reveal_fog_of_war(unit.global_position, 24)
-
-
 func get_military_units_by_colony(_colony : CenterBuilding) -> Array[Unit]:
 	var _units : Array[Unit] = []
 	for unit : Unit in units:
@@ -139,8 +131,6 @@ func on_save_data() -> Dictionary:
 	for unit: Unit in units:
 		unit_data.append({
 			"position" : unit.position,
-			"is_persistent" : unit.is_persistent,
-			"move_points" : unit.move_points,
 			"stat" : unit.stat.on_save_data(),
 		})
 
@@ -162,8 +152,6 @@ func on_load_data(_data: Dictionary) -> void:
 		stat.on_load_data(unit_data.stat)
 		
 		var unit : Unit = create_unit(stat, unit_data.position)
-		unit.is_persistent = unit_data.is_persistent
-		unit.move_points   = unit_data.move_points
 
 #endregion
 

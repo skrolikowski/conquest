@@ -36,3 +36,4 @@ shape = SubResource("RectangleShape2D_s0mwa")
 path_desired_distance = 4.0
 target_desired_distance = 4.0
 navigation_layers = 2
+debug_enabled = true
