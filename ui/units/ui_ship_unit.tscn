@@ -94,17 +94,17 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Detach All"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ActionContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 10
 
-[node name="UnitDisband" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="BtnDisband" type="CheckBox" parent="MarginContainer/VBoxContainer/ActionContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Disband"
 
-[node name="UnitPersistent" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="BtnPersistent" type="CheckBox" parent="MarginContainer/VBoxContainer/ActionContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10

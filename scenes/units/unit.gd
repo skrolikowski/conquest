@@ -19,7 +19,8 @@ func _ready() -> void:
 	connect("area_entered", _on_area_entered)
 	connect("area_exited", _on_area_exited)
 	
-	nav_agent.connect("waypoint_reached", _on_waypoint_reached)
+	if Def.FOG_OF_WAR_ENABLED:
+		nav_agent.connect("waypoint_reached", _on_waypoint_reached)
 
 
 func _on_waypoint_reached(_details: Dictionary) -> void:
@@ -44,9 +45,10 @@ func _process(_delta: float) -> void:
 			var move_gain      : float = move_speed * _delta
 			global_position += move_direction * move_gain
 
-			# -- move cost..
+			# -- Reduce move points..
 			stat.move_points -= movement_modifier * _delta
-				
+			stat.move_points = max(0, stat.move_points)
+	
 		else:
 			is_moving = false
 
@@ -90,16 +92,8 @@ func can_disband() -> bool:
 
 
 func disband() -> void:
+	#TODO: what about attached_units?
 	queue_free()
-
-#endregion
-
-
-#region EXPLORING UNIT
-var is_exploring : bool = false
-
-func can_explore() -> bool:
-	return stat.unit_type == Term.UnitType.EXPLORER or stat.unit_type == Term.UnitType.SHIP
 
 #endregion
 
@@ -113,6 +107,7 @@ func on_selected() -> void:
 func on_drag_release(_position: Vector2) -> void:
 	nav_agent.target_position = _position
 	
+	#TODO: can we reach a the closest reachable tile?
 	if nav_agent.is_target_reachable():
 		is_moving = true
 		
@@ -128,7 +123,8 @@ func on_drag_release(_position: Vector2) -> void:
 			# 	on_enter_node(over_node)
 	else:
 		print("Target Not Reachable!")
-	
+
+
 func on_enter_node(_node: Node) -> void:
 	"""
 	Unit enters a "Carrier Node".. (e.g. CenterBuilding, CarrierUnit)

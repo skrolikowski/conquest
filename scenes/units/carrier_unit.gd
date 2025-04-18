@@ -2,6 +2,15 @@ extends Unit
 class_name CarrierUnit
 
 
+func _process(_delta: float) -> void:
+	super._process(_delta)
+
+	if is_moving:
+		for unit_stat: UnitStats in stat.attached_units:
+			unit_stat.move_points -= _delta * 5
+			unit_stat.move_points = max(0, unit_stat.move_points)
+
+
 #region CARRIER ACTIONS
 func detach_all_units() -> void:
 	for unit_stat : UnitStats in stat.attached_units:
@@ -53,5 +62,16 @@ func _detach_unit(_unit_stat: UnitStats) -> void:
 	if _unit_stat.leader:
 		_unit_stat.leader.attached_units.erase(_unit_stat)
 		_unit_stat.leader = null
+
+#endregion
+
+
+#region TURN MANAGEMENT
+func begin_turn() -> void:
+	super.begin_turn()
+	
+	# -- Reset attached units..
+	for attached_unit in stat.attached_units:
+		attached_unit.move_points = attached_unit.get_stat().move_points
 
 #endregion

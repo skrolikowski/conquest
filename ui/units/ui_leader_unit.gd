@@ -1,12 +1,16 @@
 extends UIUnit
 class_name UILeaderUnit
 
+@onready var btn_units_attached    := %BtnUnitsAttached as Button
+@onready var btn_assign_experience := %BtnAssignExperience as Button
+@onready var btn_detach_all        := %BtnDetachAll as Button
+
 
 func _ready() -> void:
 	super._ready()
 
-	%UnitsAttached.connect("pressed", _on_units_attached_pressed)
-	%DetachAll.connect("pressed", _on_detach_all_pressed)
+	btn_assign_experience.connect("pressed", _on_units_attached_pressed)
+	btn_detach_all.connect("pressed", _on_detach_all_pressed)
 
 
 func _set_unit(_unit: Unit) -> void:
@@ -23,7 +27,7 @@ func _set_unit(_unit: Unit) -> void:
 	var unit_capacity : int = _unit.stat.max_attached_units
 	%Leadership.text = "Leadership: " + str(unit_count) + "/" + str(unit_capacity)
 	
-	%DetachAll.disabled = not _unit.can_detach_unit()
+	btn_detach_all.disabled = not _unit.can_detach_unit()
 
 
 func _on_units_attached_pressed() -> void:

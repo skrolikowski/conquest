@@ -179,7 +179,7 @@ func debug() -> void:
 	#Def.get_world().world_camera.position = settler_unit.position
 	
 	var ship       : UnitStats = UnitStats.New_Unit(Term.UnitType.SHIP, 1)
-	var shore_tile : Vector2i = Def.get_world_map().get_random_shore_tile()
+	var shore_tile : Vector2i = Def.get_world_map().get_random_starting_tile()
 	var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(shore_tile)
 	# var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(43, 32))
 	var ship_unit  : Unit = create_unit(ship, ship_pos)

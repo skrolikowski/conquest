@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://dprcxm507pllp"]
+
+[ext_resource type="Script" uid="uid://c2ugvto1jrlnx" path="res://scenes/units/explorer_unit.gd" id="1_nrrv5"]
+[ext_resource type="Texture2D" uid="uid://bp0anc1eh14ed" path="res://assets/images/units/Seth_rogues.png" id="2_nrrv5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_va6oo"]
+atlas = ExtResource("2_nrrv5")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ps1iw"]
+size = Vector2(32, 32)
+
+[node name="ExplorerUnit" type="Area2D"]
+script = ExtResource("1_nrrv5")
+metadata/_custom_type_script = "uid://cjfxq4hq5ibci"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_va6oo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ps1iw")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]

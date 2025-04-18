@@ -1,12 +1,20 @@
-[gd_scene load_steps=2 format=3 uid="uid://dqnh0rtm345lg"]
+[gd_scene load_steps=5 format=3 uid="uid://dqnh0rtm345lg"]
 
+[ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_5pacb"]
 [ext_resource type="Script" uid="uid://qhd7x2ilud1f" path="res://ui/units/ui_explorer_unit.gd" id="1_gaao6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pacb"]
+bg_color = Color(0.266667, 0.266667, 0.266667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wmlay"]
+bg_color = Color(1, 0, 0, 1)
 
 [node name="UIExplorerUnit" type="PanelContainer"]
 custom_minimum_size = Vector2(256, 224)
 offset_right = 40.0
 offset_bottom = 40.0
 size_flags_vertical = 0
+theme = ExtResource("1_5pacb")
 script = ExtResource("1_gaao6")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -19,10 +27,19 @@ theme_override_constants/margin_bottom = 8
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="UnitTitle" type="Label" parent="MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(2.08165e-12, 32)
+[node name="TitleContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="BtnClose" type="Button" parent="MarginContainer/VBoxContainer/TitleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "x"
+
+[node name="UnitTitle" type="Label" parent="MarginContainer/VBoxContainer/TitleContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Explorer"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -40,26 +57,29 @@ horizontal_alignment = 1
 
 [node name="MovementValue" type="ProgressBar" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(128, 2.08165e-12)
+custom_minimum_size = Vector2(64, 2.08165e-12)
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_5pacb")
+theme_override_styles/fill = SubResource("StyleBoxFlat_wmlay")
+max_value = 1.0
 
-[node name="Explore" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="BtnExplore" type="Button" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Explore / Halt"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ActionContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 10
 
-[node name="UnitDisband" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="BtnDisband" type="CheckBox" parent="MarginContainer/VBoxContainer/ActionContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Disband"
 
-[node name="UnitPersistent" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="BtnPersistent" type="CheckBox" parent="MarginContainer/VBoxContainer/ActionContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10

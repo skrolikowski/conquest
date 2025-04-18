@@ -381,12 +381,12 @@ func _get_lowest_neighbor(_tile:Vector2i) -> Vector2i:
 	return lowest_neighbor
 
 
-func get_tiles_in_rect(_pos:Vector2, _size:Vector2) -> Array[Vector2i]:
-	var center_tile : Vector2i = get_water_layer().local_to_map(_pos)
-	var center_pos  : Vector2 = get_water_layer().map_to_local(center_tile)
+func get_tiles_in_rect(_pos:Vector2, _size:Vector2, _mapLayer:MapLayer = MapLayer.WATER) -> Array[Vector2i]:
+	var center_tile : Vector2i = tilemap_layers[_mapLayer].local_to_map(_pos)
+	var center_pos  : Vector2 = tilemap_layers[_mapLayer].map_to_local(center_tile)
 	# --
-	var first_tile : Vector2i = get_water_layer().local_to_map(center_pos - _size)
-	var last_tile  : Vector2i = get_water_layer().local_to_map(center_pos + _size)
+	var first_tile : Vector2i = tilemap_layers[_mapLayer].local_to_map(center_pos - _size)
+	var last_tile  : Vector2i = tilemap_layers[_mapLayer].local_to_map(center_pos + _size)
 	var tiles      : Array[Vector2i] = []
 	
 	for x: int in range(first_tile.x, last_tile.x + 1):
@@ -396,22 +396,22 @@ func get_tiles_in_rect(_pos:Vector2, _size:Vector2) -> Array[Vector2i]:
 	return tiles
 
 
-func get_tiles_in_radius(_pos:Vector2, _radius:float) -> Array[Vector2i]:
+func get_tiles_in_radius(_pos:Vector2, _radius:float, _mapLayer:MapLayer = MapLayer.WATER) -> Array[Vector2i]:
 	"""
 	Returns a list of tiles within a given radius from a given local position
 	"""
-	var center_tile : Vector2i = get_water_layer().local_to_map(_pos)
-	var center_pos  : Vector2 = get_water_layer().map_to_local(center_tile)
+	var center_tile : Vector2i = tilemap_layers[_mapLayer].local_to_map(_pos)
+	var center_pos  : Vector2 = tilemap_layers[_mapLayer].map_to_local(center_tile)
 	# --
 	var area_size  : Vector2 = Vector2(_radius, _radius)
-	var first_tile : Vector2i = get_water_layer().local_to_map(center_pos - area_size)
-	var last_tile  : Vector2i = get_water_layer().local_to_map(center_pos + area_size)
+	var first_tile : Vector2i = tilemap_layers[_mapLayer].local_to_map(center_pos - area_size)
+	var last_tile  : Vector2i = tilemap_layers[_mapLayer].local_to_map(center_pos + area_size)
 	var tiles      : Array[Vector2i] = []
 	
 	for x: int in range(first_tile.x, last_tile.x + 1):
 		for y: int in range(first_tile.y, last_tile.y + 1):
 			var tile     : Vector2i = Vector2i(x, y)
-			var tile_pos : Vector2 = get_water_layer().map_to_local(tile)
+			var tile_pos : Vector2 = tilemap_layers[_mapLayer].map_to_local(tile)
 			
 			if _pos.distance_to(tile_pos) <= _radius:
 				tiles.append(tile)
@@ -419,8 +419,9 @@ func get_tiles_in_radius(_pos:Vector2, _radius:float) -> Array[Vector2i]:
 	return tiles
 
 
-func get_random_shore_tile() -> Vector2i:
+func get_random_starting_tile() -> Vector2i:
 	var shore_tiles : Array[Vector2i] = get_shore_tiles()
+	#TODO: filter out non ocean-access tiles..
 	return shore_tiles[randi() % shore_tiles.size()]
 
 
@@ -609,7 +610,6 @@ func reveal_fog_of_war(_pos: Vector2, _radius: float = 48.0) -> void:
 		var tiles_in_range : Array[Vector2i] = get_tiles_in_radius(_pos, _radius)
 		get_fog_layer().set_cells_terrain_connect(
 			tiles_in_range, TerrainSet.DEFAULT, FogTerrain.NONE, true)
-	pass
 
 #endregion
 
