@@ -20,6 +20,7 @@ var is_dragging : bool = false
 var drag_start  : Vector2 = Vector2.ZERO
 var drag_end    : Vector2 = Vector2.ZERO
 var drag_offset : Vector2 = Vector2.ZERO
+var mouse_pos   : Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
@@ -60,12 +61,15 @@ func _on_map_loaded() -> void:
 		player_manager.on_load_data(player_data)
 
 
+func _process(_delta: float) -> void:
+	mouse_pos = get_global_mouse_position()
 
 func _unhandled_input(_event:InputEvent) -> void:
 	if _event is InputEventMouseButton:
 		var mouse_event    : InputEventMouseButton = _event as InputEventMouseButton
-		var world_position : Vector2 = get_global_mouse_position()
-		
+		# var world_position : Vector2 = get_global_mouse_position()
+		var world_position : Vector2 = Vector2(mouse_pos.x, mouse_pos.y)
+
 		if mouse_event.button_index == 1:	
 			if mouse_event.double_click:
 				"""
@@ -82,12 +86,6 @@ func _unhandled_input(_event:InputEvent) -> void:
 					unselect_all()
 
 			elif mouse_event.pressed:
-				#var tile_map : TileMap = world_map.tile_map
-				#var map_pos  : Vector2 = tile_map.local_to_map(mouse_event.position)
-				#var tile_data : TileData = tile_map.get_cell_tile_data(0, map_pos)
-				#print(tile_map.get_cell_atlas_coords(0, map_pos))
-				#print(tile_data.get_custom_data("weight"))
-				
 				"""
 				Mouse Button - Press
 				"""
@@ -134,21 +132,16 @@ func detect_collision(_position:Vector2) -> Node:
 	var query : PhysicsPointQueryParameters2D = PhysicsPointQueryParameters2D.new()
 	query.collide_with_areas  = true
 	query.collide_with_bodies = false
-	query.position            = _position
+	query.collision_mask      = 1
+	query.position = _position
 
-	var results : Array[Dictionary] = space.intersect_point(query, 2)
+	var results : Array[Dictionary] = space.intersect_point(query, 1)
 	"""
 		Dev-note:
 		Some Units/Buildings have multiple Area2D
 	"""
 	if results.size() > 0:
-		if results.size() == 1:
-			return results[0]['collider']
-		else:
-			if results[0]['collider'] is Unit or results[0]['collider'] is Building:
-				return results[0]['collider']
-			elif results[1]['collider'] is Unit or results[1]['collider'] is Building:
-				return results[1]['collider']
+		return results[0]['collider']
 	return null
 
 
@@ -260,7 +253,7 @@ func select_building(_building: Building) -> void:
 func select_unit(_unit: Unit) -> void:
 	if selection != _unit:
 		selection = _unit
-		_unit.on_selected()
+	selection.on_selected()
 
 
 func select_village(_village: Village) -> void:
@@ -280,7 +273,7 @@ func _set_selection(_selection: Node) -> void:
 	
 	if selection != null:
 		start_pulsing_effect()
-		world_canvas.close_all_ui()
+		#world_canvas.close_all_ui()
 
 	# --
 	map_set_focus_tile(focus_tile)
