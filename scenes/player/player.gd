@@ -92,7 +92,12 @@ func get_ships() -> Array[ShipUnit]:
 
 func create_unit(_unit_stat: UnitStats, _position: Vector2) -> Unit:
 	var unit_scene : PackedScene = Def.get_unit_scene_by_type(_unit_stat.unit_type)
+	var unit_name  : String = Def._convert_unit_type_to_name(_unit_stat.unit_type)
 	var unit       : Unit = unit_scene.instantiate() as Unit
+	
+	if unit == null:
+		print("[ERROR] Unit scene not found for type: " + unit_name)
+		return null
 	
 	unit.stat        = _unit_stat
 	unit.stat.player = self
@@ -179,12 +184,18 @@ func debug() -> void:
 	#Def.get_world().world_camera.position = settler_unit.position
 	
 	var ship       : UnitStats = UnitStats.New_Unit(Term.UnitType.SHIP, 1)
-	var shore_tile : Vector2i = Def.get_world_map().get_random_starting_tile()
-	var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(shore_tile)
-	# var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(43, 32))
+	# var shore_tile : Vector2i = Def.get_world_map().get_random_starting_tile()
+	# var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(shore_tile)
+	var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(53, 32))
 	var ship_unit  : Unit = create_unit(ship, ship_pos)
 	Def.get_world().world_camera.position = ship_unit.position
 	
+	var e1      : UnitStats = UnitStats.New_Unit(Term.UnitType.EXPLORER, 1)
+	var e1_pos  : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(51, 32))
+	var e1_unit : Unit = create_unit(e1, e1_pos)
+	var e2      : UnitStats = UnitStats.New_Unit(Term.UnitType.EXPLORER, 1)
+	var e2_pos  : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(52, 32))
+	var e2_unit : Unit = create_unit(e2, e2_pos)
 	# var leader : UnitStats = UnitStats.New_Unit(Term.UnitType.LEADER, 1)
 	# leader.attach_unit(UnitStats.New_Unit(Term.UnitType.INFANTRY, 2))
 	# leader.attached_units.append(UnitStats.New_Unit(Term.UnitType.INFANTRY, 2))

@@ -48,10 +48,11 @@ const ui_tavern_scene      : PackedScene = preload("res://ui/buildings/ui_tavern
 
 
 # UNITS
-const unit         : PackedScene = preload("res://scenes/units/unit.tscn")
-const leader_unit  : PackedScene = preload("res://scenes/units/leader_unit.tscn")
-const ship_unit    : PackedScene = preload("res://scenes/units/ship_unit.tscn")
-const settler_unit : PackedScene = preload("res://scenes/units/settler_unit.tscn")
+const unit          : PackedScene = preload("res://scenes/units/unit.tscn")
+const leader_unit   : PackedScene = preload("res://scenes/units/leader_unit.tscn")
+const ship_unit     : PackedScene = preload("res://scenes/units/ship_unit.tscn")
+const settler_unit  : PackedScene = preload("res://scenes/units/settler_unit.tscn")
+const explorer_unit : PackedScene = preload("res://scenes/units/explorer_unit.tscn")
 
 const ui_settler_scene   : PackedScene = preload("res://ui/units/ui_settler_unit.tscn")
 const ui_explorer_scene  : PackedScene = preload("res://ui/units/ui_explorer_unit.tscn")

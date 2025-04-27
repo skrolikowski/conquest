@@ -60,7 +60,7 @@ func _ready() -> void:
 	UnitScenes = {
 		Term.UnitType.LEADER:    Preload.leader_unit,
 		Term.UnitType.SETTLER:   Preload.settler_unit,
-		Term.UnitType.EXPLORER:  Preload.unit,
+		Term.UnitType.EXPLORER:  Preload.explorer_unit,
 		Term.UnitType.SHIP:      Preload.ship_unit,
 		Term.UnitType.INFANTRY:  Preload.unit,
 		Term.UnitType.CALVARY:   Preload.unit,
@@ -160,6 +160,10 @@ func get_world_canvas() -> WorldCanvas:
 
 func get_world() -> WorldManager:
 	return get_tree().get_first_node_in_group("world") as WorldManager
+
+
+func get_world_selector() -> WorldSelector:
+	return get_world().world_selector
 
 
 func get_world_map() -> WorldGen:

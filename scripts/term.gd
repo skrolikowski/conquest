@@ -1,6 +1,10 @@
 extends Node
 class_name Term
 
+enum CollisionMask {
+	UNIT    = 1 << 0,
+	CARRIER = 1 << 1,
+}
 
 enum BuildingSize {
 	NONE,

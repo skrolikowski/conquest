@@ -2,10 +2,7 @@
 
 [ext_resource type="Script" uid="uid://hyetuygy8lrl" path="res://scenes/units/ship_unit.gd" id="1_377pb"]
 [ext_resource type="Texture2D" uid="uid://utlb047k5o6f" path="res://assets/maps/WinLu_Fantasy_World/Fantasy_Vehicle.png" id="3_68p7g"]
-[ext_resource type="PackedScene" uid="uid://bardxsiggrtyx" path="res://scenes/units/carrier.tscn" id="3_rts31"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_v0dym"]
-radius = 24.0
+[ext_resource type="PackedScene" uid="uid://bardxsiggrtyx" path="res://scenes/units/carrier_manager.tscn" id="3_rts31"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_aboks"]
 atlas = ExtResource("3_68p7g")
@@ -14,23 +11,29 @@ region = Rect2(144, 48, 48, 48)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s0mwa"]
 size = Vector2(48, 48)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_v0dym"]
+radius = 48.0
+
 [node name="ShipUnit" type="Area2D"]
 collision_mask = 4
 monitoring = false
 script = ExtResource("1_377pb")
-
-[node name="Carrier" parent="." node_paths=PackedStringArray("unit") instance=ExtResource("3_rts31")]
-unit = NodePath("..")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Carrier"]
-shape = SubResource("CircleShape2D_v0dym")
-debug_color = Color(0, 0.6, 0.192157, 0.227451)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("AtlasTexture_aboks")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_s0mwa")
+
+[node name="CarrierManager" parent="." node_paths=PackedStringArray("unit") instance=ExtResource("3_rts31")]
+unique_name_in_owner = true
+collision_mask = 1
+monitoring = true
+unit = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CarrierManager"]
+shape = SubResource("CircleShape2D_v0dym")
+debug_color = Color(0, 0.6, 0.192157, 0.227451)
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_desired_distance = 4.0

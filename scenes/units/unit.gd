@@ -1,6 +1,7 @@
 extends Area2D
 class_name Unit
 
+@onready var sprite    := $Sprite2D as Sprite2D
 @onready var nav_agent := $NavigationAgent2D as NavigationAgent2D
 @onready var shape     := $CollisionShape2D as CollisionShape2D
 
@@ -10,15 +11,8 @@ class_name Unit
 var is_moving  : bool = false
 var move_delta : Vector2
 
-# -- Entering a "carrier node"..
-var entering_node : Node : set = _set_entering_node
-var over_node     : Node : set = _set_over_node
-
 
 func _ready() -> void:
-	connect("area_entered", _on_area_entered)
-	connect("area_exited", _on_area_exited)
-	
 	if Def.FOG_OF_WAR_ENABLED:
 		nav_agent.connect("waypoint_reached", _on_waypoint_reached)
 
@@ -46,9 +40,8 @@ func _process(_delta: float) -> void:
 			global_position += move_direction * move_gain
 
 			# -- Reduce move points..
-			stat.move_points -= movement_modifier * _delta
-			stat.move_points = max(0, stat.move_points)
-	
+			#stat.move_points -= movement_modifier * _delta
+			#stat.move_points = max(0, stat.move_points)
 		else:
 			is_moving = false
 
@@ -98,90 +91,30 @@ func disband() -> void:
 #endregion
 
 
-#region SELECTION/MOVEMENT
+#region INPUT
 func on_selected() -> void:
-	is_moving     = false
-	entering_node = null
+	is_moving = false
 
 
 func on_drag_release(_position: Vector2) -> void:
 	nav_agent.target_position = _position
+	nav_agent.target_position = nav_agent.get_final_position()
 	
-	#TODO: can we reach a the closest reachable tile?
-	if nav_agent.is_target_reachable():
-		is_moving = true
-		
-		var collision : Node = Def.get_world().detect_collision(_position)
+	is_moving = nav_agent.is_target_reachable()
+
+	# --
+	if is_moving:
+		#TODO: detect collision with a "Carrier Node"..
+		var collision : Node = Def.get_world_selector().point_collision(_position, Term.CollisionMask.CARRIER)
 		if collision:
-			if collision is CenterBuilding:
-				entering_node = collision as CenterBuilding
-			elif collision is CarrierUnit:
-				entering_node = collision as CarrierUnit
-			
-			# # -- Are we on top of the `entering_node`..?
-			# if entering_node != null and over_node == entering_node:
-			# 	on_enter_node(over_node)
-	else:
-		print("Target Not Reachable!")
-
-
-func on_enter_node(_node: Node) -> void:
-	"""
-	Unit enters a "Carrier Node".. (e.g. CenterBuilding, CarrierUnit)
-	"""
-	var _stat : UnitStats = stat.duplicate()
-	_node.stat.attached_units.append(_stat)
-
-	Def.get_world().unselect_all()
-
-	queue_free()
-
-
-func _set_entering_node(_node: Node) -> void:
-	"""
-	[SET] Entering a "Carrier Node"..
-	"""
-	entering_node = _node
-
-	# -- Are we entering the expected ..?
-	if entering_node != null and over_node == entering_node:
-		on_enter_node(over_node)
-
-
-func _set_over_node(_over_node: Node) -> void:
-	"""
-	[SET] Over a "Carrier Node"..
-	"""
-	over_node = _over_node
-
-	# -- Are we entering the expected ..?
-	if over_node != null and entering_node == over_node:
-		on_enter_node(over_node)
-
-#endregion
-
-
-#region EVENT HANDLERS
-func _on_area_entered(_area: Area2D) -> void:
-	"""
-	Unit enters an Area2D..
-	"""
-	if _area is CenterBuilding:
-		over_node = _area as CenterBuilding
-	elif _area is Carrier:
-		over_node = _area.unit as CarrierUnit
-		
-	# # -- Are we entering the expected ..?
-	# if over_node != null and entering_node == over_node:
-	# 	on_enter_node(over_node)
-			
-		
-func _on_area_exited(_area: Area2D) -> void:
-	"""
-	Unit exits an Area2D..
-	"""
-	if over_node == _area:
-		over_node = null
+			if collision is CarrierManager:
+				var carrier : CarrierManager = collision as CarrierManager
+				carrier.add_unit_entering(self)
+			elif collision is CenterBuilding:
+				# var center : CenterBuilding = collision as CenterBuilding
+				# center.entering_node = self
+				#TODO: add to center building
+				pass
 
 #endregion
 

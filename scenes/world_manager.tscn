@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://ba354gic7in0a"]
+[gd_scene load_steps=7 format=3 uid="uid://ba354gic7in0a"]
 
 [ext_resource type="Script" uid="uid://br0awaag15d2" path="res://scenes/world_manager.gd" id="1_uhvwe"]
 [ext_resource type="PackedScene" uid="uid://cbisubxats4ra" path="res://scenes/camera/world_camera.tscn" id="2_bk1bu"]
 [ext_resource type="PackedScene" uid="uid://ror8c8gr62y8" path="res://scenes/map/world_gen.tscn" id="2_fa3fk"]
+[ext_resource type="PackedScene" uid="uid://cgefuq1iqth28" path="res://world_selector.tscn" id="3_bk1bu"]
 [ext_resource type="PackedScene" uid="uid://de3t5875vnq06" path="res://ui/world_canvas.tscn" id="4_7jw07"]
 [ext_resource type="PackedScene" uid="uid://ygorgf62tag4" path="res://scenes/player_manager.tscn" id="5_bk1bu"]
 
@@ -19,3 +20,5 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="PlayerManager" parent="." instance=ExtResource("5_bk1bu")]
+
+[node name="WorldSelector" parent="." instance=ExtResource("3_bk1bu")]

@@ -12,8 +12,11 @@ func _ready() -> void:
 func refresh_ui() -> void:
 	super.refresh_ui()
 	
+	# -- Explorer Unit Data
+	var explorer_unit : ExplorerUnit = unit as ExplorerUnit
+	
 	# --
-	if unit.is_exploring:
+	if explorer_unit.is_exploring:
 		btn_explore.text = "Halt"
 	else:
 		btn_explore.text = "Explore"
