@@ -18,7 +18,7 @@ const ATTACKER_RESERVE_ROW : Vector2i = Vector2i(0, 0)
 const ATTACKER_FLAG_SQUARE : Vector2i = Vector2i(1, 1)
 
 # --
-const FOG_OF_WAR_ENABLED : bool = false
+const FOG_OF_WAR_ENABLED : bool = true
 const CONFIRM_END_TURN_ENABLED : bool = false
 const WEALTH_MODE_ENABLED : bool = true
 

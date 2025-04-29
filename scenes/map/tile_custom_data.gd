@@ -15,6 +15,9 @@ var movement_modifiers : Dictionary = {
 	Term.UnitMovement.OTHER    : 0
 }
 
+# -- Fog of War
+var is_fog_of_war : bool = true
+
 # -- Water
 var is_water : bool = false
 var is_ocean : bool = false

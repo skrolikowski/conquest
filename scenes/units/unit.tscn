@@ -22,4 +22,3 @@ texture = SubResource("AtlasTexture_cx6aj")
 shape = SubResource("RectangleShape2D_vnnf1")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
-debug_enabled = true

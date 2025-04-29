@@ -14,11 +14,16 @@ var move_delta : Vector2
 
 func _ready() -> void:
 	if Def.FOG_OF_WAR_ENABLED:
+		nav_agent.connect("target_reached", _on_target_reached)
 		nav_agent.connect("waypoint_reached", _on_waypoint_reached)
 
 
+func _on_target_reached() -> void:
+	pass
+
+
 func _on_waypoint_reached(_details: Dictionary) -> void:
-	Def.get_world_map().reveal_fog_of_war(global_position, stat.get_stat().fog_reveal)
+	_reveal_fog_of_war()
 
 
 func _process(_delta: float) -> void:
@@ -66,6 +71,10 @@ func can_attack() -> bool:
 		return true
 
 	return stat.unit_type == Term.UnitType.LEADER and stat.unit_state == Term.UnitState.IDLE
+
+
+func _reveal_fog_of_war() -> void:
+	Def.get_world_map().reveal_fog_of_war(global_position, stat.get_stat().fog_reveal)
 
 
 #region PERSISTENT MOVEMENT
@@ -147,7 +156,7 @@ func begin_turn() -> void:
 	stat.unit_state = Term.UnitState.IDLE
 
 	# -- Reveal Fog of War..
-	Def.get_world_map().reveal_fog_of_war(global_position, stat.get_stat().fog_reveal)
+	_reveal_fog_of_war()
 
 
 func end_turn() -> void:
