@@ -18,23 +18,26 @@ func _ready() -> void:
 
 func refresh_ui() -> void:
 	super.refresh_ui()
+
+	# -- Ship Unit Data
+	var ship_unit : ShipUnit = unit as ShipUnit
 	
 	# --
 	#btn_explore.disabled    = not unit.can_explore()
-	btn_detach_all.disabled = not unit.can_detach_unit()
+	btn_detach_all.disabled = not ship_unit.can_detach_unit()
 	
 	# -- Explort button
-	if unit.is_exploring:
+	if ship_unit.is_exploring:
 		btn_explore.text = "Halt"
 	else:
 		btn_explore.text = "Explore"
 	
 	# -- Unit name
-	unit_name.text = "Name: " + unit.stat.unit_name
+	unit_name.text = "Name: " + ship_unit.stat.unit_name
 	
 	# -- Cargo Hold
-	var unit_count    : int = unit.stat.attached_units.size()
-	var unit_capacity : int = unit.stat.max_attached_units
+	var unit_count    : int = ship_unit.stat.attached_units.size()
+	var unit_capacity : int = ship_unit.stat.max_attached_units
 	cargo_hold.text = "Cargo Hold: " + str(unit_count) + "/" + str(unit_capacity)
 
 
@@ -43,9 +46,8 @@ func _on_cargo_pressed() -> void:
 
 
 func _on_explore_pressed() -> void:
-	#TODO: mark as exploring (e.g. desire to uncover "fog of war")
-	#TODO: w/ persistent behavior, unit will explore on begin turn
-	pass
+	unit.is_exploring = not unit.is_exploring
+	refresh_ui()
 
 
 func _on_detach_all_pressed() -> void:

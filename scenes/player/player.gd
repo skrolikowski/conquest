@@ -190,9 +190,9 @@ func debug() -> void:
 	var ship_unit  : Unit = create_unit(ship, ship_pos)
 	Def.get_world().world_camera.position = ship_unit.position
 	
-	var e1      : UnitStats = UnitStats.New_Unit(Term.UnitType.EXPLORER, 1)
-	var e1_pos  : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(51, 32))
-	var e1_unit : Unit = create_unit(e1, e1_pos)
+	# var e1      : UnitStats = UnitStats.New_Unit(Term.UnitType.EXPLORER, 1)
+	# var e1_pos  : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(51, 32))
+	# var e1_unit : Unit = create_unit(e1, e1_pos)
 	# var e2      : UnitStats = UnitStats.New_Unit(Term.UnitType.EXPLORER, 1)
 	# var e2_pos  : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(52, 32))
 	# var e2_unit : Unit = create_unit(e2, e2_pos)
@@ -202,8 +202,8 @@ func debug() -> void:
 	# ship_unit.stat.attached_units.append(leader)
 
 	ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.SETTLER, 1))
-	# ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.EXPLORER, 1))
-	# ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.EXPLORER, 1))
+	ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.EXPLORER, 1))
+	ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.EXPLORER, 1))
 
 	# --
 	# call_deferred("begin_turn")

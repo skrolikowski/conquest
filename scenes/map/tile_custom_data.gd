@@ -39,40 +39,40 @@ func _set_biome(_biome: WorldGen.TileCategory) -> void:
 		industry_modifiers[Term.IndustryType.MILL] = 0
 
 		movement_modifiers[Term.UnitMovement.EXPLORER] = 0
-		movement_modifiers[Term.UnitMovement.SHIP]     = 4
+		movement_modifiers[Term.UnitMovement.SHIP]     = 30
 		movement_modifiers[Term.UnitMovement.OTHER]    = 0
 	elif biome == WorldGen.TileCategory.RIVER:
-		industry_modifiers[Term.IndustryType.FARM] = 8
+		industry_modifiers[Term.IndustryType.FARM] = 20
 		industry_modifiers[Term.IndustryType.MINE] = 8
 		industry_modifiers[Term.IndustryType.MILL] = 8
 
-		movement_modifiers[Term.UnitMovement.EXPLORER] = 8
+		movement_modifiers[Term.UnitMovement.EXPLORER] = 20
 		movement_modifiers[Term.UnitMovement.SHIP]     = 0
-		movement_modifiers[Term.UnitMovement.OTHER]    = 50
+		movement_modifiers[Term.UnitMovement.OTHER]    = 10
 	elif biome == WorldGen.TileCategory.GRASS:
 		industry_modifiers[Term.IndustryType.FARM] = 4
 		industry_modifiers[Term.IndustryType.MINE] = 0
 		industry_modifiers[Term.IndustryType.MILL] = -1
 
-		movement_modifiers[Term.UnitMovement.EXPLORER] = 8
+		movement_modifiers[Term.UnitMovement.EXPLORER] = 30
 		movement_modifiers[Term.UnitMovement.SHIP]     = 0
-		movement_modifiers[Term.UnitMovement.OTHER]    = 10
+		movement_modifiers[Term.UnitMovement.OTHER]    = 20
 	elif biome == WorldGen.TileCategory.SWAMP:
 		industry_modifiers[Term.IndustryType.FARM] = 4
 		industry_modifiers[Term.IndustryType.MINE] = 0
 		industry_modifiers[Term.IndustryType.MILL] = 2
 
-		movement_modifiers[Term.UnitMovement.EXPLORER] = 10
+		movement_modifiers[Term.UnitMovement.EXPLORER] = 25
 		movement_modifiers[Term.UnitMovement.SHIP]     = 0
-		movement_modifiers[Term.UnitMovement.OTHER]    = 14
+		movement_modifiers[Term.UnitMovement.OTHER]    = 15
 	elif biome == WorldGen.TileCategory.FOREST:
 		industry_modifiers[Term.IndustryType.FARM] = -2
 		industry_modifiers[Term.IndustryType.MINE] = 0
 		industry_modifiers[Term.IndustryType.MILL] = 4
 
-		movement_modifiers[Term.UnitMovement.EXPLORER] = 15
+		movement_modifiers[Term.UnitMovement.EXPLORER] = 22
 		movement_modifiers[Term.UnitMovement.SHIP]     = 0
-		movement_modifiers[Term.UnitMovement.OTHER]    = 40
+		movement_modifiers[Term.UnitMovement.OTHER]    = 17
 	elif biome == WorldGen.TileCategory.MOUNTAIN:
 		industry_modifiers[Term.IndustryType.FARM] = 0
 		industry_modifiers[Term.IndustryType.MINE] = 8
@@ -80,7 +80,7 @@ func _set_biome(_biome: WorldGen.TileCategory) -> void:
 
 		movement_modifiers[Term.UnitMovement.EXPLORER] = 18
 		movement_modifiers[Term.UnitMovement.SHIP]     = 0
-		movement_modifiers[Term.UnitMovement.OTHER]    = 60
+		movement_modifiers[Term.UnitMovement.OTHER]    = 12
 
 
 func add_terrain_modifier(_industry_type: Term.ResourceType, _value: int) -> void:

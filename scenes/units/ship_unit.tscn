@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dcfshltv0e7y3"]
+[gd_scene load_steps=8 format=3 uid="uid://dcfshltv0e7y3"]
 
 [ext_resource type="Script" uid="uid://hyetuygy8lrl" path="res://scenes/units/ship_unit.gd" id="1_377pb"]
 [ext_resource type="Texture2D" uid="uid://utlb047k5o6f" path="res://assets/maps/WinLu_Fantasy_World/Fantasy_Vehicle.png" id="3_68p7g"]
 [ext_resource type="PackedScene" uid="uid://bardxsiggrtyx" path="res://scenes/units/carrier_manager.tscn" id="3_rts31"]
+[ext_resource type="PackedScene" uid="uid://c76hwexrasmdf" path="res://scenes/units/explore_manager.tscn" id="4_aboks"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_aboks"]
 atlas = ExtResource("3_68p7g")
@@ -34,6 +35,8 @@ unit = NodePath("..")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CarrierManager"]
 shape = SubResource("CircleShape2D_v0dym")
 debug_color = Color(0, 0.6, 0.192157, 0.227451)
+
+[node name="ExploreManager" parent="." instance=ExtResource("4_aboks")]
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_desired_distance = 4.0

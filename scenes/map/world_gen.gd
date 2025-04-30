@@ -361,6 +361,14 @@ func has_ocean_access_tile(_tile: Vector2i) -> bool:
 	return false
 
 
+func get_map_to_local_position(_tile: Vector2i) -> Vector2:
+	return get_land_layer().map_to_local(_tile)
+
+
+func get_local_to_map_position(_pos: Vector2) -> Vector2i:
+	return get_land_layer().local_to_map(_pos)
+
+
 func get_tile_height(_tile: Vector2i) -> float:
 	var noise : float = noise_gen.settings.noise.get_noise_2d(_tile.x, _tile.y)
 	if noise_gen.settings.falloff_enabled and noise_gen.settings.falloff_map and not noise_gen.settings.infinite:

@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://dprcxm507pllp"]
+[gd_scene load_steps=6 format=3 uid="uid://dprcxm507pllp"]
 
 [ext_resource type="Script" uid="uid://c2ugvto1jrlnx" path="res://scenes/units/explorer_unit.gd" id="1_nrrv5"]
 [ext_resource type="Texture2D" uid="uid://bp0anc1eh14ed" path="res://assets/images/units/Seth_rogues.png" id="2_nrrv5"]
+[ext_resource type="PackedScene" uid="uid://c76hwexrasmdf" path="res://scenes/units/explore_manager.tscn" id="3_va6oo"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_va6oo"]
 atlas = ExtResource("2_nrrv5")
@@ -22,3 +23,5 @@ shape = SubResource("RectangleShape2D_ps1iw")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 debug_enabled = true
+
+[node name="ExploreManager" parent="." instance=ExtResource("3_va6oo")]

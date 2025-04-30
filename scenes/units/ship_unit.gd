@@ -1,11 +1,15 @@
 extends CarrierUnit
 class_name ShipUnit
 
+@onready var explore_manager := $ExploreManager as ExploreManager
+
 var is_exploring : bool : set = _set_is_exploring
 
 
 func _ready() -> void:
 	super._ready()
+
+	explore_manager.unit = self
 	
 	stat.title     = "Ship"
 	stat.unit_type = Term.UnitType.SHIP
@@ -13,11 +17,14 @@ func _ready() -> void:
 
 func _set_is_exploring(_exploring: bool) -> void:
 	is_exploring = _exploring
+	explore_manager.is_exploring = is_exploring
 	
 	if is_exploring:
 		stat.unit_state = Term.UnitState.EXPLORE
 	else:
 		stat.unit_state = Term.UnitState.IDLE
 
-	#TODO: mark as exploring (e.g. desire to uncover "fog of war")
-	#TODO: w/ persistent behavior, unit will explore on begin turn
+
+func on_selected() -> void:
+	super.on_selected()
+	is_exploring = false

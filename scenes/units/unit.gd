@@ -31,22 +31,21 @@ func _process(_delta: float) -> void:
 		if not nav_agent.is_target_reached():
 			
 			# -- Get TileCustomData or current position..
-			var tile_map_layer    : TileMapLayer = Def.get_world_map().get_land_layer()
-			var map_position      : Vector2 = tile_map_layer.local_to_map(global_position)
-			var tile_custom_data  : TileCustomData = Def.get_world_map().get_tile_custom_data(map_position)
+			var world_map         : WorldGen = Def.get_world_map()
+			var unit_tile         : Vector2i = get_tile()
+			var tile_custom_data  : TileCustomData = world_map.get_tile_custom_data(unit_tile)
 			var movement_modifier : int = tile_custom_data.get_movement_modifier_by_unit_type(stat.unit_type)
-
+			
 			# -- Movement..
-			var move_base_speed : float = 48.0
-			var move_speed     : float = move_base_speed * (stat.move_points / 100.0)
-			var move_target    : Vector2 = nav_agent.get_next_path_position()
-			var move_direction : Vector2 = (move_target - global_position).normalized()
-			var move_gain      : float = move_speed * _delta
-			global_position += move_direction * move_gain
+			var base_move_speed : float = 48.0
+			var move_speed      : float = base_move_speed * (movement_modifier / 30.0) * _delta
+			var move_target     : Vector2 = nav_agent.get_next_path_position()
+			var move_direction  : Vector2 = (move_target - global_position).normalized()
+			global_position += move_direction * move_speed
 
 			# -- Reduce move points..
-			#stat.move_points -= movement_modifier * _delta
-			#stat.move_points = max(0, stat.move_points)
+			stat.move_points -= base_move_speed * 0.1 * _delta
+			stat.move_points = max(0, stat.move_points)
 		else:
 			is_moving = false
 

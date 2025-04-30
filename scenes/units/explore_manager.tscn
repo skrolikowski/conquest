@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c76hwexrasmdf"]
+
+[ext_resource type="Script" uid="uid://cm340d22dx2x6" path="res://scenes/units/explore_manager.gd" id="1_8ktvl"]
+
+[node name="ExploreManager" type="Node2D"]
+script = ExtResource("1_8ktvl")
