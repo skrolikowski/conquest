@@ -39,7 +39,7 @@ func new_game() -> void:
 		add_child(npc)
 
 		#TODO: randomize this..
-		npc.tribe = NPC.Tribe.ELVES
+		npc.tribe = NPC.Tribe.DWARVES
 
 		npc.new_game()
 		npcs.append(npc)

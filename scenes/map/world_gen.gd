@@ -244,6 +244,9 @@ func init_tile_custom_data() -> void:
 		tile_custom_data[tile].is_water = true
 		tile_custom_data[tile].biome = TileCategory.OCEAN
 
+		if Def.FOG_OF_WAR_ENABLED:
+			tile_custom_data[tile].is_fog_of_war = true
+
 	# -- Land tiles..
 	for tile: Vector2i in get_land_tiles():
 		tile_custom_data[tile].is_water = false

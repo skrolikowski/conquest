@@ -115,7 +115,7 @@ func _drag_end(_position: Vector2) -> void:
 
 
 #region VIEWPORT CLICK DETECTION
-func _select_point(_position: Vector2, _collision_mask: Term.CollisionMask = Term.CollisionMask.UNIT) -> void:
+func _select_point(_position: Vector2, _collision_mask: Term.CollisionMask = Term.CollisionMask.OBJECT) -> void:
 	selected = null
 
 	var collision : Node = point_collision(_position, _collision_mask)
@@ -130,14 +130,14 @@ func _select_point(_position: Vector2, _collision_mask: Term.CollisionMask = Ter
 			selected = collision as Village
 
 
-func _select_drag_rect(_position: Vector2, _collision_mask: Term.CollisionMask = Term.CollisionMask.UNIT) -> void:
+func _select_drag_rect(_position: Vector2, _collision_mask: Term.CollisionMask = Term.CollisionMask.OBJECT) -> void:
 	var center : Vector2 = (_position + drag_start) / 2
 	var rect   : RectangleShape2D = RectangleShape2D.new()
 	rect.extents = abs(_position - drag_start) / 2
 	_select_rect_shape2d(center, rect, _collision_mask)
 
 
-func _select_rect_shape2d(_position: Vector2, _shape: RectangleShape2D, _collision_mask: Term.CollisionMask = Term.CollisionMask.UNIT) -> void:
+func _select_rect_shape2d(_position: Vector2, _shape: RectangleShape2D, _collision_mask: Term.CollisionMask = Term.CollisionMask.OBJECT) -> void:
 	selection = []
 	
 	var collision : Array[Dictionary] = shape_collision(_position, _shape, _collision_mask)
@@ -148,7 +148,7 @@ func _select_rect_shape2d(_position: Vector2, _shape: RectangleShape2D, _collisi
 				selection.append(unit)
 
 
-func point_collision(_position: Vector2, _collision_mask: Term.CollisionMask = Term.CollisionMask.UNIT) -> Node:
+func point_collision(_position: Vector2, _collision_mask: Term.CollisionMask = Term.CollisionMask.OBJECT) -> Node:
 	var space : PhysicsDirectSpaceState2D = get_world_2d().direct_space_state
 	var query : PhysicsPointQueryParameters2D = PhysicsPointQueryParameters2D.new()
 	query.collide_with_areas  = true
@@ -166,7 +166,7 @@ func point_collision(_position: Vector2, _collision_mask: Term.CollisionMask = T
 	return null
 
 
-func shape_collision(_position: Vector2, _shape: RectangleShape2D, _collision_mask: Term.CollisionMask = Term.CollisionMask.UNIT) -> Array[Dictionary]:
+func shape_collision(_position: Vector2, _shape: RectangleShape2D, _collision_mask: Term.CollisionMask = Term.CollisionMask.OBJECT) -> Array[Dictionary]:
 	var space : PhysicsDirectSpaceState2D = get_world_2d().direct_space_state
 	var query : PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
 	query.collide_with_areas  = true

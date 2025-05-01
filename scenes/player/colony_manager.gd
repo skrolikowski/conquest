@@ -116,7 +116,8 @@ func found_colony(_tile: Vector2i, _position: Vector2, _level: int = 1) -> void:
 	_refresh_placing_tiles(_tile)
 
 	Def.get_world_canvas().open_found_colony_menu(self)
-	# Def.get_world().map_set_focus_node(placing_colony)
+	# Def.get_world_selector().clear_selection()
+	Def.get_world().map_set_focus_node(placing_colony)
 
 
 func cancel_found_colony() -> void:
@@ -135,8 +136,8 @@ func cancel_found_colony() -> void:
 
 
 func _refresh_placing_tiles(_tile: Vector2i) -> void:
-	var tile_map_layer : TileMapLayer = Def.get_world_tile_map()
-	var tile_size      : Vector2 = tile_map_layer.tile_set.tile_size
+	var world_map : WorldGen = Def.get_world_map()
+	var tile_size : Vector2i = Def.TILE_SIZE
 	
 	placing_tile   = _tile
 	placing_tiles  = {}
@@ -157,7 +158,7 @@ func _refresh_placing_tiles(_tile: Vector2i) -> void:
 		for bound: Dictionary in bounds:
 			for tile: Vector2i in bound.tiles:
 				if not tile in placing_tiles:
-					var tile_pos  : Vector2 = tile_map_layer.map_to_local(tile)
+					var tile_pos  : Vector2 = world_map.get_map_to_local_position(tile)
 					var tile_tl   : Vector2 = tile_pos - tile_size * 0.5
 					var tile_rect : Rect2 = Rect2(tile_tl, tile_size)
 					

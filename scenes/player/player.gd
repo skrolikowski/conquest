@@ -178,10 +178,10 @@ func debug() -> void:
 	# center.bm._place_temp_building()
 
 	# -- Just a Settler..
-	#var settler       : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, 1)
-	#var settler_pos   : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(26, 8))
-	#var settler_unit  : Unit = create_unit(settler, settler_pos)
-	#Def.get_world().world_camera.position = settler_unit.position
+	var settler       : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, 1)
+	var settler_pos   : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(51, 32))
+	var settler_unit  : Unit = create_unit(settler, settler_pos)
+	# Def.get_world().world_camera.position = settler_unit.position
 	
 	var ship       : UnitStats = UnitStats.New_Unit(Term.UnitType.SHIP, 1)
 	# var shore_tile : Vector2i = Def.get_world_map().get_random_starting_tile()
@@ -201,9 +201,10 @@ func debug() -> void:
 	# leader.attached_units.append(UnitStats.New_Unit(Term.UnitType.INFANTRY, 2))
 	# ship_unit.stat.attached_units.append(leader)
 
-	ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.SETTLER, 1))
-	ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.EXPLORER, 1))
-	ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.EXPLORER, 1))
+	# -- Units attached to ship..
+	# ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.SETTLER, 1))
+	# ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.EXPLORER, 1))
+	# ship_unit.stat.attached_units.append(UnitStats.New_Unit(Term.UnitType.EXPLORER, 1))
 
 	# --
 	# call_deferred("begin_turn")

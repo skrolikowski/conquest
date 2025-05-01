@@ -96,7 +96,7 @@ scroll_left={
 
 [layer_names]
 
-2d_physics/layer_1="Unit"
+2d_physics/layer_1="Object"
 2d_navigation/layer_1="Land"
 2d_physics/layer_2="Carrier"
 2d_navigation/layer_2="Sea"

@@ -14,13 +14,6 @@ var occupy_tiles : Array[Vector2i]
 var buildings    : Array[Building] = []
 	
 
-func _ready() -> void:
-	"""
-	Defer to allow for colony placement
-	"""
-	call_deferred("_refresh_build_tiles")
-
-
 func _process(_delta: float) -> void:
 	if placing_building != null:
 		var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
@@ -72,6 +65,7 @@ func remove_building(_building: Building) -> void:
 #region BUILDING PLACEMENT
 func add_temp_building(_building: Building) -> void:
 	placing_building = _building
+	_refresh_build_tiles()
 
 	Def.get_world().map_set_focus_node(placing_building)
 	
@@ -185,6 +179,7 @@ func _refresh_build_tiles() -> void:
 	"""
 	NOTE: Should be called once per building level change
 	"""
+	var world_map   : WorldGen = Def.get_world_map()
 	var build_radius   : float = Def.get_building_stat(Term.BuildingType.CENTER, colony.level).build_radius * Def.TILE_SIZE.x
 	var tiles_in_range : Array[Vector2i] = Def.get_world_map().get_tiles_in_radius(global_position, build_radius)
 	var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
@@ -192,6 +187,9 @@ func _refresh_build_tiles() -> void:
 	build_tiles = {}
 	
 	for tile : Vector2i in tiles_in_range:
+		if world_map.tile_custom_data[tile].is_fog_of_war:
+			continue
+
 		build_tiles[tile] = tile_map_layer.get_cell_tile_data(tile)
 	# print("Building Tiles: ", build_tiles.size())
 

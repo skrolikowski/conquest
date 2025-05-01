@@ -11,6 +11,8 @@ const ui_new_trade_scene : PackedScene = preload("res://ui/trade/ui_new_trade.ts
 const npc_scene        : PackedScene = preload("res://scenes/npc/npc.tscn")
 const village_scene    : PackedScene = preload("res://scenes/npc/village.tscn")
 const ui_village_scene : PackedScene = preload("res://ui/npc/ui_village.tscn")
+const dwarven_village_scene : PackedScene = preload("res://scenes/npc/race/dwarven_village.tscn")
+const elven_village_scene   : PackedScene = preload("res://scenes/npc/race/elven_village.tscn")
 
 # BUILDINGS
 const center_building_scene      : PackedScene = preload("res://scenes/buildings/center_building.tscn")

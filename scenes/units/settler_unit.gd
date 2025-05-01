@@ -19,7 +19,7 @@ func settle() -> void:
 	stat.player.found_colony(get_tile(), global_position, stat.level)
 	stat.player.disband_unit(self)
 
-	Def.get_world().unselect_all()
+	Def.get_world_selector().clear_selection()
 
 #endregion
 

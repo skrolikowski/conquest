@@ -9,17 +9,22 @@ enum Tribe
 
 @onready var village_list := $VillageList as Node2D
 
-var title : String
-var tribe : Tribe : set = _set_tribe
+var title  : String
+var sprite : Node2D
+var village_range : Array[float] = []
+var tribe  : Tribe : set = _set_tribe
 
 func _set_tribe(_tribe: Tribe) -> void:
 	tribe = _tribe
 
 	if tribe == Tribe.ELVES:
-		title = "Elf"
+		title  = "Elf"
+		sprite = Preload.elven_village_scene.instantiate() as Node2D
+		village_range = [0.4, 0.5]
 	elif tribe == Tribe.DWARVES:
 		title = "Dwarf"
-
+		sprite = Preload.dwarven_village_scene.instantiate() as Node2D
+		village_range = [0.6, 0.7]
 
 
 #region VILLAGE MANAGEMENT
@@ -37,6 +42,7 @@ func create_village(_tile: Vector2i) -> void:
 	village_list.add_child(village)
 
 	village.npc = self
+	village.add_child(sprite)
 
 	# -- set village position..
 	var tile_map_layer : TileMapLayer = Def.get_world_map().get_land_layer()
@@ -92,8 +98,8 @@ func end_turn() -> void:
 
 #region GAME PERSISTENCE
 func new_game() -> void:
-	# var rand_tile : Vector2i = Def.get_world_map().get_random_height_range_tile(0.3, 0.4)
-	var rand_tile : Vector2i = Vector2i(46, 32)
+	var rand_tile : Vector2i = Def.get_world_map().get_random_height_range_tile(village_range[0], village_range[1])
+	# var rand_tile : Vector2i = Vector2i(46, 32)
 	create_village(rand_tile)
 
 

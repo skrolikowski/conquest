@@ -16,7 +16,7 @@ var movement_modifiers : Dictionary = {
 }
 
 # -- Fog of War
-var is_fog_of_war : bool = true
+var is_fog_of_war : bool = false
 
 # -- Water
 var is_water : bool = false
