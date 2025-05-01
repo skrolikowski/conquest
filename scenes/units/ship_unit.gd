@@ -25,6 +25,6 @@ func _set_is_exploring(_exploring: bool) -> void:
 		stat.unit_state = Term.UnitState.IDLE
 
 
-func on_selected() -> void:
-	super.on_selected()
+func _set_selected(_selected: bool) -> void:
+	super._set_selected(_selected)
 	is_exploring = false

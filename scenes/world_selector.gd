@@ -20,18 +20,27 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	if is_dragging:
 		if selected is Unit:
-			# var unit : Unit = selected as Unit
-			# unit.move_delta = drag_end - drag_start
-			# unit.queue_redraw()
+			var _unit : Unit = selected as Unit
+			_unit.move_delta = drag_end - _unit.position
+			_unit.queue_redraw()
+
 			for selected_unit:Unit in selection:
 				selected_unit.move_delta = drag_end - selected_unit.position
 				selected_unit.queue_redraw()
+
 		elif _is_valid_drag():
 			draw_rect(Rect2(drag_start, mouse_pos - drag_start), Color.LIGHT_GRAY, false, 2.0)
 
 
+func clear_selected() -> void:
+	if selected:
+		selected.selected = false
+		selected = null
+
+
 func clear_selection() -> void:
-	_stop_all_pulsing_effects()
+	for node: Unit in selection:
+		node.selected = false
 	selection = []
 
 
@@ -46,7 +55,7 @@ func _input(_event: InputEvent) -> void:
 				DOUBLE-CLICK
 				"""
 				if selected:
-					_start_pulsing_effect(selected)
+					clear_selection()
 
 					if selected is Unit:
 						Def.get_world_canvas().open_unit_menu(selected as Unit)
@@ -61,15 +70,16 @@ func _input(_event: InputEvent) -> void:
 				"""
 				_select_point(world_position)
 				_drag_start(world_position)
-				
-				if selected == null:
-					_stop_all_pulsing_effects()
 			
 			elif is_dragging and _is_valid_drag():
 				"""
 				RELEASE
 				"""
 				if selected is Unit:
+					selected.move_delta = Vector2.ZERO
+					selected.queue_redraw()
+					selected.on_drag_release(world_position)
+					
 					for node: Unit in selection:
 						node.move_delta = Vector2.ZERO
 						node.queue_redraw()
@@ -77,8 +87,6 @@ func _input(_event: InputEvent) -> void:
 				else:
 					_drag_end(world_position)
 					_select_drag_rect(world_position)
-					_start_pulsing_effects()
-				selected = null
 				
 
 	elif _event is InputEventMouseMotion and is_dragging:
@@ -116,18 +124,35 @@ func _drag_end(_position: Vector2) -> void:
 
 #region VIEWPORT CLICK DETECTION
 func _select_point(_position: Vector2, _collision_mask: Term.CollisionMask = Term.CollisionMask.OBJECT) -> void:
-	selected = null
-
+	var pick : Node
+	
+	# --
 	var collision : Node = point_collision(_position, _collision_mask)
 	if collision:
 		if collision is Unit:
-			selected = collision as Unit
-			selected.on_selected()
-			selection.append(selected)
+			pick = collision as Unit
 		elif collision is Building:
-			selected = collision as Building
+			pick = collision as Building
 		elif collision is Village:
-			selected = collision as Village
+			pick = collision as Village
+
+	if pick:
+		if selected == null:
+			selected = pick
+			selected.selected = true
+		elif selected != pick:
+			selected.selected = false
+			selected = pick
+			selected.selected = true
+
+		if selected is Building or selected is Village:
+			clear_selection()
+		elif selected is Unit and not selected in selection:
+			clear_selection()
+	else:
+		if selected:
+			clear_selected()
+			clear_selection()
 
 
 func _select_drag_rect(_position: Vector2, _collision_mask: Term.CollisionMask = Term.CollisionMask.OBJECT) -> void:
@@ -138,15 +163,16 @@ func _select_drag_rect(_position: Vector2, _collision_mask: Term.CollisionMask =
 
 
 func _select_rect_shape2d(_position: Vector2, _shape: RectangleShape2D, _collision_mask: Term.CollisionMask = Term.CollisionMask.OBJECT) -> void:
-	selection = []
-	
+	clear_selection()
+
 	var collision : Array[Dictionary] = shape_collision(_position, _shape, _collision_mask)
 	if collision.size() > 0:
 		for result in collision:
 			if result['collider'] is Unit:
 				var unit : Unit = result['collider'] as Unit
+				unit.selected = true
 				selection.append(unit)
-
+	
 
 func point_collision(_position: Vector2, _collision_mask: Term.CollisionMask = Term.CollisionMask.OBJECT) -> Node:
 	var space : PhysicsDirectSpaceState2D = get_world_2d().direct_space_state
@@ -180,35 +206,42 @@ func shape_collision(_position: Vector2, _shape: RectangleShape2D, _collision_ma
 
 
 #region PULSE HIGHLIGHT EFFECT
-func _start_pulsing_effect(_node: Node) -> void:
-	var tween : Tween = create_tween()
-	tween.set_ease(Tween.EASE_IN_OUT)
-	tween.set_trans(Tween.TRANS_SINE)
-	tween.set_loops(-1)
+# func _start_pulsing_effect(_node: Node) -> void:
+# 	var tween : Tween = create_tween()
+# 	tween.set_ease(Tween.EASE_IN_OUT)
+# 	tween.set_trans(Tween.TRANS_SINE)
+# 	tween.set_loops(-1)
 	
-	# -- Set highlight effect..
-	var property : Sprite2D = _node.sprite as Sprite2D
-	tween.tween_property(property, "modulate", Color.LIGHT_GRAY, 0.5)
-	tween.tween_property(property, "modulate", Color.WHITE, 0.5)
+# 	# -- Set highlight effect..
+# 	var property : Sprite2D = _node.sprite as Sprite2D
+# 	tween.tween_property(property, "modulate", Color.LIGHT_GRAY, 0.5)
+# 	tween.tween_property(property, "modulate", Color.WHITE, 0.5)
 	
-	selection_tweens.append(tween)
+# 	selection_tweens.append(tween)
 
 
-func _start_pulsing_effects() -> void:
-	_stop_all_pulsing_effects()
+# func _start_pulsing_effects() -> void:
+# 	_stop_all_pulsing_effects()
 	
-	for node : Node in selection:
-		_start_pulsing_effect(node)
+# 	if selected != null:
+# 		_start_pulsing_effect(selected)
+
+# 	for node : Node in selection:
+# 		_start_pulsing_effect(node)
 
 
-func _stop_all_pulsing_effects() -> void:
-	if selection_tweens.size() > 0:
-		for tween : Tween in selection_tweens:
-			tween.stop()
-		selection_tweens.clear()
+# func _stop_all_pulsing_effects() -> void:
+# 	if selection_tweens.size() > 0:
+# 		for tween : Tween in selection_tweens:
+# 			tween.stop()
+# 		selection_tweens.clear()
 
-	for node : Node in selection:
-		var property : Sprite2D = node.sprite as Sprite2D
-		property.modulate = Color.WHITE
+# 	if selected:
+# 		var property : Sprite2D = selected.sprite as Sprite2D
+# 		property.modulate = Color.WHITE
+
+# 	for node : Node in selection:
+# 		var property : Sprite2D = node.sprite as Sprite2D
+# 		property.modulate = Color.WHITE
 
 #endregion

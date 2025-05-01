@@ -1,9 +1,8 @@
 extends Building
 class_name CenterBuilding
 
-@onready var bank   := $Bank as Bank
-@onready var sprite := $Sprite2D as Sprite2D
-@onready var bm     := $BuildingManager as BuildingManager
+@onready var bank := $Bank as Bank
+@onready var bm   := $BuildingManager as BuildingManager
 
 @export var population : int = 0
 

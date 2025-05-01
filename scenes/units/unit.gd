@@ -7,6 +7,9 @@ class_name Unit
 
 @export var stat : UnitStats
 
+var selected : bool : set = _set_selected
+var selection_tween : Tween
+
 # -- Movement..
 var is_moving  : bool = false
 var move_delta : Vector2
@@ -99,11 +102,38 @@ func disband() -> void:
 #endregion
 
 
+#region SELECTION
+func _set_selected(_selected: bool) -> void:
+	if selected != _selected:
+		selected = _selected
+		is_moving = false
+
+		if selected:
+			_start_pulse_effect()
+		else:
+			_stop_pulse_effect()
+
+
+func _start_pulse_effect() -> void:
+	selection_tween = create_tween()
+	selection_tween.set_ease(Tween.EASE_IN_OUT)
+	selection_tween.set_trans(Tween.TRANS_SINE)
+	selection_tween.set_loops(-1)
+
+	# -- Set highlight effect..
+	selection_tween.tween_property(sprite, "modulate", Color.LIGHT_GRAY, 0.5)
+	selection_tween.tween_property(sprite, "modulate", Color.WHITE, 0.5)
+
+
+func _stop_pulse_effect() -> void:
+	selection_tween.stop()
+
+	sprite.modulate = Color.WHITE
+
+#endregion
+
+
 #region INPUT
-func on_selected() -> void:
-	is_moving = false
-
-
 func on_drag_release(_position: Vector2) -> void:
 	nav_agent.target_position = _position
 	nav_agent.target_position = nav_agent.get_final_position()

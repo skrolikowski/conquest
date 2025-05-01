@@ -1,16 +1,52 @@
 extends Area2D
 class_name Building
 
+@onready var sprite := $Sprite2D as Sprite2D
+
 @export var title          : String
 @export var level          : int = 1
 @export var building_state : Term.BuildingState = Term.BuildingState.ACTIVE
 @export var colony         : CenterBuilding
 @export var player         : Player
 
+var selected : bool : set = _set_selected
+var selection_tween : Tween
+
 var max_level     : int = 4
 var building_type : Term.BuildingType
 var building_size : Term.BuildingSize
 var is_selectable : bool = true
+
+
+#region SELECTION
+func _set_selected(_selected: bool) -> void:
+	if selected != _selected:
+		selected = _selected
+
+		if selected:
+			_start_pulse_effect()
+		else:
+			_stop_pulse_effect()
+
+
+func _start_pulse_effect() -> void:
+	selection_tween = create_tween()
+	selection_tween.set_ease(Tween.EASE_IN_OUT)
+	selection_tween.set_trans(Tween.TRANS_SINE)
+	selection_tween.set_loops(-1)
+
+	# -- Set highlight effect..
+	selection_tween.tween_property(sprite, "modulate", Color.LIGHT_GRAY, 0.5)
+	selection_tween.tween_property(sprite, "modulate", Color.WHITE, 0.5)
+
+
+func _stop_pulse_effect() -> void:
+	selection_tween.stop()
+
+	sprite.modulate = Color.WHITE
+
+#endregion
+
 
 func _ready() -> void:
 	building_state = Term.BuildingState.NEW
