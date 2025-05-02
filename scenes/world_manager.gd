@@ -16,6 +16,8 @@ var turn_number : int = 0
 func _ready() -> void:
 	world_camera.reset()
 
+	world_selector.connect("cursor_updated", _on_cursor_updated)
+
 	world_gen.connect("map_loaded", _on_map_loaded)
 
 	world_canvas.connect("end_turn", _on_end_turn)
@@ -23,9 +25,9 @@ func _ready() -> void:
 
 	# --
 	# print("[WorldManager] New Game")
-	Persistence.new_game()
+	#Persistence.new_game()
 	# print("[WorldManager] Load Game")
-	# Persistence.load_game()
+	Persistence.load_game()
 
 
 func _on_map_loaded() -> void:
@@ -44,19 +46,13 @@ func _on_map_loaded() -> void:
 		player_manager.on_load_data(player_data)
 
 
-func _unhandled_input(_event:InputEvent) -> void:
-	# --
-	# -- Map Information..
-	if _event is InputEventMouse:
-		var world_position : Vector2 = get_global_mouse_position()
-		var tile_coords    : Vector2i = Def.get_world_map().get_land_layer().local_to_map(world_position)
-
-		if focus_tile != tile_coords:
-			map_set_focus_tile(tile_coords)
-
-
-
 #region MAP INFORMATION / CURSOR
+func _on_cursor_updated(_cursor_position: Vector2) -> void:
+	var tile_coords : Vector2i = world_gen.get_local_to_map_position(_cursor_position)
+	if focus_tile != tile_coords:
+		map_set_focus_tile(tile_coords)
+
+
 func map_set_focus_tile(_tile: Vector2i) -> void:
 	focus_tile = _tile
 
@@ -72,25 +68,12 @@ func map_refresh_cursor() -> void:
 
 
 func map_refresh_status() -> void:
-	#TODO: re-add this..
-	# if selection != null:
-	# 	if selection is Unit:
-	# 		var node : Unit = selection as Unit
-	# 		var info : String = node.get_status_information(focus_tile)
-	# 		world_canvas.update_status(info)
-	# 	elif selection is Building:
-	# 		var node : Building = selection as Building
-	# 		var info : String = node.get_status_information(focus_tile)
-	# 		world_canvas.update_status(info)
-	#   elif focus_node != null:
-	#TODO: re-add this..
-	
 	if focus_node != null:
-		if focus_node is Unit:
-			var node : Unit = focus_node as Unit
-			var info : String = node.get_status_information(focus_tile)
-			world_canvas.update_status(info)
-		elif focus_node is Building:
+		# if focus_node is Unit:
+		# 	var node : Unit = focus_node as Unit
+		# 	var info : String = node.get_status_information(focus_tile)
+		# 	world_canvas.update_status(info)
+		if focus_node is Building:
 			var node : Building = focus_node as Building
 			var info : String = node.get_status_information(focus_tile)
 			world_canvas.update_status(info)
@@ -100,7 +83,6 @@ func map_refresh_status() -> void:
 		status_text.append("Tile: " + str(focus_tile))
 		
 		world_canvas.update_status(Def.STATUS_SEP.join(status_text))
-		# world_canvas.clear_status()
 
 
 func map_refresh_tile_status() -> void:

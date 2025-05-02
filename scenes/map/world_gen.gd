@@ -619,7 +619,8 @@ func reveal_fog_of_war(_pos: Vector2, _radius: float = 48.0) -> void:
 			tiles_in_range, TerrainSet.DEFAULT, FogTerrain.NONE, true)
 		
 		for tile_in_range : Vector2i in tiles_in_range:
-			tile_custom_data[tile_in_range].is_fog_of_war = false
+			if tile_custom_data.has(tile_in_range):
+				tile_custom_data[tile_in_range].is_fog_of_war = false
 
 #endregion
 

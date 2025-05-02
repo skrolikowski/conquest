@@ -27,4 +27,6 @@ func _set_is_exploring(_exploring: bool) -> void:
 
 func _set_selected(_selected: bool) -> void:
 	super._set_selected(_selected)
-	is_exploring = false
+	
+	if selected:
+		is_exploring = false

@@ -35,10 +35,11 @@ func _on_target_reached() -> void:
 
 
 func _on_waypoint_reached(_details: Dictionary) -> void:
-	var unit_tile : Vector2i = unit.get_tile()
-	if unit_tile != start_tile and unit_tile != target_tile:
-		print("[EXPLORE] Waypoint Reached!", unit_tile)
-		_set_new_exploration_target()
+	if unit.is_exploring:
+		var unit_tile : Vector2i = unit.get_tile()
+		if unit_tile != start_tile and unit_tile != target_tile:
+			print("[EXPLORE] Waypoint Reached!", unit_tile)
+			_set_new_exploration_target()
 
 
 func _set_new_exploration_target(_range:int = lo_tile_radius) -> void:

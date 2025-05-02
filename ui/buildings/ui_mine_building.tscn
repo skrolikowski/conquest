@@ -31,7 +31,7 @@ text = "X"
 
 [node name="BuildingTitle" type="Label" parent="MarginContainer/VBoxContainer/TitleContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(2.08165e-12, 24)
+custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Mine"
@@ -90,23 +90,27 @@ columns = 3
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Production/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
 horizontal_alignment = 2
 
 [node name="MetalValue" type="Label" parent="MarginContainer/VBoxContainer/Production/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
 text = "Metal"
 horizontal_alignment = 1
 
 [node name="GoldValue" type="Label" parent="MarginContainer/VBoxContainer/Production/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
 text = "Gold"
 horizontal_alignment = 1
 
 [node name="ThisBuilding" type="Label" parent="MarginContainer/VBoxContainer/Production/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
 text = "This Mine:"
 horizontal_alignment = 2
 
@@ -114,6 +118,7 @@ horizontal_alignment = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
 text = "--"
 horizontal_alignment = 1
 
@@ -121,12 +126,14 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
 text = "--"
 horizontal_alignment = 1
 
 [node name="AllBuildings" type="Label" parent="MarginContainer/VBoxContainer/Production/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
 text = "All Mines:"
 horizontal_alignment = 2
 
@@ -134,6 +141,7 @@ horizontal_alignment = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
 text = "--"
 horizontal_alignment = 1
 
@@ -141,12 +149,14 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
 text = "--"
 horizontal_alignment = 1
 
 [node name="Stockpile" type="Label" parent="MarginContainer/VBoxContainer/Production/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
 text = "Stockpile:"
 horizontal_alignment = 2
 
@@ -154,6 +164,7 @@ horizontal_alignment = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
 text = "--"
 horizontal_alignment = 1
 
@@ -161,6 +172,7 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
 text = "--"
 horizontal_alignment = 1
 

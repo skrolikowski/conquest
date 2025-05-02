@@ -1,6 +1,8 @@
 extends Node2D
 class_name WorldSelector
 
+signal cursor_updated(mouse_pos: Vector2)
+
 var mouse_pos : Vector2 = Vector2.ZERO
 
 # -- Selection..
@@ -98,12 +100,15 @@ func _input(_event: InputEvent) -> void:
 					_select_drag_rect(world_position)
 				
 
-	elif _event is InputEventMouseMotion and is_dragging:
-		var mouse_event   : InputEventMouseMotion = _event as InputEventMouseMotion
-		var drag_position : Vector2 = Vector2(mouse_pos.x, mouse_pos.y)
-		
-		if mouse_event.button_mask == MOUSE_BUTTON_MASK_LEFT:
-			_drag_update(drag_position)
+	elif _event is InputEventMouseMotion:
+		cursor_updated.emit(mouse_pos)
+
+		if is_dragging:
+			var mouse_event   : InputEventMouseMotion = _event as InputEventMouseMotion
+			var drag_position : Vector2 = Vector2(mouse_pos.x, mouse_pos.y)
+			
+			if mouse_event.button_mask == MOUSE_BUTTON_MASK_LEFT:
+				_drag_update(drag_position)
 
 
 #region DRAG & DRAG

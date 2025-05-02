@@ -37,7 +37,10 @@ func _process(_delta: float) -> void:
 			var world_map         : WorldGen = Def.get_world_map()
 			var unit_tile         : Vector2i = get_tile()
 			var tile_custom_data  : TileCustomData = world_map.get_tile_custom_data(unit_tile)
-			var movement_modifier : int = tile_custom_data.get_movement_modifier_by_unit_type(stat.unit_type)
+			var movement_modifier : float = 30.0
+			
+			if not self is ShipUnit:
+				movement_modifier = tile_custom_data.get_movement_modifier_by_unit_type(stat.unit_type)
 			
 			# -- Movement..
 			var base_move_speed : float = 48.0
@@ -47,8 +50,8 @@ func _process(_delta: float) -> void:
 			global_position += move_direction * move_speed
 
 			# -- Reduce move points..
-			stat.move_points -= base_move_speed * 0.1 * _delta
-			stat.move_points = max(0, stat.move_points)
+			# stat.move_points -= base_move_speed * 0.1 * _delta
+			# stat.move_points = max(0, stat.move_points)
 		else:
 			is_moving = false
 
@@ -106,10 +109,10 @@ func disband() -> void:
 func _set_selected(_selected: bool) -> void:
 	if selected != _selected:
 		selected = _selected
-		is_moving = false
 
 		if selected:
 			_start_pulse_effect()
+			is_moving = false
 		else:
 			_stop_pulse_effect()
 
