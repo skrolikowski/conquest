@@ -46,7 +46,7 @@ func add_building(_building: Building) -> void:
 
 func get_buildings_sorted_by_building_type() -> Array[Building]:
 	var _buildings : Array[Building] = buildings.duplicate()
-	_buildings.sort_custom(func(a:Building, b:Building) -> bool: return a.building_type < b.building_type)
+	_buildings.sort_custom(Def.sort_buildings_by_building_type)
 	return _buildings
 
 

@@ -136,32 +136,18 @@ func _drag_end(_position: Vector2) -> void:
 #endregion
 
 
-#region VIEWPORT CLICK DETECTION
-func _select_point(_position: Vector2, _collision_mask: Term.CollisionMask = Term.CollisionMask.OBJECT) -> void:
-	var pick : Node
-	
-	# --
-	var collision : Node = point_collision(_position, _collision_mask)
-	if collision:
-		if collision is Unit:
-			pick = collision as Unit
-		elif collision is Building:
-			pick = collision as Building
-		elif collision is Village:
-			pick = collision as Village
-
-	if pick:
+func set_selected(_selected: Node) -> void:
+	if _selected:
 		if selected == null:
-			selected = pick
+			selected = _selected
 			selected.selected = true
-			Def.get_world().map_set_focus_node(selected)
-		elif selected != pick:
+		elif selected != _selected:
 			selected.selected = false
-			selected = pick
+			selected = _selected
 			selected.selected = true
-			Def.get_world().map_set_focus_node(selected)
 
 		if selected is Building or selected is Village:
+			Def.get_world().map_set_focus_node(selected)
 			clear_selection()
 		elif selected is Unit and not selected in selection:
 			clear_selection()
@@ -169,6 +155,43 @@ func _select_point(_position: Vector2, _collision_mask: Term.CollisionMask = Ter
 		if selected:
 			clear_selected()
 			clear_selection()
+
+
+#region VIEWPORT CLICK DETECTION
+func _select_point(_position: Vector2, _collision_mask: Term.CollisionMask = Term.CollisionMask.OBJECT) -> void:
+	# var pick : Node
+	
+	# --
+	var collision : Node = point_collision(_position, _collision_mask)
+	if collision:
+		if collision is Unit:
+			set_selected(collision as Unit)
+			# pick = collision as Unit
+		elif collision is Building:
+			set_selected(collision as Building)
+			# pick = collision as Building
+		elif collision is Village:
+			set_selected(collision as Village)
+			# pick = collision as Village
+
+	# if pick:
+	# 	if selected == null:
+	# 		selected = pick
+	# 		selected.selected = true
+	# 	elif selected != pick:
+	# 		selected.selected = false
+	# 		selected = pick
+	# 		selected.selected = true
+
+	# 	if selected is Building or selected is Village:
+	# 		Def.get_world().map_set_focus_node(selected)
+	# 		clear_selection()
+	# 	elif selected is Unit and not selected in selection:
+	# 		clear_selection()
+	# else:
+	# 	if selected:
+	# 		clear_selected()
+	# 		clear_selection()
 
 
 func _select_drag_rect(_position: Vector2, _collision_mask: Term.CollisionMask = Term.CollisionMask.OBJECT) -> void:

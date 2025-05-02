@@ -9,14 +9,19 @@ func _set_colony(_building: CenterBuilding) -> void:
 
 
 func _ready() -> void:
-	for i:String in Term.BuildingType:
-		var building_type : Term.BuildingType = Term.BuildingType[i]
+	var building_types : Array[Term.BuildingType] = []
+	for i: String in Term.BuildingType:
+		building_types.append(Term.BuildingType[i])
+	building_types.sort_custom(Def.sort_building_types_by_priority)
+
+	# --
+	for building_type: Term.BuildingType in building_types:
 		if building_type == Term.BuildingType.NONE or building_type == Term.BuildingType.CENTER:
 			continue
 			
 		create_button(building_type)
-		
-		
+
+
 func create_button(_building_type : Term.BuildingType) -> void:
 	var build_button : Button = Button.new()
 	build_button.text = Def._convert_building_type_to_name(_building_type)

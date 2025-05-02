@@ -11,18 +11,33 @@ size_flags_vertical = 2
 theme = ExtResource("1_1v41n")
 script = ExtResource("2_k4uyb")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer"]
-custom_minimum_size = Vector2(2.08165e-12, 32)
+[node name="TitleContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+
+[node name="BtnClose" type="Button" parent="MarginContainer/VBoxContainer/TitleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "x"
+
+[node name="MenuTitle" type="Label" parent="MarginContainer/VBoxContainer/TitleContainer"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Buildings List"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BuildingButtons" type="VBoxContainer" parent="VBoxContainer"]
+[node name="BuildingButtons" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3

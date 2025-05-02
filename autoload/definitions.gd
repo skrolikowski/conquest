@@ -431,6 +431,45 @@ together), and farms.  Commerce does not gain production bonuses.
 #endregion
 
 
+#region SORTING
+static func sort_building_types_by_priority(_a: Term.BuildingType, _b: Term.BuildingType) -> bool:
+	const sort_ref : Dictionary = {
+		Term.BuildingType.DOCK        : 0,
+		Term.BuildingType.HOUSING     : 1,
+		Term.BuildingType.CHURCH      : 7,
+		Term.BuildingType.TAVERN      : 8,
+		Term.BuildingType.FARM        : 2,
+		Term.BuildingType.MILL        : 3,
+		Term.BuildingType.METAL_MINE  : 4,
+		Term.BuildingType.GOLD_MINE   : 5,
+		Term.BuildingType.COMMERCE    : 6,
+		Term.BuildingType.FORT        : 9,
+		Term.BuildingType.WAR_COLLEGE : 10,
+	}
+	var a : int = sort_ref.get(_a, 100)
+	var b : int = sort_ref.get(_b, 100)
+	return a < b
+
+
+static func sort_buildings_by_building_type(_a: Building, _b: Building) -> bool:
+	const sort_ref : Dictionary = {
+		Term.BuildingType.DOCK        : 0,
+		Term.BuildingType.HOUSING     : 1,
+		Term.BuildingType.CHURCH      : 7,
+		Term.BuildingType.TAVERN      : 8,
+		Term.BuildingType.FARM        : 2,
+		Term.BuildingType.MILL        : 3,
+		Term.BuildingType.METAL_MINE  : 4,
+		Term.BuildingType.GOLD_MINE   : 5,
+		Term.BuildingType.COMMERCE    : 6,
+		Term.BuildingType.FORT        : 9,
+		Term.BuildingType.WAR_COLLEGE : 10,
+	}
+	var a : int = sort_ref.get(_a.building_type, 100)
+	var b : int = sort_ref.get(_b.building_type, 100)
+	return a < b
+
+
 static func sort_combat_units_by_type(a: CombatUnit, b: CombatUnit) -> bool:
 	"""
 	Sort units by type: See Term.UnitType
