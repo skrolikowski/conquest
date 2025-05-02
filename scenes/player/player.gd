@@ -55,8 +55,8 @@ func get_colonies() -> Array[CenterBuilding]:
 	return cm.get_colonies()
 
 
-func found_colony(_tile : Vector2i, _position: Vector2, _level:int = 1) -> void:
-	cm.found_colony(_tile, _position, _level)
+func found_colony(_tile : Vector2i, _position: Vector2, _stats:UnitStats) -> void:
+	cm.found_colony(_tile, _position, _stats)
 
 
 func undo_found_colony(_building:CenterBuilding) -> void:

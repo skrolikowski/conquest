@@ -16,7 +16,7 @@ func can_settle() -> bool:
 
 
 func settle() -> void:
-	stat.player.found_colony(get_tile(), global_position, stat.level)
+	stat.player.found_colony(get_tile(), global_position, stat)
 	stat.player.disband_unit(self)
 
 	Def.get_world_selector().clear_selection()

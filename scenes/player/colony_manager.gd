@@ -6,7 +6,7 @@ class_name ColonyManager
 @export var player : Player
 
 var settler_position : Vector2
-var settler_level	 : int
+var settler_stats	 : UnitStats
 
 var placing_colony   : CenterBuilding
 var placing_tile     : Vector2i
@@ -49,8 +49,8 @@ func create_colony() -> void:
 	placing_colony.modulate = Color(1, 1, 1, 1.0)
 	
 	# -- Set initial resources..
-	var settler_stat  : Dictionary = Def.get_unit_stat(Term.UnitType.SETTLER, settler_level)
-	placing_colony.set_init_resources(settler_stat.resources)
+	var unit_stat  : Dictionary = Def.get_unit_stat(Term.UnitType.SETTLER, settler_stats.level)
+	placing_colony.set_init_resources(unit_stat.resources)
 	placing_colony.refresh_bank()
 	
 	_refresh_placing_tiles(Vector2i.ZERO)
@@ -63,7 +63,8 @@ func undo_create_colony(_building: CenterBuilding) -> void:
 	if _building.building_state == Term.BuildingState.NEW:
 		
 		# -- Create settler..
-		var settler  : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, settler_level)
+		var settler  : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, settler_stats.level)
+		settler.on_load_data(settler_stats.on_save_data())
 		var settler_pos : Vector2 = _building.global_position - Vector2(Def.TILE_SIZE.x * 0.25, Def.TILE_SIZE.y * 0.25)
 		player.create_unit(settler, settler_pos)
 
@@ -94,7 +95,7 @@ func can_settle(_tile : Vector2i) -> bool:
 	return true
 
 
-func found_colony(_tile: Vector2i, _position: Vector2, _level: int = 1) -> void:
+func found_colony(_tile: Vector2i, _position: Vector2, _stats: UnitStats) -> void:
 	var building_scene : PackedScene = Def.get_building_scene_by_type(Term.BuildingType.CENTER)
 	var building       : CenterBuilding = building_scene.instantiate() as CenterBuilding
 	placing_colony = building
@@ -111,7 +112,7 @@ func found_colony(_tile: Vector2i, _position: Vector2, _level: int = 1) -> void:
 	
 	# -- save for undoing..
 	settler_position = _position
-	settler_level    = _level
+	settler_stats    = _stats
 
 	_refresh_placing_tiles(_tile)
 
@@ -126,7 +127,8 @@ func cancel_found_colony() -> void:
 	remove_colony(placing_colony)
 
 	# -- create settler..
-	var settler  : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, settler_level)
+	var settler  : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, settler_stats.level)
+	settler.on_load_data(settler_stats.on_save_data())
 	player.create_unit(settler, settler_position)
 
 	_refresh_placing_tiles(Vector2i.ZERO)
@@ -181,7 +183,7 @@ func on_save_data() -> Dictionary:
 	return {
 		"colonies"         : colony_data,
 		"settler_position" : settler_position,
-		"settler_level"    : settler_level,
+		"settler_stats"    : settler_stats.on_save_data(),
 	}
 
 
@@ -189,7 +191,8 @@ func on_load_data(_data: Dictionary) -> void:
 
 	# -- Load settler data (if applicable)..
 	settler_position = _data["settler_position"]
-	settler_level    = _data["settler_level"]
+	settler_stats = UnitStats.New_Unit(_data["settler_stats"].unit_type, _data["settler_stats"].level)
+	settler_stats.on_load_data(_data["settler_stats"])
 
 	# -- Load colonies..
 	for colony_data: Dictionary in _data["colonies"]:
