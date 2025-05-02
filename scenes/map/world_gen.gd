@@ -445,11 +445,6 @@ func get_random_height_range_tile(_min_height:float, _max_height:float) -> Vecto
 	return select_tiles[randi() % select_tiles.size()]
 
 
-func get_terrain_modifier_value_by_industry_type(_tile:Vector2i, _industry_type:Term.IndustryType) -> int:
-	if tile_custom_data.has(_tile):
-		return tile_custom_data[_tile].terrain_modifier[_industry_type]
-	return 0
-
 #endregion
 
 
@@ -680,6 +675,12 @@ func get_terrain_modifier_by_industry_type(_tile: Vector2i) -> Dictionary:
 	if tile_custom_data.has(_tile):
 		return tile_custom_data[_tile].terrain_modifiers
 	return {}
+
+
+func get_terrain_modifier_value_by_industry_type(_tile: Vector2i, _industry_type: Term.IndustryType) -> int:
+	if tile_custom_data.has(_tile):
+		return tile_custom_data[_tile].terrain_modifiers[_industry_type]
+	return 0
 
 """
 func generate_terrain_modifiers() -> void:

@@ -104,22 +104,32 @@ func get_movement_modifier_by_unit_type(_unit_type:Term.UnitType) -> int:
 func on_save_data() -> Dictionary:
 	return {
 		"biome"             : biome,
+		"is_fog_of_war"     : is_fog_of_war,
 		"is_water"          : is_water,
 		"is_ocean"          : is_ocean,
 		"is_shore"          : is_shore,
 		"is_river"          : is_river,
 		"has_ocean_access"  : has_ocean_access,
 		"is_river_enriched" : is_river_enriched,
+
+		"industry_modifiers": industry_modifiers,
+		"terrain_modifiers" : terrain_modifiers,
+		"movement_modifiers": movement_modifiers
 	}
 
 
 func on_load_data(_data: Dictionary) -> void:
 	biome             = _data["biome"]
+	is_fog_of_war     = _data["is_fog_of_war"]
 	is_water          = _data["is_water"]
 	is_ocean          = _data["is_ocean"]
 	is_shore          = _data["is_shore"]
 	is_river          = _data["is_river"]
 	has_ocean_access  = _data["has_ocean_access"]
 	is_river_enriched = _data["is_river_enriched"]
+
+	industry_modifiers = _data["industry_modifiers"]
+	terrain_modifiers  = _data["terrain_modifiers"]
+	movement_modifiers = _data["movement_modifiers"]
 
 #endregion
