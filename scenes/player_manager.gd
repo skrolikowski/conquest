@@ -33,16 +33,16 @@ func new_game() -> void:
 	diplomacy.new_game()
 
 	# -- Generate NPCS..
-	for i in range(npc_count):
-		var npc_scene : PackedScene = Preload.npc_scene
-		var npc       : NPC = npc_scene.instantiate() as NPC
-		add_child(npc)
+	# for i in range(npc_count):
+	# 	var npc_scene : PackedScene = Preload.npc_scene
+	# 	var npc       : NPC = npc_scene.instantiate() as NPC
+	# 	add_child(npc)
 
-		#TODO: randomize this..
-		npc.tribe = NPC.Tribe.DWARVES
+	# 	#TODO: randomize this..
+	# 	npc.tribe = NPC.Tribe.DWARVES
 
-		npc.new_game()
-		npcs.append(npc)
+	# 	npc.new_game()
+	# 	npcs.append(npc)
 
 	# --
 	begin_turn()

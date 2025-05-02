@@ -99,7 +99,7 @@ func _input(_event: InputEvent) -> void:
 
 #region DRAG & DRAG
 func _is_valid_drag() -> bool:
-	return drag_start.distance_to(drag_end) > Def.TILE_SIZE.x * 0.25
+	return drag_start.distance_to(drag_end) > Def.TILE_SIZE.x * 0.1
 
 
 func _drag_start(_position: Vector2) -> void:
@@ -140,10 +140,12 @@ func _select_point(_position: Vector2, _collision_mask: Term.CollisionMask = Ter
 		if selected == null:
 			selected = pick
 			selected.selected = true
+			Def.get_world().map_set_focus_node(selected)
 		elif selected != pick:
 			selected.selected = false
 			selected = pick
 			selected.selected = true
+			Def.get_world().map_set_focus_node(selected)
 
 		if selected is Building or selected is Village:
 			clear_selection()

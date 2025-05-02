@@ -86,9 +86,14 @@ func map_refresh_status() -> void:
 	#TODO: re-add this..
 	
 	if focus_node != null:
-		var node : Building = focus_node as Building
-		var info : String = node.get_status_information(focus_tile)
-		world_canvas.update_status(info)
+		if focus_node is Unit:
+			var node : Unit = focus_node as Unit
+			var info : String = node.get_status_information(focus_tile)
+			world_canvas.update_status(info)
+		elif focus_node is Building:
+			var node : Building = focus_node as Building
+			var info : String = node.get_status_information(focus_tile)
+			world_canvas.update_status(info)
 	else:
 		# --
 		var status_text : PackedStringArray = PackedStringArray()

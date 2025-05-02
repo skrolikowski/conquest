@@ -4,7 +4,7 @@
 [ext_resource type="Theme" uid="uid://imx8kyejr8tk" path="res://assets/themes/new_theme.tres" id="1_yrusm"]
 
 [node name="UICommunityDetails" type="PanelContainer"]
-custom_minimum_size = Vector2(360, 208)
+custom_minimum_size = Vector2(456, 240)
 offset_right = 360.0
 offset_bottom = 192.0
 size_flags_vertical = 0
@@ -21,15 +21,15 @@ theme_override_constants/margin_bottom = 8
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="TitleContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="BtnClose" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="BtnClose" type="Button" parent="MarginContainer/VBoxContainer/TitleContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "X"
 
-[node name="MenuTitle" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="MenuTitle" type="Label" parent="MarginContainer/VBoxContainer/TitleContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 24)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -51,41 +51,35 @@ columns = 5
 [node name="Resource" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
 horizontal_alignment = 1
 
 [node name="Producing" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
 text = "Producing"
 horizontal_alignment = 1
 
 [node name="Consuming" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
 text = "Consuming"
 horizontal_alignment = 1
 
 [node name="NetTrade" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
 text = "Net Trade"
 horizontal_alignment = 1
 
 [node name="Total" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
 text = "Total"
 horizontal_alignment = 1
 
 [node name="GoldResource" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "Gold"
 horizontal_alignment = 1
 
@@ -93,7 +87,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0 of 0"
 horizontal_alignment = 1
 
@@ -101,7 +94,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
@@ -109,7 +101,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
@@ -117,14 +108,12 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
 [node name="MetalResource" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "Metal"
 horizontal_alignment = 1
 
@@ -132,7 +121,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0 of 0"
 horizontal_alignment = 1
 
@@ -140,7 +128,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
@@ -148,7 +135,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
@@ -156,14 +142,12 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
 [node name="WoodResource" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "Wood"
 horizontal_alignment = 1
 
@@ -171,7 +155,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0 of 0"
 horizontal_alignment = 1
 
@@ -179,7 +162,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
@@ -187,7 +169,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
@@ -195,14 +176,12 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
 [node name="GoodsResource" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "Goods"
 horizontal_alignment = 1
 
@@ -210,7 +189,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0 of 0"
 horizontal_alignment = 1
 
@@ -218,7 +196,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
@@ -226,7 +203,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
@@ -234,14 +210,12 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
 [node name="CropsResource" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "Crops"
 horizontal_alignment = 1
 
@@ -249,7 +223,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0 of 0"
 horizontal_alignment = 1
 
@@ -257,7 +230,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
@@ -265,7 +237,6 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 
@@ -273,6 +244,5 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
