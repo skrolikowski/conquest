@@ -15,6 +15,7 @@ signal camera_zoom(_direction:int)
 @onready var btn_menu      := %BtnMenu as Button
 
 var current_ui     : PanelContainer
+var locking_ui     : PanelContainer
 var current_sub_ui : Array[PanelContainer] = []
 # var current_unit_list_ui : PanelContainer
 
@@ -89,10 +90,6 @@ func _on_menu_pressed() -> void:
 
 
 #region CLOSE UI
-# func _on_close_ui_pressed() -> void:
-# 	close_all_ui()
-
-
 func close_all_ui() -> void:
 	if current_ui != null:
 		%Panels.remove_child(current_ui)
@@ -103,6 +100,7 @@ func close_all_ui() -> void:
 		ui.queue_free()
 
 	current_ui     = null
+	locking_ui	   = null
 	current_sub_ui = []
 
 
@@ -229,6 +227,7 @@ func open_found_colony_menu(_cm: ColonyManager) -> void:
 	%Panels.move_child(ui, 0)
 
 	current_ui = ui
+	locking_ui = ui
 
 #endregion
 

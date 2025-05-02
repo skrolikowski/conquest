@@ -1,8 +1,9 @@
 extends Node2D
 class_name WorldSelector
 
-var mouse_pos   : Vector2 = Vector2.ZERO
+var mouse_pos : Vector2 = Vector2.ZERO
 
+# -- Selection..
 var selected  : Node
 var selection : Array[Unit] = []
 var selection_tweens : Array[Tween] = []
@@ -45,6 +46,14 @@ func clear_selection() -> void:
 
 
 func _input(_event: InputEvent) -> void:
+	if Def.get_world_canvas().locking_ui != null:
+		"""
+			Dev-note:
+			If locking_ui is open, we don't want to process any input events until it's closed..
+		"""
+		return
+	
+	# --
 	if _event is InputEventMouseButton:
 		var mouse_event    : InputEventMouseButton = _event as InputEventMouseButton
 		var world_position : Vector2 = Vector2(mouse_pos.x, mouse_pos.y)
@@ -203,47 +212,5 @@ func shape_collision(_position: Vector2, _shape: RectangleShape2D, _collision_ma
 	query.shape = _shape
 	query.transform = Transform2D(0, _position)
 	return space.intersect_shape(query)
-
-#endregion
-
-
-#region PULSE HIGHLIGHT EFFECT
-# func _start_pulsing_effect(_node: Node) -> void:
-# 	var tween : Tween = create_tween()
-# 	tween.set_ease(Tween.EASE_IN_OUT)
-# 	tween.set_trans(Tween.TRANS_SINE)
-# 	tween.set_loops(-1)
-	
-# 	# -- Set highlight effect..
-# 	var property : Sprite2D = _node.sprite as Sprite2D
-# 	tween.tween_property(property, "modulate", Color.LIGHT_GRAY, 0.5)
-# 	tween.tween_property(property, "modulate", Color.WHITE, 0.5)
-	
-# 	selection_tweens.append(tween)
-
-
-# func _start_pulsing_effects() -> void:
-# 	_stop_all_pulsing_effects()
-	
-# 	if selected != null:
-# 		_start_pulsing_effect(selected)
-
-# 	for node : Node in selection:
-# 		_start_pulsing_effect(node)
-
-
-# func _stop_all_pulsing_effects() -> void:
-# 	if selection_tweens.size() > 0:
-# 		for tween : Tween in selection_tweens:
-# 			tween.stop()
-# 		selection_tweens.clear()
-
-# 	if selected:
-# 		var property : Sprite2D = selected.sprite as Sprite2D
-# 		property.modulate = Color.WHITE
-
-# 	for node : Node in selection:
-# 		var property : Sprite2D = node.sprite as Sprite2D
-# 		property.modulate = Color.WHITE
 
 #endregion
