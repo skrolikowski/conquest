@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://c8x25vufthj0g" path="res://ui/player/ui_build_building.gd" id="2_k4uyb"]
 
 [node name="UIBuildBuilding" type="PanelContainer"]
-custom_minimum_size = Vector2(240, 160)
+custom_minimum_size = Vector2(208, 0)
 offset_right = 130.0
 offset_bottom = 78.0
 size_flags_vertical = 2
@@ -33,7 +33,7 @@ text = "x"
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Buildings List"
+text = "Build Building"
 horizontal_alignment = 1
 vertical_alignment = 1
 

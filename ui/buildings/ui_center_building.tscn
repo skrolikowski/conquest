@@ -29,7 +29,7 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
-text = "X"
+text = "x"
 
 [node name="UITitle" type="Label" parent="MarginContainer/VBoxContainer/TitleContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 24)

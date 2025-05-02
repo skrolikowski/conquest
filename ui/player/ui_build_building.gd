@@ -1,6 +1,8 @@
 extends PanelContainer
 class_name UIBuildBuilding
 
+@onready var btn_close : Button = %BtnClose as Button
+
 var colony : CenterBuilding : set = _set_colony
 
 
@@ -9,9 +11,13 @@ func _set_colony(_building: CenterBuilding) -> void:
 
 
 func _ready() -> void:
+	btn_close.connect("pressed", _on_close_pressed)
+
+	# -- Gather building types..
 	var building_types : Array[Term.BuildingType] = []
 	for i: String in Term.BuildingType:
 		building_types.append(Term.BuildingType[i])
+	
 	building_types.sort_custom(Def.sort_building_types_by_priority)
 
 	# --
@@ -50,3 +56,7 @@ func _on_button_entered(_building_type: Term.BuildingType) -> void:
 
 func _on_button_exited() -> void:
 	Def.get_world_canvas().clear_status()
+
+
+func _on_close_pressed() -> void:
+	Def.get_world_canvas().close_sub_ui(self)
