@@ -12,26 +12,28 @@ var placing_tile     : Vector2i
 var build_tiles  : Dictionary
 var occupy_tiles : Array[Vector2i]
 var buildings    : Array[Building] = []
-	
 
-func _process(_delta: float) -> void:
-	if placing_building != null:
-		var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
-		var map_tile       : Vector2i = tile_map_layer.local_to_map(get_global_mouse_position())
 
-		if placing_tile != map_tile:
-			_update_temp_building(map_tile)
-	
+func _ready() -> void:
+	Def.get_world().world_selector.connect("cursor_updated", _on_cursor_updated)
+
 
 func _draw() -> void:
 	if placing_building != null:
 		for tile: Vector2 in build_tiles.keys():
-			var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
+			var tile_map_layer : TileMapLayer = Def.get_world_tile_map()
 			var tile_size      : Vector2 = tile_map_layer.tile_set.tile_size
 			var tile_pos       : Vector2 = global_position - tile_map_layer.map_to_local(tile)
 			var tile_rect      : Rect2 = Rect2(tile_pos - tile_size * 0.5, tile_size)
 			
 			draw_rect(tile_rect, Color(Color.WHITE, 0.5), true)
+
+
+#region EVENT HANDLERS
+func _on_cursor_updated() -> void:
+	_refresh_placing_tiles()
+
+#endregion
 
 
 #region BUILDING MANAGEMENT
@@ -140,6 +142,19 @@ func _can_place_temp_building() -> bool:
 	return true
 
 
+func _refresh_placing_tiles() -> void:
+	"""
+	Refresh the placing building position based on mouse cursor
+	(only called when cursor updated)
+	"""
+	if placing_building:
+		var tile_map_layer : TileMapLayer = Def.get_world_tile_map()
+		var map_tile       : Vector2i = tile_map_layer.local_to_map(get_global_mouse_position())
+
+		if placing_tile != map_tile:
+			_update_temp_building(map_tile)
+
+
 func _place_temp_building() -> void:
 	if not _can_place_temp_building():
 		remove_building(placing_building)
@@ -182,7 +197,7 @@ func _refresh_build_tiles() -> void:
 	var world_map   : WorldGen = Def.get_world_map()
 	var build_radius   : float = Def.get_building_stat(Term.BuildingType.CENTER, colony.level).build_radius * Def.TILE_SIZE.x
 	var tiles_in_range : Array[Vector2i] = Def.get_world_map().get_tiles_in_radius(global_position, build_radius)
-	var tile_map_layer : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
+	var tile_map_layer : TileMapLayer = Def.get_world_tile_map()
 
 	build_tiles = {}
 	
