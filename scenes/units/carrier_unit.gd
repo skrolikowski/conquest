@@ -46,7 +46,7 @@ func detach_unit(_unit_stat: UnitStats) -> void:
 
 
 func _detach_unit(_unit_stat: UnitStats) -> void:
-	var tile_map   : TileMapLayer = Def.get_world_map().tilemap_layers[WorldGen.MapLayer.LAND]
+	var tile_map   : TileMapLayer = Def.get_world_tile_map()
 	var unit_scene : PackedScene = Def.get_unit_scene_by_type(_unit_stat.unit_type)
 	var unit       : Unit = unit_scene.instantiate() as Unit
 	

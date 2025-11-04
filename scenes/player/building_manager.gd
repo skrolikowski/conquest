@@ -12,7 +12,7 @@ var placing_tile     : Vector2i
 var build_tiles  : Dictionary
 var occupy_tiles : Array[Vector2i]
 var buildings    : Array[Building] = []
-
+	
 
 func _ready() -> void:
 	Def.get_world().world_selector.connect("cursor_updated", _on_cursor_updated)
