@@ -4,6 +4,7 @@ class_name DefinitionsRef
 # REFACTOR PHASE 1: Import new utility classes
 const TypeRegistry = preload("res://scripts/type_registry.gd")
 const GameRules = preload("res://scripts/game_rules.gd")
+const C = preload("res://scripts/constants.gd")  # Pure constants file
 
 var buildings : Dictionary = {}
 var units     : Dictionary = {}
@@ -13,21 +14,23 @@ var UIBuildingScenes : Dictionary
 var UnitScenes       : Dictionary
 var UIUnitScenes     : Dictionary
 
-const TILE_SIZE : Vector2i = Vector2i(48, 48)
+# REFACTOR PHASE 2: Constants now reference shared constants.gd file
+# NOTE: Future code should use C.TILE_SIZE directly (via preload("res://scripts/constants.gd"))
+const TILE_SIZE : Vector2i = C.TILE_SIZE
 
 # -- Combat constants
-const DEFENDER_RESERVE_ROW : Vector2i = Vector2i(5, 0)
-const DEFENDER_FLAG_SQUARE : Vector2i = Vector2i(4, 1)
-const ATTACKER_RESERVE_ROW : Vector2i = Vector2i(0, 0)
-const ATTACKER_FLAG_SQUARE : Vector2i = Vector2i(1, 1)
+const DEFENDER_RESERVE_ROW : Vector2i = C.DEFENDER_RESERVE_ROW
+const DEFENDER_FLAG_SQUARE : Vector2i = C.DEFENDER_FLAG_SQUARE
+const ATTACKER_RESERVE_ROW : Vector2i = C.ATTACKER_RESERVE_ROW
+const ATTACKER_FLAG_SQUARE : Vector2i = C.ATTACKER_FLAG_SQUARE
 
-# --
-const FOG_OF_WAR_ENABLED : bool = false
-const CONFIRM_END_TURN_ENABLED : bool = false
-const WEALTH_MODE_ENABLED : bool = true
+# -- Feature flags
+const FOG_OF_WAR_ENABLED : bool = C.FOG_OF_WAR_ENABLED
+const CONFIRM_END_TURN_ENABLED : bool = C.CONFIRM_END_TURN_ENABLED
+const WEALTH_MODE_ENABLED : bool = C.WEALTH_MODE_ENABLED
 
-# --
-const STATUS_SEP : String = "; "
+# -- Rendering
+const STATUS_SEP : String = C.STATUS_SEP
 
 
 func _ready() -> void:
@@ -288,21 +291,13 @@ func get_unit_stat(_unit_type: Term.UnitType, _unit_level: int) -> Dictionary:
 
 #region MILITARY RESEARCH
 func get_research_max_level() -> int:
-	return 5
+	# REFACTOR PHASE 2: Delegating to GameConfig
+	return GameConfig.get_research_max_level()
 
 
 func get_research_max_exp_by_level(level:int) -> int:
-	if level == 1:
-		return 1000
-	if level == 2:
-		return 5000
-	if level == 3:
-		return 10000
-	if level == 4:
-		return 25000
-	if level == 5:
-		return 50000
-	return 0
+	# REFACTOR PHASE 2: Delegating to GameConfig
+	return GameConfig.get_research_max_exp_by_level(level)
 #endregion
 
 
@@ -312,14 +307,16 @@ func get_base_population_growth_rate() -> float:
 	According to this wiki: https://gamefaqs.gamespot.com/pc/196975-conquest-of-the-new-world/faqs/2038
 	TODO: 8% of current population + 10 per Church level
 	"""
-	return 0.08
+	# REFACTOR PHASE 2: Delegating to GameConfig
+	return GameConfig.get_base_population_growth_rate()
 
 
 func get_crops_consumption_rate() -> float:
 	"""
 	1 crop feeds 100 population
 	"""
-	return 0.01
+	# REFACTOR PHASE 2: Delegating to GameConfig
+	return GameConfig.get_crops_consumption_rate()
 #endregion
 
 

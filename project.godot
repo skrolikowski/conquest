@@ -12,11 +12,12 @@ config_version=5
 
 config/name="Conquest"
 run/main_scene="res://scenes/world_manager.tscn"
-config/features=PackedStringArray("4.4", "Forward Plus")
+config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
+GameConfig="*res://autoload/game_config.gd"
 Def="*res://autoload/definitions.tscn"
 Preload="*res://autoload/preloads.tscn"
 Popups="*res://autoload/popups.tscn"
