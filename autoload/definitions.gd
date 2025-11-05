@@ -9,10 +9,8 @@ const C = preload("res://scripts/constants.gd")  # Pure constants file
 var buildings : Dictionary = {}
 var units     : Dictionary = {}
 
-var BuildingScenes   : Dictionary
-var UIBuildingScenes : Dictionary
-var UnitScenes       : Dictionary
-var UIUnitScenes     : Dictionary
+# REFACTOR PHASE 3: Scene dictionaries removed - now handled by Preload autoload
+# Use Preload.get_building_scene(type) instead of BuildingScenes[type]
 
 # REFACTOR PHASE 2: Constants now reference shared constants.gd file
 # NOTE: Future code should use C.TILE_SIZE directly (via preload("res://scripts/constants.gd"))
@@ -34,56 +32,9 @@ const STATUS_SEP : String = C.STATUS_SEP
 
 
 func _ready() -> void:
-	BuildingScenes = {
-		Term.BuildingType.CENTER:      Preload.center_building_scene,
-		Term.BuildingType.CHURCH:      Preload.church_building_scene,
-		Term.BuildingType.COMMERCE:    Preload.commerce_building_scene,
-		Term.BuildingType.DOCK:        Preload.dock_building_scene,
-		Term.BuildingType.FARM:        Preload.farm_building_scene,
-		Term.BuildingType.FORT:        Preload.fort_building_scene,
-		Term.BuildingType.HOUSING:     Preload.house_building_scene,
-		Term.BuildingType.METAL_MINE:  Preload.metal_mine_building_scene,
-		Term.BuildingType.GOLD_MINE:   Preload.gold_mine_building_scene,
-		Term.BuildingType.MILL:        Preload.mill_building_scene,
-		Term.BuildingType.TAVERN:      Preload.tavern_building_scene,
-		Term.BuildingType.WAR_COLLEGE: Preload.war_college_building_scene,
-	}
+	# REFACTOR PHASE 3: Scene dictionary initialization removed
+	# Preload autoload now handles all scene lookups via static methods
 
-	UIBuildingScenes = {
-		Term.BuildingType.CENTER:      Preload.ui_center_building_scene,
-		Term.BuildingType.CHURCH:      Preload.ui_church_scene,
-		Term.BuildingType.COMMERCE:    Preload.ui_commerce_scene,
-		Term.BuildingType.DOCK:        Preload.ui_dock_scene,
-		Term.BuildingType.FARM:        Preload.ui_farm_scene,
-		Term.BuildingType.FORT:        Preload.ui_fort_scene,
-		Term.BuildingType.HOUSING:     Preload.ui_house_scene,
-		Term.BuildingType.METAL_MINE:  Preload.ui_mine_scene,
-		Term.BuildingType.GOLD_MINE:   Preload.ui_mine_scene,
-		Term.BuildingType.MILL:        Preload.ui_mill_scene,
-		Term.BuildingType.TAVERN:      Preload.ui_tavern_scene,
-		Term.BuildingType.WAR_COLLEGE: Preload.ui_war_college_scene,
-	}
-
-	UnitScenes = {
-		Term.UnitType.LEADER:    Preload.leader_unit,
-		Term.UnitType.SETTLER:   Preload.settler_unit,
-		Term.UnitType.EXPLORER:  Preload.explorer_unit,
-		Term.UnitType.SHIP:      Preload.ship_unit,
-		Term.UnitType.INFANTRY:  Preload.unit,
-		Term.UnitType.CALVARY:   Preload.unit,
-		Term.UnitType.ARTILLARY: Preload.unit,
-	}
-
-	UIUnitScenes = {
-		Term.UnitType.LEADER:    Preload.ui_leader_scene,
-		Term.UnitType.SETTLER:   Preload.ui_settler_scene,
-		Term.UnitType.EXPLORER:  Preload.ui_explorer_scene,
-		Term.UnitType.SHIP:      Preload.ui_ship_scene,
-		Term.UnitType.INFANTRY:  Preload.ui_infantry_scene,
-		Term.UnitType.CALVARY:   Preload.ui_calvary_scene,
-		Term.UnitType.ARTILLARY: Preload.ui_artillary_scene
-	}
-	
 	## BUILDINGS
 	var json_as_text : String = FileAccess.get_file_as_string("res://assets/metadata/buildings.json")
 	var json_as_dict : Dictionary = JSON.parse_string(json_as_text)
@@ -186,19 +137,23 @@ func get_world_tile_map() -> TileMapLayer:
 
 
 func get_building_scene_by_type(_building_type: Term.BuildingType) -> PackedScene:
-	return BuildingScenes[_building_type]
+	# REFACTOR PHASE 3: Delegating to Preload
+	return Preload.get_building_scene(_building_type)
 
 
 func get_ui_building_scene_by_type(_building_type: Term.BuildingType) -> PackedScene:
-	return UIBuildingScenes[_building_type]
+	# REFACTOR PHASE 3: Delegating to Preload
+	return Preload.get_building_ui_scene(_building_type)
 
 
 func get_unit_scene_by_type(_unit_type: Term.UnitType) -> PackedScene:
-	return UnitScenes[_unit_type]
+	# REFACTOR PHASE 3: Delegating to Preload
+	return Preload.get_unit_scene(_unit_type)
 
 
 func get_ui_unit_scene_by_type(_unit_type: Term.UnitType) -> PackedScene:
-	return UIUnitScenes[_unit_type]
+	# REFACTOR PHASE 3: Delegating to Preload
+	return Preload.get_unit_ui_scene(_unit_type)
 
 
 func _convert_building_type_to_name(_building_type:Term.BuildingType) -> String:

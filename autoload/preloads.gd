@@ -1,6 +1,11 @@
 extends Node
 class_name PreloadsRef
 
+## Centralized scene and resource preloading.
+## All PackedScenes are preloaded at startup to prevent runtime loading delays.
+##
+## REFACTOR PHASE 3: Added typed accessor methods for buildings and units.
+## Use get_building_scene(type) instead of directly accessing properties.
 
 const player_scene       : PackedScene = preload("res://scenes/player/player.tscn")
 const ui_diplomacy_scene : PackedScene = preload("res://ui/ui_diplomacy.tscn")
@@ -77,3 +82,103 @@ const combat_infantry_unit  : Resource = preload("res://combat/resources/infantr
 const combat_orc_artillary_unit : Resource = preload("res://combat/resources/orc_artillary_animations.tres")
 const combat_orc_calvary_unit   : Resource = preload("res://combat/resources/orc_calvary_animations.tres")
 const combat_orc_infantry_unit  : Resource = preload("res://combat/resources/orc_infantry_animations.tres")
+
+
+#region TYPED ACCESSORS (REFACTOR PHASE 3)
+
+## Building scene accessor dictionaries (lazy-initialized)
+static var _building_scenes: Dictionary = {}
+static var _building_ui_scenes: Dictionary = {}
+static var _unit_scenes: Dictionary = {}
+static var _unit_ui_scenes: Dictionary = {}
+static var _initialized: bool = false
+
+static func _initialize_dictionaries() -> void:
+	"""Initialize scene lookup dictionaries (called once on first access)."""
+	if _initialized:
+		return
+	_initialized = true
+
+	# Building scenes
+	_building_scenes = {
+		Term.BuildingType.CENTER: center_building_scene,
+		Term.BuildingType.CHURCH: church_building_scene,
+		Term.BuildingType.COMMERCE: commerce_building_scene,
+		Term.BuildingType.DOCK: dock_building_scene,
+		Term.BuildingType.FARM: farm_building_scene,
+		Term.BuildingType.FORT: fort_building_scene,
+		Term.BuildingType.HOUSING: house_building_scene,
+		Term.BuildingType.METAL_MINE: metal_mine_building_scene,
+		Term.BuildingType.GOLD_MINE: gold_mine_building_scene,
+		Term.BuildingType.MILL: mill_building_scene,
+		Term.BuildingType.WAR_COLLEGE: war_college_building_scene,
+		Term.BuildingType.TAVERN: tavern_building_scene,
+	}
+
+	# Building UI scenes
+	_building_ui_scenes = {
+		Term.BuildingType.CENTER: ui_center_building_scene,
+		Term.BuildingType.CHURCH: ui_church_scene,
+		Term.BuildingType.COMMERCE: ui_commerce_scene,
+		Term.BuildingType.DOCK: ui_dock_scene,
+		Term.BuildingType.FARM: ui_farm_scene,
+		Term.BuildingType.FORT: ui_fort_scene,
+		Term.BuildingType.HOUSING: ui_house_scene,
+		Term.BuildingType.METAL_MINE: ui_mine_scene,
+		Term.BuildingType.GOLD_MINE: ui_mine_scene,
+		Term.BuildingType.MILL: ui_mill_scene,
+		Term.BuildingType.WAR_COLLEGE: ui_war_college_scene,
+		Term.BuildingType.TAVERN: ui_tavern_scene,
+	}
+
+	# Unit scenes
+	_unit_scenes = {
+		Term.UnitType.LEADER: leader_unit,
+		Term.UnitType.SETTLER: settler_unit,
+		Term.UnitType.EXPLORER: explorer_unit,
+		Term.UnitType.SHIP: ship_unit,
+		Term.UnitType.INFANTRY: unit,
+		Term.UnitType.CALVARY: unit,
+		Term.UnitType.ARTILLARY: unit,
+	}
+
+	# Unit UI scenes
+	_unit_ui_scenes = {
+		Term.UnitType.LEADER: ui_leader_scene,
+		Term.UnitType.SETTLER: ui_settler_scene,
+		Term.UnitType.EXPLORER: ui_explorer_scene,
+		Term.UnitType.SHIP: ui_ship_scene,
+		Term.UnitType.INFANTRY: ui_infantry_scene,
+		Term.UnitType.CALVARY: ui_calvary_scene,
+		Term.UnitType.ARTILLARY: ui_artillary_scene,
+	}
+
+
+static func get_building_scene(type: Term.BuildingType) -> PackedScene:
+	"""Get building scene by type. Asserts if type not found."""
+	_initialize_dictionaries()
+	assert(_building_scenes.has(type), "No building scene for type: " + str(type))
+	return _building_scenes[type]
+
+
+static func get_building_ui_scene(type: Term.BuildingType) -> PackedScene:
+	"""Get building UI scene by type. Asserts if type not found."""
+	_initialize_dictionaries()
+	assert(_building_ui_scenes.has(type), "No building UI scene for type: " + str(type))
+	return _building_ui_scenes[type]
+
+
+static func get_unit_scene(type: Term.UnitType) -> PackedScene:
+	"""Get unit scene by type. Asserts if type not found."""
+	_initialize_dictionaries()
+	assert(_unit_scenes.has(type), "No unit scene for type: " + str(type))
+	return _unit_scenes[type]
+
+
+static func get_unit_ui_scene(type: Term.UnitType) -> PackedScene:
+	"""Get unit UI scene by type. Asserts if type not found."""
+	_initialize_dictionaries()
+	assert(_unit_ui_scenes.has(type), "No unit UI scene for type: " + str(type))
+	return _unit_ui_scenes[type]
+
+#endregion
