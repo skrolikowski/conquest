@@ -1,6 +1,10 @@
 extends Node2D
 class_name DefinitionsRef
 
+# REFACTOR PHASE 1: Import new utility classes
+const TypeRegistry = preload("res://scripts/type_registry.gd")
+const GameRules = preload("res://scripts/game_rules.gd")
+
 var buildings : Dictionary = {}
 var units     : Dictionary = {}
 
@@ -195,127 +199,32 @@ func get_ui_unit_scene_by_type(_unit_type: Term.UnitType) -> PackedScene:
 
 
 func _convert_building_type_to_name(_building_type:Term.BuildingType) -> String:
-	if _building_type == Term.BuildingType.CENTER:
-		return "Colony Center"
-	if _building_type == Term.BuildingType.HOUSING:
-		return "Housing"
-	if _building_type == Term.BuildingType.MILL:
-		return "Mill"
-	if _building_type == Term.BuildingType.FARM:
-		return "Farm"
-	if _building_type == Term.BuildingType.CHURCH:
-		return "Church"
-	if _building_type == Term.BuildingType.DOCK:
-		return "Dock"
-	if _building_type == Term.BuildingType.METAL_MINE:
-		return "Metal Mine"
-	if _building_type == Term.BuildingType.GOLD_MINE:
-		return "Gold Mine"
-	if _building_type == Term.BuildingType.COMMERCE:
-		return "Commerce"
-	if _building_type == Term.BuildingType.FORT:
-		return "Fort"
-	if _building_type == Term.BuildingType.WAR_COLLEGE:
-		return "War College"
-	if _building_type == Term.BuildingType.TAVERN:
-		return "Tavern"
-	return ""
+	# REFACTOR PHASE 1: Delegating to TypeRegistry
+	return TypeRegistry.building_type_to_name(_building_type)
 
 
 func _convert_to_building_type(_building_code: String) -> Term.BuildingType:
-	if _building_code == "center":
-		return Term.BuildingType.CENTER
-	if _building_code == "housing":
-		return Term.BuildingType.HOUSING
-	if _building_code == "farm":
-		return Term.BuildingType.FARM
-	if _building_code == "church":
-		return Term.BuildingType.CHURCH
-	if _building_code == "docks":
-		return Term.BuildingType.DOCK
-	if _building_code == "mill":
-		return Term.BuildingType.MILL
-	if _building_code == "metal_mine":
-		return Term.BuildingType.METAL_MINE
-	if _building_code == "gold_mine":
-		return Term.BuildingType.GOLD_MINE
-	if _building_code == "commerce":
-		return Term.BuildingType.COMMERCE
-	if _building_code == "fort":
-		return Term.BuildingType.FORT
-	if _building_code == "war_college":
-		return Term.BuildingType.WAR_COLLEGE
-	if _building_code == "tavern":
-		return Term.BuildingType.TAVERN
-
-	return Term.BuildingType.NONE
+	# REFACTOR PHASE 1: Delegating to TypeRegistry
+	return TypeRegistry.building_type_from_code(_building_code)
 	
 func _convert_unit_type_to_name(_unit_type: Term.UnitType) -> String:
-	if _unit_type == Term.UnitType.ARTILLARY:
-		return "Artillary"
-	if _unit_type == Term.UnitType.CALVARY:
-		return "Calvary"
-	if _unit_type == Term.UnitType.EXPLORER:
-		return "Explorer"
-	if _unit_type == Term.UnitType.INFANTRY:
-		return "Infantry"
-	if _unit_type == Term.UnitType.LEADER:
-		return "Leader"
-	if _unit_type == Term.UnitType.SETTLER:
-		return "Settler"
-	if _unit_type == Term.UnitType.SHIP:
-		return "Ship"
-
-	return "Unit"
+	# REFACTOR PHASE 1: Delegating to TypeRegistry
+	return TypeRegistry.unit_type_to_name(_unit_type)
 
 
 func _convert_to_unit_type(_code: String) -> Term.UnitType:
-	if _code == "settler":
-		return Term.UnitType.SETTLER
-	if _code == "ship":
-		return Term.UnitType.SHIP
-	if _code == "infantry":
-		return Term.UnitType.INFANTRY
-	if _code == "cavalry":
-		return Term.UnitType.CALVARY
-	if _code == "artillery":
-		return Term.UnitType.ARTILLARY
-	if _code == "explorer":
-		return Term.UnitType.EXPLORER
-	if _code == "leader":
-		return Term.UnitType.LEADER
-
-	return Term.UnitType.NONE
+	# REFACTOR PHASE 1: Delegating to TypeRegistry
+	return TypeRegistry.unit_type_from_code(_code)
 
 
 func _convert_to_resource_type(_resource_code: String) -> Term.ResourceType:
-	if _resource_code == "wood":
-		return Term.ResourceType.WOOD
-	if _resource_code == "metal":
-		return Term.ResourceType.METAL
-	if _resource_code == "crops":
-		return Term.ResourceType.CROPS
-	if _resource_code == "gold":
-		return Term.ResourceType.GOLD
-	if _resource_code == "goods":
-		return Term.ResourceType.GOODS
-		
-	return Term.ResourceType.NONE
+	# REFACTOR PHASE 1: Delegating to TypeRegistry
+	return TypeRegistry.resource_type_from_code(_resource_code)
 
 
 func _convert_resource_type_to_name(_resource_type:Term.ResourceType) -> String:
-	if _resource_type == Term.ResourceType.WOOD:
-		return "Wood"
-	if _resource_type == Term.ResourceType.METAL:
-		return "Metal"
-	if _resource_type == Term.ResourceType.CROPS:
-		return "Crops"
-	if _resource_type == Term.ResourceType.GOLD:
-		return "Gold"
-	if _resource_type == Term.ResourceType.GOODS:
-		return "Goods"
-
-	return "Resource"
+	# REFACTOR PHASE 1: Delegating to TypeRegistry
+	return TypeRegistry.resource_type_to_name(_resource_type)
 
 func _convert_to_transaction(_resources: Dictionary) -> Transaction:
 	var transaction:Transaction = Transaction.new()
@@ -433,55 +342,29 @@ together), and farms.  Commerce does not gain production bonuses.
 
 #region SORTING
 static func sort_building_types_by_priority(_a: Term.BuildingType, _b: Term.BuildingType) -> bool:
-	const sort_ref : Dictionary = {
-		Term.BuildingType.DOCK        : 0,
-		Term.BuildingType.HOUSING     : 1,
-		Term.BuildingType.CHURCH      : 7,
-		Term.BuildingType.TAVERN      : 8,
-		Term.BuildingType.FARM        : 2,
-		Term.BuildingType.MILL        : 3,
-		Term.BuildingType.METAL_MINE  : 4,
-		Term.BuildingType.GOLD_MINE   : 5,
-		Term.BuildingType.COMMERCE    : 6,
-		Term.BuildingType.FORT        : 9,
-		Term.BuildingType.WAR_COLLEGE : 10,
-	}
-	var a : int = sort_ref.get(_a, 100)
-	var b : int = sort_ref.get(_b, 100)
-	return a < b
+	# REFACTOR PHASE 1: Delegating to GameRules
+	return GameRules.sort_building_types_by_priority(_a, _b)
 
 
 static func sort_buildings_by_building_type(_a: Building, _b: Building) -> bool:
-	const sort_ref : Dictionary = {
-		Term.BuildingType.DOCK        : 0,
-		Term.BuildingType.HOUSING     : 1,
-		Term.BuildingType.CHURCH      : 7,
-		Term.BuildingType.TAVERN      : 8,
-		Term.BuildingType.FARM        : 2,
-		Term.BuildingType.MILL        : 3,
-		Term.BuildingType.METAL_MINE  : 4,
-		Term.BuildingType.GOLD_MINE   : 5,
-		Term.BuildingType.COMMERCE    : 6,
-		Term.BuildingType.FORT        : 9,
-		Term.BuildingType.WAR_COLLEGE : 10,
-	}
-	var a : int = sort_ref.get(_a.building_type, 100)
-	var b : int = sort_ref.get(_b.building_type, 100)
-	return a < b
+	# REFACTOR PHASE 1: Delegating to GameRules
+	return GameRules.sort_buildings_by_priority(_a, _b)
 
 
 static func sort_combat_units_by_type(a: CombatUnit, b: CombatUnit) -> bool:
 	"""
 	Sort units by type: See Term.UnitType
 	"""
-	return a.stat.unit_type > b.stat.unit_type
+	# REFACTOR PHASE 1: Delegating to GameRules
+	return GameRules.sort_combat_units_by_type(a, b)
 
 
 static func sort_combat_units_by_health(a: CombatUnit, b: CombatUnit) -> bool:
 	"""
 	Sort units by type: stat.health
 	"""
-	return a.stat.health > b.stat.health
+	# REFACTOR PHASE 1: Delegating to GameRules
+	return GameRules.sort_combat_units_by_health(a, b)
 
 
 # static func sort_combat_squares_by_priority(a: CombatSquare, b: CombatSquare) -> bool:
