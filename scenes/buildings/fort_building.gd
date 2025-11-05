@@ -12,7 +12,7 @@ func _ready() -> void:
 
 
 func get_unit_capacity_value() -> int:
-	return Def.get_building_stat(building_type, level).max_military_units
+	return GameData.get_building_stat(building_type, level).max_military_units
 
 
 func can_train_military_unit(i_unit_type: Term.UnitType) -> bool:
@@ -32,5 +32,5 @@ func can_train_military_unit(i_unit_type: Term.UnitType) -> bool:
 		return false
 
 	# -- Resource availability check..
-	var unit_cost : Transaction = Def.get_unit_cost(i_unit_type, train_level)
+	var unit_cost : Transaction = GameData.get_unit_cost(i_unit_type, train_level)
 	return colony.bank.can_afford_this_turn(unit_cost)

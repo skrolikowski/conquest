@@ -14,7 +14,7 @@ func _ready() -> void:
 
 
 func get_population_capacity_value() -> int:
-	return Def.get_building_stat(building_type, level).max_population
+	return GameData.get_building_stat(building_type, level).max_population
 
 
 func can_recruit_settler() -> bool:
@@ -26,5 +26,5 @@ func can_recruit_settler() -> bool:
 	if building_state != Term.BuildingState.ACTIVE:
 		return false
 		
-	var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.SETTLER, level)
+	var unit_cost : Transaction = GameData.get_unit_cost(Term.UnitType.SETTLER, level)
 	return colony.bank.can_afford_this_turn(unit_cost)

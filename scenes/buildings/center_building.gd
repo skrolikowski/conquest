@@ -24,7 +24,7 @@ func _ready() -> void:
 	building_state = Term.BuildingState.NEW
 
 	# -- Init stats..
-	var building_stat  : Dictionary = Def.get_building_stat(building_type, level)
+	var building_stat  : Dictionary = GameData.get_building_stat(building_type, level)
 	population = building_stat.init_population
 
 	# Init military research..
@@ -74,19 +74,19 @@ func get_total_population_capacity_value(_building_type:Term.BuildingType) -> in
 	var value : int = 0
 	for building:Building in bm.get_buildings():
 		if building.building_type == _building_type:
-			value += Def.get_building_stat(building.building_type, level).max_population
+			value += GameData.get_building_stat(building.building_type, level).max_population
 	return value
 
 
 func get_max_population() -> int:
-	var value : int = Def.get_building_stat(building_type, level).max_population
+	var value : int = GameData.get_building_stat(building_type, level).max_population
 
 	for building: Building in bm.get_buildings():
 		if building.building_state == Term.BuildingState.NEW or building.building_state == Term.BuildingState.ACTIVE:
 			if building.building_type == Term.BuildingType.HOUSING:
-				value += Def.get_building_stat(building.building_type, level).max_population
+				value += GameData.get_building_stat(building.building_type, level).max_population
 			elif building.building_type == Term.BuildingType.FARM:
-				value += Def.get_building_stat(building.building_type, level).max_population
+				value += GameData.get_building_stat(building.building_type, level).max_population
 	
 	return value
 
@@ -100,21 +100,21 @@ func get_next_max_population() -> int:
 
 	if building_state == Term.BuildingState.UPGRADE:
 		#TODO: handle max building level error
-		var curr_max : int = Def.get_building_stat(building_type, level).max_population
-		var next_max : int = Def.get_building_stat(building_type, level + 1).max_population
+		var curr_max : int = GameData.get_building_stat(building_type, level).max_population
+		var next_max : int = GameData.get_building_stat(building_type, level + 1).max_population
 		value += next_max - curr_max
 
 	# for building: Building in bm.get_buildings():
 	# 	if building.building_state == Term.BuildingState.NEW:
 	# 		if building.building_type == Term.BuildingType.HOUSING:
 	# 			#TODO: handle max building level error
-	# 			var curr_max : int = Def.get_building_stat(building_type, level).max_population
-	# 			var next_max : int = Def.get_building_stat(building_type, level + 1).max_population
+	# 			var curr_max : int = GameData.get_building_stat(building_type, level).max_population
+	# 			var next_max : int = GameData.get_building_stat(building_type, level + 1).max_population
 	# 			value += next_max - curr_max
 	# 		elif building.building_type == Term.BuildingType.FARM:
 	# 			#TODO: handle max building level error
-	# 			var curr_max : int = Def.get_building_stat(building_type, level).max_population
-	# 			var next_max : int = Def.get_building_stat(building_type, level + 1).max_population
+	# 			var curr_max : int = GameData.get_building_stat(building_type, level).max_population
+	# 			var next_max : int = GameData.get_building_stat(building_type, level + 1).max_population
 	# 			value += next_max - curr_max
 
 	return value
@@ -179,7 +179,7 @@ func get_immigration_bonus() -> int:
 	var value : int = 0
 	for building: Building in bm.get_buildings():
 		if building.building_type == Term.BuildingType.CHURCH:
-			value += Def.get_building_stat(building.building_type, building.level).immigration
+			value += GameData.get_building_stat(building.building_type, building.level).immigration
 	return value
 
 
@@ -221,7 +221,7 @@ func get_units_sorted_by_unit_type() -> Array[UnitStats]:
 	
 	
 func detach_unit(_unit_stat: UnitStats) -> void:
-	var unit_scene : PackedScene = Def.get_unit_scene_by_type(_unit_stat.unit_type)
+	var unit_scene : PackedScene = PreloadsRef.get_unit_scene(_unit_stat.unit_type)
 	var unit       : Unit = unit_scene.instantiate() as Unit
 	
 	unit.stat     = _unit_stat
@@ -489,7 +489,7 @@ func create_building(_building_type: Term.BuildingType) -> void:
 	"""
 	Creates to building to place in World.
 	"""
-	var building_scene : PackedScene = Def.get_building_scene_by_type(_building_type)
+	var building_scene : PackedScene = PreloadsRef.get_building_scene(_building_type)
 	var building       : Building = building_scene.instantiate() as Building
 	#NOTE: Call _ready on specific building type..
 	building._ready()
@@ -505,7 +505,7 @@ func purchase_building(_building : Building) -> void:
 	"""
 	Purchases _building in World; owned by this Colony.
 	"""
-	var buy_value : Transaction = Def.get_building_cost(_building.building_type)
+	var buy_value : Transaction = GameData.get_building_cost(_building.building_type)
 	if bank.can_afford_this_turn(buy_value):
 		bank.resource_purchase(buy_value)
 
@@ -550,13 +550,13 @@ func set_commission_leader(_commission_leader: bool) -> void:
 		Def.get_world_canvas().open_create_leader_unit_menu(self, commission_leader_unit)
 
 		# -- Provide funds for training..
-		var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.LEADER, level)
+		var unit_cost : Transaction = GameData.get_unit_cost(Term.UnitType.LEADER, level)
 		bank.resource_purchase(unit_cost)
 	else:
 		commission_leader_unit = null
 		
 		# -- Refund training funds..
-		var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.LEADER, level)
+		var unit_cost : Transaction = GameData.get_unit_cost(Term.UnitType.LEADER, level)
 		bank.resource_credit(unit_cost)
 
 	# --
@@ -579,7 +579,7 @@ func can_commission_leader() -> bool:
 		return false
 
 	# -- Resource availability check..
-	var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.LEADER, level)
+	var unit_cost : Transaction = GameData.get_unit_cost(Term.UnitType.LEADER, level)
 	return bank.can_afford_this_turn(unit_cost)
 #endregion
 

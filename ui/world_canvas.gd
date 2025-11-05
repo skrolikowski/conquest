@@ -1,6 +1,8 @@
 extends CanvasLayer
 class_name WorldCanvas
 
+const C = preload("res://scripts/constants.gd")
+
 signal end_turn
 signal camera_zoom(_direction:int)
 
@@ -30,7 +32,7 @@ func _ready() -> void:
 	
 	btn_diplomacy.connect("pressed", _on_diplomacy_pressed)
 	
-	if Def.CONFIRM_END_TURN_ENABLED:
+	if C.CONFIRM_END_TURN_ENABLED:
 		btn_end_turn.connect("pressed", _on_end_turn_pressed)
 	else:
 		btn_end_turn.connect("pressed", _on_end_turn_confirmed)
@@ -307,7 +309,7 @@ func open_building_menu(_building: Building) -> void:
 	# --
 	close_all_ui()
 
-	var scene : PackedScene = Def.get_ui_building_scene_by_type(_building.building_type)
+	var scene : PackedScene = PreloadsRef.get_building_ui_scene(_building.building_type)
 	var ui    : PanelContainer = scene.instantiate() as PanelContainer
 	
 	%Panels.add_child(ui)
@@ -339,7 +341,7 @@ func open_unit_menu(_unit: Unit) -> void:
 	# --
 	close_all_ui()
 
-	var scene : PackedScene = Def.get_ui_unit_scene_by_type(_unit.stat.unit_type)
+	var scene : PackedScene = PreloadsRef.get_unit_ui_scene(_unit.stat.unit_type)
 	var ui    : PanelContainer = scene.instantiate() as PanelContainer
 	
 	%Panels.add_child(ui)

@@ -14,7 +14,7 @@ func _ready() -> void:
 
 
 func get_unit_capacity_value() -> int:
-	return Def.get_building_stat(building_type, level).max_ships
+	return GameData.get_building_stat(building_type, level).max_ships
 
 
 func can_construct_ship() -> bool:
@@ -33,5 +33,5 @@ func can_construct_ship() -> bool:
 		return false
 		
 	# -- Resource availability check..
-	var unit_cost : Transaction = Def.get_unit_cost(Term.UnitType.SHIP, level)
+	var unit_cost : Transaction = GameData.get_unit_cost(Term.UnitType.SHIP, level)
 	return colony.bank.can_afford_this_turn(unit_cost)

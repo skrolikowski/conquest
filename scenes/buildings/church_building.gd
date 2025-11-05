@@ -12,4 +12,4 @@ func _ready() -> void:
 
 
 func get_immigration_bonus() -> int:
-	return Def.get_building_stat(building_type, level).immigration
+	return GameData.get_building_stat(building_type, level).immigration

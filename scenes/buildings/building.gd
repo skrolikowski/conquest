@@ -1,5 +1,9 @@
 extends Area2D
 class_name Building
+const C = preload("res://scripts/constants.gd")
+
+
+const TypeRegistry = preload("res://scripts/type_registry.gd")
 
 @onready var sprite := $Sprite2D as Sprite2D
 
@@ -89,31 +93,31 @@ func get_tiles() -> Array[Vector2i]:
 
 
 func get_stat() -> Dictionary:
-	return Def.get_building_stat(building_type, level)
+	return GameData.get_building_stat(building_type, level)
 
 
 func get_need() -> Transaction:
-	return Def.get_building_need(building_type, level)
+	return GameData.get_building_need(building_type, level)
 
 
 func get_labor_demand() -> int:
-	return Def.get_building_labor_demand(building_type, level)
+	return GameData.get_building_labor_demand(building_type, level)
 
 
 func get_make() -> Transaction:
-	return Def.get_building_make(building_type, level)
+	return GameData.get_building_make(building_type, level)
 
 
 func get_upgrade_cost() -> Transaction:
-	return Def.get_building_cost(building_type, level + 1)
+	return GameData.get_building_cost(building_type, level + 1)
 
 
 func get_buy_value() -> Transaction:
-	return Def.get_building_cost(building_type, 1)
+	return GameData.get_building_cost(building_type, 1)
 
 
 func get_sell_value() -> Transaction:
-	var transaction : Transaction = Def.get_building_cost(building_type, level)
+	var transaction : Transaction = GameData.get_building_cost(building_type, level)
 
 	if building_state == Term.BuildingState.NEW:
 		return transaction
@@ -163,7 +167,7 @@ func get_status_information(_tile: Vector2i) -> String:
 	var text : PackedStringArray = PackedStringArray()
 
 	# -- unit name/level
-	var building_name : String = Def._convert_building_type_to_name(building_type)
+	var building_name : String = TypeRegistry.building_type_to_name(building_type)
 	building_name = "Lv. " + str(level) + " " + building_name
 	text.append(building_name)
 
@@ -188,7 +192,7 @@ func get_status_information(_tile: Vector2i) -> String:
 	# if production != "":
 	# 	text.append(production)
 
-	return (" " + Def.STATUS_SEP + " ").join(text)
+	return (" " + C.STATUS_SEP + " ").join(text)
 
 
 func get_status_information_cost(_transaction:Transaction) -> String:
@@ -197,7 +201,7 @@ func get_status_information_cost(_transaction:Transaction) -> String:
 	
 	for i: String in Term.ResourceType:
 		var resource_type  : Term.ResourceType = Term.ResourceType[i]
-		var resource_name  : String = Def._convert_resource_type_to_name(resource_type)
+		var resource_name  : String = TypeRegistry.resource_type_to_name(resource_type)
 		var resource_value : int = cost.get_resource_amount(resource_type)
 		
 		if resource_value > 0:

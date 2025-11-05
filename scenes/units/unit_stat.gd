@@ -1,6 +1,8 @@
 extends Resource
 class_name UnitStats
 
+const TypeRegistry = preload("res://scripts/type_registry.gd")
+
 signal health_changed(_health:int, _max_health:int)
 
 @export var title         : String
@@ -56,11 +58,11 @@ func get_population() -> int:
 
 
 func get_stat() -> Dictionary:
-	return Def.get_unit_stat(unit_type, level)
+	return GameData.get_unit_stat(unit_type, level)
 
 
 func get_cost() -> Transaction:
-	return Def.get_unit_cost(unit_type, level)
+	return GameData.get_unit_cost(unit_type, level)
 
 
 #region COMBAT
@@ -106,9 +108,9 @@ func get_units_sorted_by_unit_type() -> Array[UnitStats]:
 
 #region STATIC METHODS
 static func New_Unit(_unit_type : Term.UnitType, _level : int = 1) -> UnitStats:
-	
+
 	var unit_stats : UnitStats = UnitStats.new()
-	unit_stats.title      = Def._convert_unit_type_to_name(_unit_type)
+	unit_stats.title      = TypeRegistry.unit_type_to_name(_unit_type)
 	unit_stats.unit_type  = _unit_type
 	unit_stats.unit_state = Term.UnitState.IDLE
 	unit_stats.level      = _level
@@ -126,7 +128,7 @@ static func New_Unit(_unit_type : Term.UnitType, _level : int = 1) -> UnitStats:
 		unit_stats.unit_category = Term.UnitCategory.MILITARY
 	elif _unit_type == Term.UnitType.SHIP:
 		unit_stats.unit_name  = NameGenerator.generate(6, 8)
-		unit_stats.max_attached_units = Def.get_unit_stat(_unit_type, _level).cargo_hold
+		unit_stats.max_attached_units = GameData.get_unit_stat(_unit_type, _level).cargo_hold
 		unit_stats.attached_units = []
 		unit_stats.unit_category = Term.UnitCategory.SHIP
 	elif _unit_type == Term.UnitType.INFANTRY || _unit_type == Term.UnitType.CALVARY || _unit_type == Term.UnitType.ARTILLARY:

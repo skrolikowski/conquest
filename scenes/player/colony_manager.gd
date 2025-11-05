@@ -1,5 +1,7 @@
 extends Node2D
 class_name ColonyManager
+const C = preload("res://scripts/constants.gd")
+
 
 @onready var colony_list : Node = $ColonyList
 
@@ -49,7 +51,7 @@ func create_colony() -> void:
 	placing_colony.modulate = Color(1, 1, 1, 1.0)
 	
 	# -- Set initial resources..
-	var unit_stat  : Dictionary = Def.get_unit_stat(Term.UnitType.SETTLER, settler_stats.level)
+	var unit_stat  : Dictionary = GameData.get_unit_stat(Term.UnitType.SETTLER, settler_stats.level)
 	placing_colony.set_init_resources(unit_stat.resources)
 	placing_colony.refresh_bank()
 	
@@ -65,7 +67,7 @@ func undo_create_colony(_building: CenterBuilding) -> void:
 		# -- Create settler..
 		var settler  : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, settler_stats.level)
 		settler.on_load_data(settler_stats.on_save_data())
-		var settler_pos : Vector2 = _building.global_position - Vector2(Def.TILE_SIZE.x * 0.25, Def.TILE_SIZE.y * 0.25)
+		var settler_pos : Vector2 = _building.global_position - Vector2(C.TILE_SIZE.x * 0.25, C.TILE_SIZE.y * 0.25)
 		player.create_unit(settler, settler_pos)
 
 		# -- Remove occupied tiles..
@@ -96,12 +98,12 @@ func can_settle(_tile : Vector2i) -> bool:
 
 
 func found_colony(_tile: Vector2i, _position: Vector2, _stats: UnitStats) -> void:
-	var building_scene : PackedScene = Def.get_building_scene_by_type(Term.BuildingType.CENTER)
+	var building_scene : PackedScene = PreloadsRef.get_building_scene(Term.BuildingType.CENTER)
 	var building       : CenterBuilding = building_scene.instantiate() as CenterBuilding
 	placing_colony = building
 
 	var world_pos : Vector2 = Def.get_world_tile_map().map_to_local(_tile)
-	placing_colony.global_position = world_pos + Vector2(Def.TILE_SIZE.x * 0.5, Def.TILE_SIZE.y * 0.5)
+	placing_colony.global_position = world_pos + Vector2(C.TILE_SIZE.x * 0.5, C.TILE_SIZE.y * 0.5)
 	placing_colony.player   = player
 	placing_colony.modulate = Color(1, 1, 1, 0.75)
 
@@ -139,16 +141,16 @@ func cancel_found_colony() -> void:
 
 func _refresh_placing_tiles(_tile: Vector2i) -> void:
 	var world_map : WorldGen = Def.get_world_map()
-	var tile_size : Vector2i = Def.TILE_SIZE
+	var tile_size : Vector2i = C.TILE_SIZE
 	
 	placing_tile   = _tile
 	placing_tiles  = {}
 
 	if placing_tile != Vector2i.ZERO:
-		var build_radius_1 : float = Def.get_building_stat(Term.BuildingType.CENTER, 1).build_radius * tile_size.x
-		var build_radius_2 : float = Def.get_building_stat(Term.BuildingType.CENTER, 2).build_radius * tile_size.x
-		var build_radius_3 : float = Def.get_building_stat(Term.BuildingType.CENTER, 3).build_radius * tile_size.x
-		var build_radius_4 : float = Def.get_building_stat(Term.BuildingType.CENTER, 4).build_radius * tile_size.x
+		var build_radius_1 : float = GameData.get_building_stat(Term.BuildingType.CENTER, 1).build_radius * tile_size.x
+		var build_radius_2 : float = GameData.get_building_stat(Term.BuildingType.CENTER, 2).build_radius * tile_size.x
+		var build_radius_3 : float = GameData.get_building_stat(Term.BuildingType.CENTER, 3).build_radius * tile_size.x
+		var build_radius_4 : float = GameData.get_building_stat(Term.BuildingType.CENTER, 4).build_radius * tile_size.x
 	
 		var bounds : Array[Dictionary] = [
 			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, build_radius_1), "color" : Color(Color.WHITE, 0.25) },
@@ -196,7 +198,7 @@ func on_load_data(_data: Dictionary) -> void:
 
 	# -- Load colonies..
 	for colony_data: Dictionary in _data["colonies"]:
-		var building_scene : PackedScene = Def.get_building_scene_by_type(Term.BuildingType.CENTER)
+		var building_scene : PackedScene = PreloadsRef.get_building_scene(Term.BuildingType.CENTER)
 		var colony         : CenterBuilding = building_scene.instantiate() as CenterBuilding
 		add_colony(colony)
 		

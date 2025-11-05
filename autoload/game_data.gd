@@ -120,7 +120,7 @@ func _dict_to_transaction(resources: Dictionary) -> Transaction:
 
 #region BUILDING QUERIES
 
-func get_building_cost(type: Term.BuildingType, level: int) -> Transaction:
+func get_building_cost(type: Term.BuildingType, level: int = 1) -> Transaction:
 	"""Get building cost for specific level. Returns cloned Transaction."""
 	assert(buildings.has(type), "No data for building type: " + str(type))
 	assert(level >= 1 and level <= buildings[type]["cost"].size(), "Invalid building level: " + str(level))

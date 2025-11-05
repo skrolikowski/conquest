@@ -1,6 +1,8 @@
 extends Area2D
 class_name CombatSquare
 
+const GameRules = preload("res://scripts/game_rules.gd")
+
 #signal square_occupied(_group : CombatGroup)
 
 var slots         : Dictionary = {}
@@ -213,7 +215,7 @@ func _reorganize_square() -> void:
 			slots[slot] = null
 
 	# -- Sort units by type..
-	units.sort_custom(Def.sort_combat_units_by_type)
+	units.sort_custom(GameRules.sort_combat_units_by_type)
 	#for unit : CombatUnit in units:
 		#print("Unit:", unit.stat.unit_type)
 

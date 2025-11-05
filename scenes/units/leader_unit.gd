@@ -21,9 +21,9 @@ func _ready() -> void:
 func get_status_information(_tile: Vector2i) -> String:
 	var text : String = super.get_status_information(_tile)
 
-	text += " " + Def.STATUS_SEP + " Charisma: " + str(stat.stat_props["charisma"])
-	text += " " + Def.STATUS_SEP + " Reputation: " + str(stat.stat_props["reputation"])
-	text += " " + Def.STATUS_SEP + " Units: " + str(stat.attached_units.size())
+	text += " " + C.STATUS_SEP + " Charisma: " + str(stat.stat_props["charisma"])
+	text += " " + C.STATUS_SEP + " Reputation: " + str(stat.stat_props["reputation"])
+	text += " " + C.STATUS_SEP + " Units: " + str(stat.attached_units.size())
 
 	return text
 

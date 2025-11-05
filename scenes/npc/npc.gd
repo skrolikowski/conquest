@@ -1,5 +1,7 @@
 extends Node2D
 class_name NPC
+const C = preload("res://scripts/constants.gd")
+
 
 enum Tribe
 {
@@ -47,7 +49,7 @@ func create_village(_tile: Vector2i) -> void:
 	# -- set village position..
 	var tile_map_layer : TileMapLayer = Def.get_world_map().get_land_layer()
 	var map_pos        : Vector2 = tile_map_layer.map_to_local(_tile)
-	village.global_position = map_pos + Vector2(Def.TILE_SIZE.x * 0.5, Def.TILE_SIZE.y * 0.5)
+	village.global_position = map_pos + Vector2(C.TILE_SIZE.x * 0.5, C.TILE_SIZE.y * 0.5)
 
 	# -- TERRAFORM: Remove forest..
 	var tiles : Array[Vector2i] = village.get_tiles()

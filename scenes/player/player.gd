@@ -1,6 +1,8 @@
 extends Node2D
 class_name Player
 
+const TypeRegistry = preload("res://scripts/type_registry.gd")
+
 @onready var unit_list := $UnitList as Node2D
 @onready var timer     := $Timer as Timer
 @onready var cm        := $ColonyManager as ColonyManager
@@ -91,8 +93,8 @@ func get_ships() -> Array[ShipUnit]:
 
 
 func create_unit(_unit_stat: UnitStats, _position: Vector2) -> Unit:
-	var unit_scene : PackedScene = Def.get_unit_scene_by_type(_unit_stat.unit_type)
-	var unit_name  : String = Def._convert_unit_type_to_name(_unit_stat.unit_type)
+	var unit_scene : PackedScene = PreloadsRef.get_unit_scene(_unit_stat.unit_type)
+	var unit_name  : String = TypeRegistry.unit_type_to_name(_unit_stat.unit_type)
 	var unit       : Unit = unit_scene.instantiate() as Unit
 	
 	if unit == null:
