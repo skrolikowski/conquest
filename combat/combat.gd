@@ -1,8 +1,6 @@
 extends Node2D
 class_name Combat
 
-const C = preload("res://scripts/constants.gd")
-
 signal turn_started(_turn_group : CombatGroup, _defend_group : CombatGroup)
 signal square_attacked(_square : CombatSquare, _assault : CombatAssault)
 signal square_occupied(_square : CombatSquare, _movement : CombatMovement)
@@ -82,18 +80,18 @@ func end_combat() -> void:
 
 
 func _ready_attacker() -> void:
-	attacker.reserves_row = battlefield.get(C.ATTACKER_RESERVE_ROW)
+	attacker.reserves_row = battlefield.get(Preload.C.ATTACKER_RESERVE_ROW)
 	attacker.reserves_row.owned_by = attacker
-	attacker.flag_square  = battlefield.get(C.ATTACKER_FLAG_SQUARE)
+	attacker.flag_square  = battlefield.get(Preload.C.ATTACKER_FLAG_SQUARE)
 	attacker.combat       = self
 	attacker.is_attacker  = true
 	attacker.start_combat()
 
 
 func _ready_defender() -> void:
-	defender.reserves_row = battlefield.get(C.DEFENDER_RESERVE_ROW)
+	defender.reserves_row = battlefield.get(Preload.C.DEFENDER_RESERVE_ROW)
 	defender.reserves_row.owned_by = defender
-	defender.flag_square  = battlefield.get(C.DEFENDER_FLAG_SQUARE)
+	defender.flag_square  = battlefield.get(Preload.C.DEFENDER_FLAG_SQUARE)
 	defender.combat       = self
 	defender.start_combat()
 
@@ -145,11 +143,11 @@ func check_victory_conditions() -> void:
 
 		# -- Check if flag was captured..
 		if turn_group.is_human_player():
-			if battlefield.get(C.DEFENDER_FLAG_SQUARE).occupied_by == turn_group:
+			if battlefield.get(Preload.C.DEFENDER_FLAG_SQUARE).occupied_by == turn_group:
 				print("Human Captures Flag!")
 				victory_group = turn_group
 		else:
-			if battlefield.get(C.ATTACKER_FLAG_SQUARE).occupied_by == turn_group:
+			if battlefield.get(Preload.C.ATTACKER_FLAG_SQUARE).occupied_by == turn_group:
 				print("AI Captures Flag!")
 				victory_group = turn_group
 

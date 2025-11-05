@@ -1,6 +1,5 @@
 extends Node2D
 class_name WorldSelector
-const C = preload("res://scripts/constants.gd")
 
 
 signal cursor_updated(mouse_pos: Vector2)
@@ -115,7 +114,7 @@ func _input(_event: InputEvent) -> void:
 
 #region DRAG & DRAG
 func _is_valid_drag() -> bool:
-	return drag_start.distance_to(drag_end) > C.TILE_SIZE.x * 0.1
+	return drag_start.distance_to(drag_end) > Preload.C.TILE_SIZE.x * 0.1
 
 
 func _drag_start(_position: Vector2) -> void:

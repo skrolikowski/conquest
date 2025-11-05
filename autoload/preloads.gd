@@ -6,6 +6,16 @@ class_name PreloadsRef
 ##
 ## REFACTOR PHASE 3: Added typed accessor methods for buildings and units.
 ## Use get_building_scene(type) instead of directly accessing properties.
+##
+## REFACTOR PHASE 7: Added common utility classes for global access.
+## - TypeRegistry: Enum/string conversions
+## - GameRules: Business logic and sorting
+## - C: Game constants (TILE_SIZE, etc.)
+
+# Common utility classes (globally accessible via PreloadsRef)
+const TR = preload("res://scripts/type_registry.gd")
+const GR = preload("res://scripts/game_rules.gd")
+const C = preload("res://scripts/constants.gd")
 
 const player_scene       : PackedScene = preload("res://scenes/player/player.tscn")
 const ui_diplomacy_scene : PackedScene = preload("res://ui/ui_diplomacy.tscn")

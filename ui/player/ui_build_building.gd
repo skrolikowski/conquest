@@ -1,8 +1,6 @@
 extends PanelContainer
 class_name UIBuildBuilding
 
-const TypeRegistry = preload("res://scripts/type_registry.gd")
-const GameRules = preload("res://scripts/game_rules.gd")
 
 @onready var btn_close : Button = %BtnClose as Button
 
@@ -21,7 +19,7 @@ func _ready() -> void:
 	for i: String in Term.BuildingType:
 		building_types.append(Term.BuildingType[i])
 
-	building_types.sort_custom(GameRules.sort_building_types_by_priority)
+	building_types.sort_custom(Preload.GR.sort_building_types_by_priority)
 
 	# --
 	for building_type: Term.BuildingType in building_types:
@@ -33,7 +31,7 @@ func _ready() -> void:
 
 func create_button(_building_type : Term.BuildingType) -> void:
 	var build_button : Button = Button.new()
-	build_button.text = TypeRegistry.building_type_to_name(_building_type)
+	build_button.text = PreloadsRef.TR.building_type_to_name(_building_type)
 	
 	var build_cost : Transaction = GameData.get_building_cost(_building_type)
 	if colony.bank.can_afford_this_turn(build_cost):

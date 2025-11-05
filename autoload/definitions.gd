@@ -2,9 +2,9 @@ extends Node2D
 class_name DefinitionsRef
 
 # REFACTOR PHASE 1: Import new utility classes
-const TypeRegistry = preload("res://scripts/type_registry.gd")
-const GameRules = preload("res://scripts/game_rules.gd")
-const C = preload("res://scripts/constants.gd")  # Pure constants file
+# const TypeRegistry = preload("res://scripts/type_registry.gd")
+# const GameRules = preload("res://scripts/game_rules.gd")
+# const C = preload("res://scripts/constants.gd")  # Pure constants file
 
 # REFACTOR PHASE 4: Building/unit data dictionaries removed - now handled by GameData autoload
 # Use GameData.get_building_cost(type, level) instead of buildings[type]["cost"][level-1]
@@ -14,21 +14,21 @@ const C = preload("res://scripts/constants.gd")  # Pure constants file
 
 # REFACTOR PHASE 2: Constants now reference shared constants.gd file
 # NOTE: Future code should use C.TILE_SIZE directly (via preload("res://scripts/constants.gd"))
-const TILE_SIZE : Vector2i = C.TILE_SIZE
+const TILE_SIZE : Vector2i = Preload.C.TILE_SIZE
 
 # -- Combat constants
-const DEFENDER_RESERVE_ROW : Vector2i = C.DEFENDER_RESERVE_ROW
-const DEFENDER_FLAG_SQUARE : Vector2i = C.DEFENDER_FLAG_SQUARE
-const ATTACKER_RESERVE_ROW : Vector2i = C.ATTACKER_RESERVE_ROW
-const ATTACKER_FLAG_SQUARE : Vector2i = C.ATTACKER_FLAG_SQUARE
+const DEFENDER_RESERVE_ROW : Vector2i = Preload.C.DEFENDER_RESERVE_ROW
+const DEFENDER_FLAG_SQUARE : Vector2i = Preload.C.DEFENDER_FLAG_SQUARE
+const ATTACKER_RESERVE_ROW : Vector2i = Preload.C.ATTACKER_RESERVE_ROW
+const ATTACKER_FLAG_SQUARE : Vector2i = Preload.C.ATTACKER_FLAG_SQUARE
 
 # -- Feature flags
-const FOG_OF_WAR_ENABLED : bool = C.FOG_OF_WAR_ENABLED
-const CONFIRM_END_TURN_ENABLED : bool = C.CONFIRM_END_TURN_ENABLED
-const WEALTH_MODE_ENABLED : bool = C.WEALTH_MODE_ENABLED
+const FOG_OF_WAR_ENABLED : bool = Preload.C.FOG_OF_WAR_ENABLED
+const CONFIRM_END_TURN_ENABLED : bool = Preload.C.CONFIRM_END_TURN_ENABLED
+const WEALTH_MODE_ENABLED : bool = Preload.C.WEALTH_MODE_ENABLED
 
 # -- Rendering
-const STATUS_SEP : String = C.STATUS_SEP
+const STATUS_SEP : String = Preload.C.STATUS_SEP
 
 
 func _ready() -> void:
@@ -96,31 +96,31 @@ func get_ui_unit_scene_by_type(_unit_type: Term.UnitType) -> PackedScene:
 
 func _convert_building_type_to_name(_building_type:Term.BuildingType) -> String:
 	# REFACTOR PHASE 1: Delegating to TypeRegistry
-	return TypeRegistry.building_type_to_name(_building_type)
+	return Preload.TR.building_type_to_name(_building_type)
 
 
 func _convert_to_building_type(_building_code: String) -> Term.BuildingType:
 	# REFACTOR PHASE 1: Delegating to TypeRegistry
-	return TypeRegistry.building_type_from_code(_building_code)
+	return Preload.TR.building_type_from_code(_building_code)
 	
 func _convert_unit_type_to_name(_unit_type: Term.UnitType) -> String:
 	# REFACTOR PHASE 1: Delegating to TypeRegistry
-	return TypeRegistry.unit_type_to_name(_unit_type)
+	return Preload.TR.unit_type_to_name(_unit_type)
 
 
 func _convert_to_unit_type(_code: String) -> Term.UnitType:
 	# REFACTOR PHASE 1: Delegating to TypeRegistry
-	return TypeRegistry.unit_type_from_code(_code)
+	return Preload.TR.unit_type_from_code(_code)
 
 
 func _convert_to_resource_type(_resource_code: String) -> Term.ResourceType:
 	# REFACTOR PHASE 1: Delegating to TypeRegistry
-	return TypeRegistry.resource_type_from_code(_resource_code)
+	return Preload.TR.resource_type_from_code(_resource_code)
 
 
 func _convert_resource_type_to_name(_resource_type:Term.ResourceType) -> String:
 	# REFACTOR PHASE 1: Delegating to TypeRegistry
-	return TypeRegistry.resource_type_to_name(_resource_type)
+	return Preload.TR.resource_type_to_name(_resource_type)
 
 func _convert_to_transaction(_resources: Dictionary) -> Transaction:
 	var transaction:Transaction = Transaction.new()
@@ -217,12 +217,12 @@ together), and farms.  Commerce does not gain production bonuses.
 #region SORTING
 static func sort_building_types_by_priority(_a: Term.BuildingType, _b: Term.BuildingType) -> bool:
 	# REFACTOR PHASE 1: Delegating to GameRules
-	return GameRules.sort_building_types_by_priority(_a, _b)
+	return Preload.GR.sort_building_types_by_priority(_a, _b)
 
 
 static func sort_buildings_by_building_type(_a: Building, _b: Building) -> bool:
 	# REFACTOR PHASE 1: Delegating to GameRules
-	return GameRules.sort_buildings_by_priority(_a, _b)
+	return Preload.GR.sort_buildings_by_priority(_a, _b)
 
 
 static func sort_combat_units_by_type(a: CombatUnit, b: CombatUnit) -> bool:
@@ -230,7 +230,7 @@ static func sort_combat_units_by_type(a: CombatUnit, b: CombatUnit) -> bool:
 	Sort units by type: See Term.UnitType
 	"""
 	# REFACTOR PHASE 1: Delegating to GameRules
-	return GameRules.sort_combat_units_by_type(a, b)
+	return Preload.GR.sort_combat_units_by_type(a, b)
 
 
 static func sort_combat_units_by_health(a: CombatUnit, b: CombatUnit) -> bool:
@@ -238,7 +238,7 @@ static func sort_combat_units_by_health(a: CombatUnit, b: CombatUnit) -> bool:
 	Sort units by type: stat.health
 	"""
 	# REFACTOR PHASE 1: Delegating to GameRules
-	return GameRules.sort_combat_units_by_health(a, b)
+	return Preload.GR.sort_combat_units_by_health(a, b)
 
 
 # static func sort_combat_squares_by_priority(a: CombatSquare, b: CombatSquare) -> bool:

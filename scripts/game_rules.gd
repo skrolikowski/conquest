@@ -5,8 +5,8 @@ extends RefCounted
 ## Centralizes game rules like building priorities, combat sorting, etc.
 ##
 ## Example usage:
-##   buildings.sort_custom(GameRules.sort_buildings_by_priority)
-##   var priority = GameRules.get_building_sort_priority(Term.BuildingType.FARM)
+##   buildings.sort_custom(PreloadsRef.GR.sort_buildings_by_priority)
+##   var priority = PreloadsRef.GR.get_building_sort_priority(Term.BuildingType.FARM)
 
 #region BUILDING SORTING
 

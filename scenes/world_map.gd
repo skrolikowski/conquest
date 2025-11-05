@@ -1,7 +1,5 @@
 extends Node2D
 class_name WorldMap
-const C = preload("res://scripts/constants.gd")
-
 
 signal map_loaded
 
@@ -35,7 +33,7 @@ func _on_noise_generation_finished() -> void:
 	# generate_artifacts()
 
 	# -- Fog of war..
-	if C.FOG_OF_WAR_ENABLED:
+	if Preload.C.FOG_OF_WAR_ENABLED:
 		generate_fog_of_war()
 	
 	# --

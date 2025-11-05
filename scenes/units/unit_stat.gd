@@ -1,7 +1,6 @@
 extends Resource
 class_name UnitStats
 
-const TypeRegistry = preload("res://scripts/type_registry.gd")
 
 signal health_changed(_health:int, _max_health:int)
 
@@ -110,7 +109,7 @@ func get_units_sorted_by_unit_type() -> Array[UnitStats]:
 static func New_Unit(_unit_type : Term.UnitType, _level : int = 1) -> UnitStats:
 
 	var unit_stats : UnitStats = UnitStats.new()
-	unit_stats.title      = TypeRegistry.unit_type_to_name(_unit_type)
+	unit_stats.title      = PreloadsRef.TR.unit_type_to_name(_unit_type)
 	unit_stats.unit_type  = _unit_type
 	unit_stats.unit_state = Term.UnitState.IDLE
 	unit_stats.level      = _level

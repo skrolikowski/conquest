@@ -1,9 +1,6 @@
 extends Unit
 class_name SettlerUnit
 
-# const C = preload("res://scripts/constants.gd")
-# const TypeRegistry = preload("res://scripts/type_registry.gd")
-
 
 func _ready() -> void:
 	super._ready()
@@ -38,11 +35,11 @@ func get_status_information(_tile: Vector2i) -> String:
 
 	for i: String in Term.ResourceType:
 		var resource_type  : Term.ResourceType = Term.ResourceType[i]
-		var resource_name  : String = TypeRegistry.resource_type_to_name(resource_type)
+		var resource_name  : String = Preload.TR.resource_type_to_name(resource_type)
 		var resource_value : int = transaction.get_resource_amount(resource_type)
 		
 		if resource_value > 0:
 			carrying.append(str(resource_value) + " " + resource_name)
 
-	return text + " " + C.STATUS_SEP + " Carrying: " + ", ".join(carrying)
+	return text + " " + Preload.C.STATUS_SEP + " Carrying: " + ", ".join(carrying)
 #endregion

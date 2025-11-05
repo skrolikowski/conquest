@@ -27,7 +27,7 @@ func _load_buildings() -> void:
 		return
 
 	for key: String in json_dict:
-		var building_type: Term.BuildingType = TypeRegistry.building_type_from_code(key)
+		var building_type: Term.BuildingType = PreloadsRef.TR.building_type_from_code(key)
 		if building_type == Term.BuildingType.NONE:
 			push_warning("Unknown building code in JSON: " + key)
 			continue
@@ -77,7 +77,7 @@ func _load_units() -> void:
 		return
 
 	for key: String in json_dict:
-		var unit_type: Term.UnitType = TypeRegistry.unit_type_from_code(key)
+		var unit_type: Term.UnitType = PreloadsRef.TR.unit_type_from_code(key)
 		if unit_type == Term.UnitType.NONE:
 			push_warning("Unknown unit code in JSON: " + key)
 			continue
@@ -109,7 +109,7 @@ func _dict_to_transaction(resources: Dictionary) -> Transaction:
 	"""Convert dictionary of resources to Transaction object."""
 	var transaction: Transaction = Transaction.new()
 	for resource_key: String in resources:
-		var resource_type: Term.ResourceType = TypeRegistry.resource_type_from_code(resource_key)
+		var resource_type: Term.ResourceType = PreloadsRef.TR.resource_type_from_code(resource_key)
 		if resource_type == Term.ResourceType.NONE:
 			push_warning("Unknown resource code in JSON: " + resource_key)
 			continue

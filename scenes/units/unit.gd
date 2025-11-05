@@ -1,8 +1,6 @@
 extends Area2D
 class_name Unit
 
-const C = preload("res://scripts/constants.gd")
-const TypeRegistry = preload("res://scripts/type_registry.gd")
 
 @onready var sprite    := $Sprite2D as Sprite2D
 @onready var nav_agent := $NavigationAgent2D as NavigationAgent2D
@@ -19,7 +17,7 @@ var move_delta : Vector2
 
 
 func _ready() -> void:
-	if C.FOG_OF_WAR_ENABLED:
+	if Preload.C.FOG_OF_WAR_ENABLED:
 		nav_agent.connect("target_reached", _on_target_reached)
 		nav_agent.connect("waypoint_reached", _on_waypoint_reached)
 
@@ -168,7 +166,7 @@ func get_status_information(_tile: Vector2i) -> String:
 	var text : PackedStringArray = PackedStringArray()
 	
 	# -- unit name/level
-	var unit_name : String = TypeRegistry.unit_type_to_name(stat.unit_type)
+	var unit_name : String = PreloadsRef.TR.unit_type_to_name(stat.unit_type)
 	unit_name = "Lv. " + str(stat.level) + " " + unit_name
 	text.append(unit_name)
 
@@ -177,7 +175,7 @@ func get_status_information(_tile: Vector2i) -> String:
 	# text.append("Movement: " + str(movement) + "%")
 
 
-	return (" " + C.STATUS_SEP + " ").join(text)
+	return (" " + Preload.C.STATUS_SEP + " ").join(text)
 #endregion
 
 

@@ -1,9 +1,5 @@
 extends Area2D
 class_name Building
-const C = preload("res://scripts/constants.gd")
-
-
-const TypeRegistry = preload("res://scripts/type_registry.gd")
 
 @onready var sprite := $Sprite2D as Sprite2D
 
@@ -167,7 +163,7 @@ func get_status_information(_tile: Vector2i) -> String:
 	var text : PackedStringArray = PackedStringArray()
 
 	# -- unit name/level
-	var building_name : String = TypeRegistry.building_type_to_name(building_type)
+	var building_name : String = PreloadsRef.TR.building_type_to_name(building_type)
 	building_name = "Lv. " + str(level) + " " + building_name
 	text.append(building_name)
 
@@ -192,7 +188,7 @@ func get_status_information(_tile: Vector2i) -> String:
 	# if production != "":
 	# 	text.append(production)
 
-	return (" " + C.STATUS_SEP + " ").join(text)
+	return (" " + Preload.C.STATUS_SEP + " ").join(text)
 
 
 func get_status_information_cost(_transaction:Transaction) -> String:
@@ -201,7 +197,7 @@ func get_status_information_cost(_transaction:Transaction) -> String:
 	
 	for i: String in Term.ResourceType:
 		var resource_type  : Term.ResourceType = Term.ResourceType[i]
-		var resource_name  : String = TypeRegistry.resource_type_to_name(resource_type)
+		var resource_name  : String = PreloadsRef.TR.resource_type_to_name(resource_type)
 		var resource_value : int = cost.get_resource_amount(resource_type)
 		
 		if resource_value > 0:

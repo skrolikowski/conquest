@@ -1,8 +1,6 @@
 extends Area2D
 class_name BuildingManager
 
-const GameRules = preload("res://scripts/game_rules.gd")
-const C = preload("res://scripts/constants.gd")
 
 @onready var build_list : Node2D = $BuildingList
 @onready var ghost_timer : Timer = $GhostTimer as Timer
@@ -51,7 +49,7 @@ func add_building(_building: Building) -> void:
 
 func get_buildings_sorted_by_building_type() -> Array[Building]:
 	var _buildings : Array[Building] = buildings.duplicate()
-	_buildings.sort_custom(GameRules.sort_buildings_by_priority)
+	_buildings.sort_custom(PreloadsRef.GR.sort_buildings_by_priority)
 	return _buildings
 
 
@@ -198,7 +196,7 @@ func _refresh_build_tiles() -> void:
 	NOTE: Should be called once per building level change
 	"""
 	var world_map   : WorldGen = Def.get_world_map()
-	var build_radius   : float = GameData.get_building_stat(Term.BuildingType.CENTER, colony.level).build_radius * C.TILE_SIZE.x
+	var build_radius   : float = GameData.get_building_stat(Term.BuildingType.CENTER, colony.level).build_radius * Preload.C.TILE_SIZE.x
 	var tiles_in_range : Array[Vector2i] = Def.get_world_map().get_tiles_in_radius(global_position, build_radius)
 	var tile_map_layer : TileMapLayer = Def.get_world_tile_map()
 

@@ -2,8 +2,6 @@
 extends Node2D
 class_name WorldGen
 
-const C = preload("res://scripts/constants.gd")
-
 signal map_loaded
 
 func _add_inspector_buttons() -> Array:
@@ -246,7 +244,7 @@ func init_tile_custom_data() -> void:
 		tile_custom_data[tile].is_water = true
 		tile_custom_data[tile].biome = TileCategory.OCEAN
 
-		if C.FOG_OF_WAR_ENABLED:
+		if Preload.C.FOG_OF_WAR_ENABLED:
 			tile_custom_data[tile].is_fog_of_war = true
 
 	# -- Land tiles..
@@ -604,7 +602,7 @@ func clear_cursor_tiles() -> void:
 
 #region FOG OF WAR
 func generate_fog_of_war() -> void:
-	if C.FOG_OF_WAR_ENABLED:
+	if Preload.C.FOG_OF_WAR_ENABLED:
 		#TODO: eventually when we have multiple players we will want to store this per player..
 		
 		# get_fog_layer().set_cells_terrain_connect(
@@ -614,7 +612,7 @@ func generate_fog_of_war() -> void:
 
 
 func reveal_fog_of_war(_pos: Vector2, _radius: float = 48.0) -> void:
-	if C.FOG_OF_WAR_ENABLED:
+	if Preload.C.FOG_OF_WAR_ENABLED:
 		var tiles_in_range : Array[Vector2i] = get_tiles_in_radius(_pos, _radius)
 		
 		get_fog_layer().set_cells_terrain_connect(
@@ -654,21 +652,21 @@ func set_terrain_modifiers() -> void:
 			if tile_custom_data[tile].biome == TileCategory.MOUNTAIN:
 				pass
 			else:
-				for tile_in_range : Vector2i in get_tiles_in_rect(tile_pos, C.TILE_SIZE * 1.5):
+				for tile_in_range : Vector2i in get_tiles_in_rect(tile_pos, Preload.C.TILE_SIZE * 1.5):
 					if tile_custom_data.has(tile_in_range):
 						var industry_modifiers : Dictionary = tile_custom_data[tile_in_range].industry_modifiers
 						tile_custom_data[tile].add_terrain_modifier(Term.IndustryType.FARM, industry_modifiers[Term.IndustryType.FARM])
 				
 			# -- For mill productivity..
 			tile_pos = get_water_layer().map_to_local(tile)
-			for tile_in_range : Vector2i in get_tiles_in_rect(tile_pos, C.TILE_SIZE * 2):
+			for tile_in_range : Vector2i in get_tiles_in_rect(tile_pos, Preload.C.TILE_SIZE * 2):
 				if tile_custom_data.has(tile_in_range):
 					var industry_modifiers : Dictionary = tile_custom_data[tile_in_range].industry_modifiers
 					tile_custom_data[tile].add_terrain_modifier(Term.IndustryType.MILL, industry_modifiers[Term.IndustryType.MILL])
 
 			# -- For mine productivity..
 			tile_pos = get_water_layer().map_to_local(tile)
-			for tile_in_range : Vector2i in get_tiles_in_rect(tile_pos, C.TILE_SIZE * 2.5):
+			for tile_in_range : Vector2i in get_tiles_in_rect(tile_pos, Preload.C.TILE_SIZE * 2.5):
 				if tile_custom_data.has(tile_in_range):
 					var industry_modifiers : Dictionary = tile_custom_data[tile_in_range].industry_modifiers
 					tile_custom_data[tile].add_terrain_modifier(Term.IndustryType.MINE, industry_modifiers[Term.IndustryType.MINE])

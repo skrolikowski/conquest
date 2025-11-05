@@ -1,6 +1,5 @@
 extends Node2D
 class_name ColonyManager
-const C = preload("res://scripts/constants.gd")
 
 
 @onready var colony_list : Node = $ColonyList
@@ -67,7 +66,7 @@ func undo_create_colony(_building: CenterBuilding) -> void:
 		# -- Create settler..
 		var settler  : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, settler_stats.level)
 		settler.on_load_data(settler_stats.on_save_data())
-		var settler_pos : Vector2 = _building.global_position - Vector2(C.TILE_SIZE.x * 0.25, C.TILE_SIZE.y * 0.25)
+		var settler_pos : Vector2 = _building.global_position - Vector2(Preload.C.TILE_SIZE.x * 0.25, Preload.C.TILE_SIZE.y * 0.25)
 		player.create_unit(settler, settler_pos)
 
 		# -- Remove occupied tiles..
@@ -103,7 +102,7 @@ func found_colony(_tile: Vector2i, _position: Vector2, _stats: UnitStats) -> voi
 	placing_colony = building
 
 	var world_pos : Vector2 = Def.get_world_tile_map().map_to_local(_tile)
-	placing_colony.global_position = world_pos + Vector2(C.TILE_SIZE.x * 0.5, C.TILE_SIZE.y * 0.5)
+	placing_colony.global_position = world_pos + Vector2(Preload.C.TILE_SIZE.x * 0.5, Preload.C.TILE_SIZE.y * 0.5)
 	placing_colony.player   = player
 	placing_colony.modulate = Color(1, 1, 1, 0.75)
 
@@ -141,7 +140,7 @@ func cancel_found_colony() -> void:
 
 func _refresh_placing_tiles(_tile: Vector2i) -> void:
 	var world_map : WorldGen = Def.get_world_map()
-	var tile_size : Vector2i = C.TILE_SIZE
+	var tile_size : Vector2i = Preload.C.TILE_SIZE
 	
 	placing_tile   = _tile
 	placing_tiles  = {}

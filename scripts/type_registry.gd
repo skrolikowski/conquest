@@ -5,8 +5,8 @@ extends RefCounted
 ## Uses static dictionaries for O(1) lookup performance.
 ##
 ## Example usage:
-##   var building_type = TypeRegistry.building_type_from_code("farm")
-##   var display_name = TypeRegistry.building_type_to_name(building_type)
+##   var building_type = PreloadsRef.TR.building_type_from_code("farm")
+##   var display_name = PreloadsRef.TR.building_type_to_name(building_type)
 
 #region BUILDING TYPES
 

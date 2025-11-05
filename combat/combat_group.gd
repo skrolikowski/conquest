@@ -1,9 +1,6 @@
 extends Node2D
 class_name CombatGroup
 
-const GameRules = preload("res://scripts/game_rules.gd")
-
-
 var leader   : CombatUnit
 var units    : Array[CombatUnit] = []
 var player   : Player
@@ -53,7 +50,7 @@ func begin_turn() -> void:
 func ai_simulate_turn() -> void:
 
 	# -- Sort units from "best" to "worst"..
-	units.sort_custom(GameRules.sort_combat_units_by_health)
+	units.sort_custom(PreloadsRef.GR.sort_combat_units_by_health)
 
 	# -- Simulate attacks..
 	ai_simulate_attacks(units)

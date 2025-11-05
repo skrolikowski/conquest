@@ -1,7 +1,5 @@
 extends Node2D
 class_name WorldManager
-const C = preload("res://scripts/constants.gd")
-
 
 @onready var world_selector := $WorldSelector as WorldSelector
 @onready var world_camera   := %WorldCamera as WorldCamera
@@ -84,7 +82,7 @@ func map_refresh_status() -> void:
 		var status_text : PackedStringArray = PackedStringArray()
 		status_text.append("Tile: " + str(focus_tile))
 		
-		world_canvas.update_status(C.STATUS_SEP.join(status_text))
+		world_canvas.update_status(Preload.C.STATUS_SEP.join(status_text))
 
 
 func map_refresh_tile_status() -> void:
@@ -125,7 +123,7 @@ func map_refresh_tile_status() -> void:
 		mod_text.append("Mine: " + str(mod_data[Term.IndustryType.MINE]) + "%")
 		tile_status.append(", ".join(mod_text))
 
-	world_canvas.update_tile_status(C.STATUS_SEP.join(tile_status))
+	world_canvas.update_tile_status(Preload.C.STATUS_SEP.join(tile_status))
 
 
 func map_set_focus_node(_node: Node) -> void:

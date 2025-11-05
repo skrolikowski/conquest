@@ -1,7 +1,6 @@
 extends Node
 class_name Transaction
 
-const TypeRegistry = preload("res://scripts/type_registry.gd")
 
 var resources: Dictionary = {}
 
@@ -49,7 +48,7 @@ func add_resources(_resources: Dictionary) -> void:
 	```
 	"""
 	for i:String in _resources:
-		var resource_type : Term.ResourceType = TypeRegistry.resource_type_from_code(i)
+		var resource_type : Term.ResourceType = PreloadsRef.TR.resource_type_from_code(i)
 		var resource_amount : int = _resources[i]
 		resources[resource_type] = resource_amount
 

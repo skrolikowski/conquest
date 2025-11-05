@@ -1,7 +1,6 @@
 extends CanvasLayer
 class_name WorldCanvas
 
-const C = preload("res://scripts/constants.gd")
 
 signal end_turn
 signal camera_zoom(_direction:int)
@@ -32,7 +31,7 @@ func _ready() -> void:
 	
 	btn_diplomacy.connect("pressed", _on_diplomacy_pressed)
 	
-	if C.CONFIRM_END_TURN_ENABLED:
+	if Preload.C.CONFIRM_END_TURN_ENABLED:
 		btn_end_turn.connect("pressed", _on_end_turn_pressed)
 	else:
 		btn_end_turn.connect("pressed", _on_end_turn_confirmed)

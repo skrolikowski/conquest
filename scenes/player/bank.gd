@@ -1,8 +1,6 @@
 extends Node2D
 class_name Bank
 
-const C = preload("res://scripts/constants.gd")
-
 var resources      : Dictionary = {}
 var consuming      : Dictionary = {}
 var trading 	   : Dictionary = {}
@@ -20,7 +18,7 @@ func _init() -> void:
 
 #region AFFORDANCE MANAGEMENT
 func can_afford_this_turn(transaction: Transaction) -> bool:
-	if C.WEALTH_MODE_ENABLED:
+	if Preload.C.WEALTH_MODE_ENABLED:
 		return true
 
 	# --
@@ -32,7 +30,7 @@ func can_afford_this_turn(transaction: Transaction) -> bool:
 
 
 func can_afford_next_turn(transaction: Transaction) -> bool:
-	if C.WEALTH_MODE_ENABLED:
+	if Preload.C.WEALTH_MODE_ENABLED:
 		return true
 
 	# --
@@ -51,13 +49,13 @@ func can_afford_next_turn(transaction: Transaction) -> bool:
 
 
 func can_afford_resource_next_turn(_resource_type: Term.ResourceType, _amount: int) -> bool:
-	if C.WEALTH_MODE_ENABLED:
+	if Preload.C.WEALTH_MODE_ENABLED:
 		return true
 	return get_next_resource_value(_resource_type) >= _amount
 
 
 func can_afford_resource_this_turn(_resource_type: Term.ResourceType, _amount: int) -> bool:
-	if C.WEALTH_MODE_ENABLED:
+	if Preload.C.WEALTH_MODE_ENABLED:
 		return true
 	return get_resource_value(_resource_type) >= _amount
 
