@@ -18,13 +18,14 @@ config/icon="res://icon.svg"
 [autoload]
 
 GameConfig="*res://autoload/game_config.gd"
-Def="*res://autoload/definitions.tscn"
+GameData="*res://autoload/game_data.gd"
 Preload="*res://autoload/preloads.tscn"
+WorldService="*res://autoload/world_service.gd"
+Def="*res://autoload/definitions.tscn"
 Popups="*res://autoload/popups.tscn"
 Print="*res://autoload/print.tscn"
 NameGenerator="*res://autoload/name_generator.gd"
 Persistence="*res://autoload/persistence.gd"
-GameData="*res://autoload/game_data.gd"
 
 [debug]
 

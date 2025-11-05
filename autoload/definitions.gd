@@ -37,32 +37,41 @@ func _ready() -> void:
 	pass
 
 
-# func get_canvas_layer() -> CanvasLayer:
-# 	return get_tree().get_first_node_in_group("canvas_layer") as CanvasLayer
-
+#region SERVICE LOCATOR (REFACTOR PHASE 5)
+## DEPRECATED: These methods use the Service Locator anti-pattern.
+## They are maintained for backward compatibility but should be migrated away from.
+##
+## Recommended migration path:
+##   1. Use dependency injection (pass references via @export or constructor)
+##   2. Use signals for communication between loosely coupled systems
+##   3. Access WorldService directly if service locator is truly needed
+##
+## These methods now delegate to WorldService which caches the lookups for performance.
 
 func get_world_canvas() -> WorldCanvas:
-	return get_tree().get_first_node_in_group("world_canvas") as WorldCanvas
+	return WorldService.get_world_canvas()
 
 
 func get_world() -> WorldManager:
-	return get_tree().get_first_node_in_group("world") as WorldManager
+	return WorldService.get_world()
 
 
 func get_world_selector() -> WorldSelector:
-	return get_world().world_selector
+	return WorldService.get_world_selector()
 
 
 func get_world_map() -> WorldGen:
-	return get_world().world_gen
+	return WorldService.get_world_map()
 
 
 func get_player_manager() -> PlayerManager:
-	return get_world().player_manager
+	return WorldService.get_player_manager()
 
 
 func get_world_tile_map() -> TileMapLayer:
-	return get_world_map().get_land_layer()
+	return WorldService.get_world_tile_map()
+
+#endregion
 
 
 func get_building_scene_by_type(_building_type: Term.BuildingType) -> PackedScene:
