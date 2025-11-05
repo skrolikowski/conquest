@@ -6,8 +6,8 @@ const TypeRegistry = preload("res://scripts/type_registry.gd")
 const GameRules = preload("res://scripts/game_rules.gd")
 const C = preload("res://scripts/constants.gd")  # Pure constants file
 
-var buildings : Dictionary = {}
-var units     : Dictionary = {}
+# REFACTOR PHASE 4: Building/unit data dictionaries removed - now handled by GameData autoload
+# Use GameData.get_building_cost(type, level) instead of buildings[type]["cost"][level-1]
 
 # REFACTOR PHASE 3: Scene dictionaries removed - now handled by Preload autoload
 # Use Preload.get_building_scene(type) instead of BuildingScenes[type]
@@ -32,80 +32,9 @@ const STATUS_SEP : String = C.STATUS_SEP
 
 
 func _ready() -> void:
-	# REFACTOR PHASE 3: Scene dictionary initialization removed
-	# Preload autoload now handles all scene lookups via static methods
-
-	## BUILDINGS
-	var json_as_text : String = FileAccess.get_file_as_string("res://assets/metadata/buildings.json")
-	var json_as_dict : Dictionary = JSON.parse_string(json_as_text)
-	if json_as_dict:
-		for key:String in json_as_dict:
-			var building_type : Term.BuildingType = _convert_to_building_type(key)
-			var building_data : Dictionary = json_as_dict[key]
-
-			buildings[building_type] = {
-				"cost": [],
-				"make": [],
-				"need": [],
-				"stat": [],
-				"labor_demand": [],
-			}
-
-			# Building cost..
-			if "cost" in building_data:
-				for cost:Dictionary in building_data["cost"]:
-					buildings[building_type]["cost"].append(_convert_to_transaction(cost))
-		
-			# Building make..
-			if "make" in building_data:
-				for make:Dictionary in building_data["make"]:
-					buildings[building_type]["make"].append(_convert_to_transaction(make))
-
-			# Building need..
-			if "need" in building_data:
-				for need:Dictionary in building_data["need"]:
-					buildings[building_type]["need"].append(_convert_to_transaction(need))
-
-			# Building labor demands..
-			if "labor_demand" in building_data:
-				for labor_demand:int in building_data["labor_demand"]:
-					buildings[building_type]["labor_demand"].append(labor_demand)
-					
-			# Building stat..
-			if "stat" in building_data:
-				for stat:Dictionary in building_data["stat"]:
-					buildings[building_type]["stat"].append(stat)
-
-		# print(JSON.stringify(buildings, "\t"))
-
-	## UNITS
-	var json_as_text2 : String = FileAccess.get_file_as_string("res://assets/metadata/units.json")
-	var json_as_dict2 : Dictionary = JSON.parse_string(json_as_text2)
-	if json_as_dict2:
-		for key:String in json_as_dict2:
-			var unit_type : Term.UnitType = _convert_to_unit_type(key)
-			var unit_data : Dictionary = json_as_dict2[key]
-
-			units[unit_type] = {
-				"cost": [],
-				"need": [],
-				"stat": [],
-			}
-
-			# Unit cost..
-			if "cost" in unit_data:
-				for cost:Dictionary in unit_data["cost"]:
-					units[unit_type]["cost"].append(_convert_to_transaction(cost))
-		
-			# Unit need..
-			if "need" in unit_data:
-				for need:Dictionary in unit_data["need"]:
-					units[unit_type]["need"].append(_convert_to_transaction(need))
-		
-			# Unit stat..
-			if "stat" in unit_data:
-				for stat:Dictionary in unit_data["stat"]:
-					units[unit_type]["stat"].append(stat)
+	# REFACTOR PHASE 4: JSON loading removed - now handled by GameData autoload
+	# REFACTOR PHASE 3: Scene dictionary initialization removed - now handled by Preload autoload
+	pass
 
 
 # func get_canvas_layer() -> CanvasLayer:
@@ -137,23 +66,23 @@ func get_world_tile_map() -> TileMapLayer:
 
 
 func get_building_scene_by_type(_building_type: Term.BuildingType) -> PackedScene:
-	# REFACTOR PHASE 3: Delegating to Preload
-	return Preload.get_building_scene(_building_type)
+	# REFACTOR PHASE 3: Delegating to Preload (using static call)
+	return PreloadsRef.get_building_scene(_building_type)
 
 
 func get_ui_building_scene_by_type(_building_type: Term.BuildingType) -> PackedScene:
-	# REFACTOR PHASE 3: Delegating to Preload
-	return Preload.get_building_ui_scene(_building_type)
+	# REFACTOR PHASE 3: Delegating to Preload (using static call)
+	return PreloadsRef.get_building_ui_scene(_building_type)
 
 
 func get_unit_scene_by_type(_unit_type: Term.UnitType) -> PackedScene:
-	# REFACTOR PHASE 3: Delegating to Preload
-	return Preload.get_unit_scene(_unit_type)
+	# REFACTOR PHASE 3: Delegating to Preload (using static call)
+	return PreloadsRef.get_unit_scene(_unit_type)
 
 
 func get_ui_unit_scene_by_type(_unit_type: Term.UnitType) -> PackedScene:
-	# REFACTOR PHASE 3: Delegating to Preload
-	return Preload.get_unit_ui_scene(_unit_type)
+	# REFACTOR PHASE 3: Delegating to Preload (using static call)
+	return PreloadsRef.get_unit_ui_scene(_unit_type)
 
 
 func _convert_building_type_to_name(_building_type:Term.BuildingType) -> String:
@@ -192,55 +121,39 @@ func _convert_to_transaction(_resources: Dictionary) -> Transaction:
 
 #region BUILDINGS
 func get_building_cost(_building_type: Term.BuildingType, _building_level: int = 1) -> Transaction:
-	var transaction : Transaction = buildings[_building_type]["cost"][_building_level-1]
-	return transaction.clone()
+	# REFACTOR PHASE 4: Delegating to GameData
+	return GameData.get_building_cost(_building_type, _building_level)
 
 
 func get_building_make(_building_type: Term.BuildingType, _building_level: int) -> Transaction:
-	var transaction : Transaction = buildings[_building_type]["make"][_building_level-1]
-	return transaction.clone()
+	# REFACTOR PHASE 4: Delegating to GameData
+	return GameData.get_building_make(_building_type, _building_level)
 
 
 func get_building_need(_building_type: Term.BuildingType, _building_level: int) -> Transaction:
-	var transaction : Transaction = Transaction.new()
-	var need        : Transaction = Transaction.new()
-	
-	if "need" in buildings[_building_type]:
-		need = buildings[_building_type]["need"][_building_level-1]
-	
-	for i:String in Term.ResourceType:
-		var type : Term.ResourceType = Term.ResourceType[i]
-		if type in need.resources:
-			transaction.resources[type] = need.resources[type]
-		else:
-			transaction.resources[type] = 0
-
-	return transaction
+	# REFACTOR PHASE 4: Delegating to GameData
+	return GameData.get_building_need(_building_type, _building_level)
 
 
 func get_building_labor_demand(_building_type: Term.BuildingType, _building_level: int) -> int:
-	if "labor_demand" in buildings[_building_type]:
-		var value : int = buildings[_building_type]["labor_demand"][_building_level-1]
-		return value
-	return 0
+	# REFACTOR PHASE 4: Delegating to GameData
+	return GameData.get_building_labor_demand(_building_type, _building_level)
 
 
 func get_building_stat(_building_type: Term.BuildingType, _building_level: int) -> Dictionary:
-	if "stat" in buildings[_building_type]:
-		return buildings[_building_type]["stat"][_building_level-1]
-	return {}
+	# REFACTOR PHASE 4: Delegating to GameData
+	return GameData.get_building_stat(_building_type, _building_level)
 #endregion
 
 
 #region UNITS
 func get_unit_cost(_unit_type: Term.UnitType, _unit_level: int) -> Transaction:
-	var transaction : Transaction = units[_unit_type]["cost"][_unit_level-1]
-	return transaction.clone()
+	# REFACTOR PHASE 4: Delegating to GameData
+	return GameData.get_unit_cost(_unit_type, _unit_level)
 
 func get_unit_stat(_unit_type: Term.UnitType, _unit_level: int) -> Dictionary:
-	if "stat" in units[_unit_type]:
-		return units[_unit_type]["stat"][_unit_level-1]
-	return {}
+	# REFACTOR PHASE 4: Delegating to GameData
+	return GameData.get_unit_stat(_unit_type, _unit_level)
 #endregion
 
 
