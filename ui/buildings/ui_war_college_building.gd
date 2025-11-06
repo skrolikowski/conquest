@@ -27,32 +27,32 @@ func _set_building(_building: WarCollegeBuilding) -> void:
 	
 	# -- Offensive Research..
 	var off_infantry_level      : int = research[Term.MilitaryResearch.OFFENSIVE][Term.UnitType.INFANTRY]["level"]
-	var off_infantry_max_level  : int = Def.get_research_max_exp_by_level(off_infantry_level)
+	var off_infantry_max_level  : int = GameConfigRef.get_research_max_exp_by_level(off_infantry_level)
 	var off_infantry_exp        : int = research[Term.MilitaryResearch.OFFENSIVE][Term.UnitType.INFANTRY]["exp"]
 	var off_calvary_level       : int = research[Term.MilitaryResearch.OFFENSIVE][Term.UnitType.CALVARY]["level"]
-	var off_calvary_max_level   : int = Def.get_research_max_exp_by_level(off_calvary_level)
+	var off_calvary_max_level   : int = GameConfigRef.get_research_max_exp_by_level(off_calvary_level)
 	var off_calvary_exp         : int = research[Term.MilitaryResearch.OFFENSIVE][Term.UnitType.CALVARY]["exp"]
 	var off_artillary_level     : int = research[Term.MilitaryResearch.OFFENSIVE][Term.UnitType.ARTILLARY]["level"]
-	var off_artillary_max_level : int = Def.get_research_max_exp_by_level(off_artillary_level)
+	var off_artillary_max_level : int = GameConfigRef.get_research_max_exp_by_level(off_artillary_level)
 	var off_artillary_exp       : int = research[Term.MilitaryResearch.OFFENSIVE][Term.UnitType.ARTILLARY]["exp"]
 	
 	# -- Defensive Research..
 	var def_infantry_level      : int = research[Term.MilitaryResearch.DEFENSIVE][Term.UnitType.INFANTRY]["level"]
-	var def_infantry_max_level  : int = Def.get_research_max_exp_by_level(def_infantry_level)
+	var def_infantry_max_level  : int = GameConfigRef.get_research_max_exp_by_level(def_infantry_level)
 	var def_infantry_exp        : int = research[Term.MilitaryResearch.DEFENSIVE][Term.UnitType.INFANTRY]["exp"]
 	var def_calvary_level       : int = research[Term.MilitaryResearch.DEFENSIVE][Term.UnitType.CALVARY]["level"]
-	var def_calvary_max_level   : int = Def.get_research_max_exp_by_level(def_calvary_level)
+	var def_calvary_max_level   : int = GameConfigRef.get_research_max_exp_by_level(def_calvary_level)
 	var def_calvary_exp         : int = research[Term.MilitaryResearch.DEFENSIVE][Term.UnitType.CALVARY]["exp"]
 	var def_artillary_level     : int = research[Term.MilitaryResearch.DEFENSIVE][Term.UnitType.ARTILLARY]["level"]
-	var def_artillary_max_level : int = Def.get_research_max_exp_by_level(def_artillary_level)
+	var def_artillary_max_level : int = GameConfigRef.get_research_max_exp_by_level(def_artillary_level)
 	var def_artillary_exp       : int = research[Term.MilitaryResearch.DEFENSIVE][Term.UnitType.ARTILLARY]["exp"]
 	
 	# -- Leader Research..
 	var leader_level     : int = research[Term.MilitaryResearch.LEADERSHIP][Term.UnitType.LEADER]["level"]
-	var leader_max_level : int = Def.get_research_max_exp_by_level(leader_level)
+	var leader_max_level : int = GameConfigRef.get_research_max_exp_by_level(leader_level)
 	var leader_exp       : int = research[Term.MilitaryResearch.LEADERSHIP][Term.UnitType.LEADER]["exp"]
 
-	%OffensiveInfantryGoldStatus.disabled = off_infantry_level >= Def.get_research_max_level()
+	%OffensiveInfantryGoldStatus.disabled = off_infantry_level >= GameConfigRef.get_research_max_level()
 	#TODO: copilot autocomplete
 	
 	%OffensiveInfantryLevel.text = str(off_infantry_level)

@@ -156,7 +156,7 @@ func has_labor_shortage() -> bool:
 
 #region IMMIGRATION
 func get_immigration() -> int:
-	var growth_rate : float = Def.get_base_population_growth_rate()
+	var growth_rate : float = GameConfigRef.get_base_population_growth_rate()
 	var immigration : int = 0
 	
 	if is_at_max_population():
@@ -184,7 +184,8 @@ func get_immigration_bonus() -> int:
 
 
 func get_crops_needed() -> int:
-	return ceil(float(get_total_population()) * Def.get_crops_consumption_rate())
+	var crop_consumption_rate : float = GameConfigRef.get_crops_consumption_rate()
+	return ceil(float(get_total_population()) * crop_consumption_rate)
 
 
 func is_starving() -> bool:
@@ -270,7 +271,7 @@ func commit_military_research() -> void:
 func train_military_research(_research_type:Term.MilitaryResearch, _unit_type:Term.UnitType, _gold: int) -> void:
 	var unit_level : int = military_research[_research_type][_unit_type]["level"]
 	var prev_exp   : int = military_research[_research_type][_unit_type]["exp"]
-	var next_exp   : int = Def.get_research_max_exp_by_level(unit_level)
+	var next_exp   : int = GameConfigRef.get_research_max_exp_by_level(unit_level)
 	
 	if prev_exp + _gold >= next_exp:
 		_gold = next_exp - prev_exp
@@ -547,7 +548,7 @@ func set_commission_leader(_commission_leader: bool) -> void:
 
 	if commission_leader:
 		commission_leader_unit = UnitStats.New_Unit(Term.UnitType.LEADER, level)
-		Def.get_world_canvas().open_create_leader_unit_menu(self, commission_leader_unit)
+		WorldService.get_world_canvas().open_create_leader_unit_menu(self, commission_leader_unit)
 
 		# -- Provide funds for training..
 		var unit_cost : Transaction = GameData.get_unit_cost(Term.UnitType.LEADER, level)

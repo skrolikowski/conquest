@@ -9,17 +9,6 @@ class_name GameConfigRef
 ## Example usage:
 ##   var growth_rate = GameConfig.get_base_population_growth_rate()
 
-# Re-export constants for convenience (can still use GameConfig.TILE_SIZE)
-const TILE_SIZE: Vector2i = Preload.C.TILE_SIZE
-const STATUS_SEP: String = Preload.C.STATUS_SEP
-const FOG_OF_WAR_ENABLED: bool = Preload.C.FOG_OF_WAR_ENABLED
-const CONFIRM_END_TURN_ENABLED: bool = Preload.C.CONFIRM_END_TURN_ENABLED
-const WEALTH_MODE_ENABLED: bool = Preload.C.WEALTH_MODE_ENABLED
-const DEFENDER_RESERVE_ROW: Vector2i = Preload.C.DEFENDER_RESERVE_ROW
-const DEFENDER_FLAG_SQUARE: Vector2i = Preload.C.DEFENDER_FLAG_SQUARE
-const ATTACKER_RESERVE_ROW: Vector2i = Preload.C.ATTACKER_RESERVE_ROW
-const ATTACKER_FLAG_SQUARE: Vector2i = Preload.C.ATTACKER_FLAG_SQUARE
-
 #region POPULATION GROWTH
 
 static func get_base_population_growth_rate() -> float:
@@ -73,6 +62,6 @@ static func get_research_max_exp_by_level(level: int) -> int:
 ## Bonuses are calculated for mills, mines (gold and metal lumped together), and farms.
 ## Commerce does not gain production bonuses.
 ##
-## NOTE: Actual calculation is implemented in GR.calculate_specialization_bonus()
+## NOTE: Actual calculation is implemented in Preload.GR.calculate_specialization_bonus()
 
 #endregion

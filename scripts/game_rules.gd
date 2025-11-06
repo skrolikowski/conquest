@@ -39,7 +39,19 @@ static func sort_buildings_by_priority(a: Building, b: Building) -> bool:
 	Use with Array.sort_custom()."""
 	return get_building_sort_priority(a.building_type) < get_building_sort_priority(b.building_type)
 
+# static func sort_combat_squares_by_priority(a: CombatSquare, b: CombatSquare) -> bool:
+# 	"""
+# 	Sort squares by priority:
+# 		- Flag Square > Non-Flag Square
+# 		- Towards opposing force's "Reserve Row"
+# 	"""
+# 	if a.is_flag_square:
+# 		return true
+# 	else:
+# 		return false
+
 #endregion
+
 
 #region COMBAT UNIT SORTING
 
@@ -54,6 +66,7 @@ static func sort_combat_units_by_health(a: CombatUnit, b: CombatUnit) -> bool:
 	return a.stat.health > b.stat.health
 
 #endregion
+
 
 #region PRODUCTION SPECIALIZATION
 
