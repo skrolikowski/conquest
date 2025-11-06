@@ -22,19 +22,11 @@ func begin_turn() -> void:
 		unit.begin_turn()
 
 	# -- Fog of War..
-	reveal_fog_of_war()
+	FogOfWarService.reveal_around_player_units(self)
 
 
 func end_turn() -> void:
 	pass
-
-#endregion
-
-
-#region FOG OF WAR
-func reveal_fog_of_war() -> void:
-	for unit: Unit in units:
-		Def.get_world_map().reveal_fog_of_war(unit.global_position, unit.stat.get_stat().fog_reveal)
 
 #endregion
 

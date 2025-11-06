@@ -23,6 +23,9 @@ func _ready() -> void:
 	world_canvas.connect("end_turn", _on_end_turn)
 	world_canvas.connect("camera_zoom", world_camera.change_zoom)
 
+	# Initialize FogOfWarService
+	FogOfWarService.initialize(world_gen, Preload.C.FOG_OF_WAR_ENABLED)
+
 	# --
 	# print("[WorldManager] New Game")
 	#Persistence.new_game()

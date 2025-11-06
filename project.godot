@@ -26,6 +26,7 @@ Popups="*res://autoload/popups.tscn"
 Print="*res://autoload/print.tscn"
 NameGenerator="*res://autoload/name_generator.gd"
 Persistence="*res://autoload/persistence.gd"
+FogOfWarService="*res://autoload/services/fog_of_war.gd"
 
 [debug]
 

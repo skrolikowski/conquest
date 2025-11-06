@@ -27,7 +27,8 @@ func _on_target_reached() -> void:
 
 
 func _on_waypoint_reached(_details: Dictionary) -> void:
-	_reveal_fog_of_war()
+	# Real-time fog reveal during movement
+	FogOfWarService.reveal_around_unit(self)
 
 
 func _process(_delta: float) -> void:
@@ -79,8 +80,6 @@ func can_attack() -> bool:
 	return stat.unit_type == Term.UnitType.LEADER and stat.unit_state == Term.UnitState.IDLE
 
 
-func _reveal_fog_of_war() -> void:
-	Def.get_world_map().reveal_fog_of_war(global_position, stat.get_stat().fog_reveal)
 
 
 #region PERSISTENT MOVEMENT
@@ -188,8 +187,7 @@ func begin_turn() -> void:
 	# -- Reset unit state..
 	stat.unit_state = Term.UnitState.IDLE
 
-	# -- Reveal Fog of War..
-	_reveal_fog_of_war()
+	# Note: Fog of war is now handled by Player via FogOfWarService
 
 
 func end_turn() -> void:
