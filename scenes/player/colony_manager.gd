@@ -34,13 +34,23 @@ func add_colony(_building: CenterBuilding) -> void:
 
 
 func remove_colony(_colony: CenterBuilding) -> void:
-	#TODO: some validation
+	var colony_index : int = colonies.find(_colony)
+	if colony_index == -1:
+		print("[ERROR] Attempted to remove colony not in colonies array: ", _colony)
+		return
 
 	# -- Removes any buildings owned by this colony..
 	for building: Building in _colony.bm.get_buildings().duplicate():
 		_colony.bm.remove_building(building)
-	
-	colonies.remove_at(colonies.find(_colony))
+
+	# -- Clear references to prevent dangling pointers..
+	if placing_colony == _colony:
+		placing_colony = null
+		placing_tiles = {}
+		settler_stats = null
+		settler_position = Vector2.ZERO
+
+	colonies.remove_at(colony_index)
 	colony_list.remove_child(_colony)
 	_colony.queue_free()
 
@@ -62,12 +72,15 @@ func create_colony() -> void:
 
 func undo_create_colony(_building: CenterBuilding) -> void:
 	if _building.building_state == Term.BuildingState.NEW:
-		
+
 		# -- Create settler..
 		var settler  : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, settler_stats.level)
 		settler.on_load_data(settler_stats.on_save_data())
 		var settler_pos : Vector2 = _building.global_position - Vector2(Preload.C.TILE_SIZE.x * 0.25, Preload.C.TILE_SIZE.y * 0.25)
-		player.create_unit(settler, settler_pos)
+		var settler_unit : Unit = player.create_unit(settler, settler_pos)
+		if settler_unit == null:
+			print("[ERROR] Failed to create settler unit during undo_create_colony")
+			return
 
 		# -- Remove occupied tiles..
 		_building.bm.remove_occupied_tiles(_building.get_tiles())
@@ -130,10 +143,13 @@ func cancel_found_colony() -> void:
 	# -- create settler..
 	var settler  : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, settler_stats.level)
 	settler.on_load_data(settler_stats.on_save_data())
-	player.create_unit(settler, settler_position)
+	var settler_unit : Unit = player.create_unit(settler, settler_position)
+	if settler_unit == null:
+		print("[ERROR] Failed to create settler unit during cancel_found_colony")
+		# Continue cleanup even if settler creation fails
 
 	_refresh_placing_tiles(Vector2i.ZERO)
-	
+
 	WorldService.get_world_canvas().close_all_ui()
 	# Def.get_world().map_set_focus_node(null)
 
@@ -180,11 +196,16 @@ func on_save_data() -> Dictionary:
 	var colony_data : Array[Dictionary] = []
 	for colony: CenterBuilding in get_colonies():
 		colony_data.append(colony.on_save_data())
-	
+
+	# -- Package settler data (only if active colony placement)..
+	var settler_data : Dictionary = {}
+	if settler_stats != null:
+		settler_data = settler_stats.on_save_data()
+
 	return {
 		"colonies"         : colony_data,
 		"settler_position" : settler_position,
-		"settler_stats"    : settler_stats.on_save_data(),
+		"settler_stats"    : settler_data,
 	}
 
 
@@ -192,8 +213,11 @@ func on_load_data(_data: Dictionary) -> void:
 
 	# -- Load settler data (if applicable)..
 	settler_position = _data["settler_position"]
-	settler_stats = UnitStats.New_Unit(_data["settler_stats"].unit_type, _data["settler_stats"].level)
-	settler_stats.on_load_data(_data["settler_stats"])
+	if not _data["settler_stats"].is_empty():
+		settler_stats = UnitStats.New_Unit(_data["settler_stats"].unit_type, _data["settler_stats"].level)
+		settler_stats.on_load_data(_data["settler_stats"])
+	else:
+		settler_stats = null
 
 	# -- Load colonies..
 	for colony_data: Dictionary in _data["colonies"]:

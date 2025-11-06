@@ -15,8 +15,7 @@ func begin_turn() -> void:
 	print("[NOTE] Begin Turn - Player")
 
 	# -- Colony management..
-	if Def.get_world().turn_number > 0:
-		begin_turn_for_colonies()
+	begin_turn_for_colonies()
 
 	# -- Units..
 	for unit: Unit in units:
@@ -42,6 +41,10 @@ func reveal_fog_of_war() -> void:
 
 #region COLONIES
 func begin_turn_for_colonies() -> void:
+	# Skip colony processing on turn 0 (initial game setup)
+	if Def.get_world().turn_number == 0:
+		return
+
 	for colony:CenterBuilding in get_colonies():
 		if colony.building_state == Term.BuildingState.NEW:
 			colony.building_state = Term.BuildingState.ACTIVE
@@ -69,8 +72,12 @@ func undo_found_colony(_building:CenterBuilding) -> void:
 #region UNITS
 func get_military_units_by_colony(_colony : CenterBuilding) -> Array[Unit]:
 	var _units : Array[Unit] = []
+	# Optimized: only iterate military units
 	for unit : Unit in units:
-		if unit.unit_category == Term.UnitCategory.MILITARY and unit.colony == _colony:
+		# Early exit for non-military units
+		if unit.unit_category != Term.UnitCategory.MILITARY:
+			continue
+		if unit.colony == _colony:
 			_units.append(unit)
 	return _units
 
@@ -114,7 +121,12 @@ func add_unit(_unit : Unit) -> void:
 
 
 func disband_unit(_unit : Unit) -> void:
-	units.remove_at(units.find(_unit))
+	var unit_index : int = units.find(_unit)
+	if unit_index == -1:
+		print("[ERROR] Attempted to disband unit not in units array: ", _unit)
+		return
+
+	units.remove_at(unit_index)
 	_unit.disband()
 	unit_list.remove_child(_unit)
 	_unit.queue_free()
@@ -155,9 +167,14 @@ func on_load_data(_data: Dictionary) -> void:
 	# -- Load units..
 	for unit_data: Dictionary in _data["units"]:
 		var stat : UnitStats = UnitStats.New_Unit(unit_data.stat.unit_type, unit_data.stat.level)
+		# Set player reference BEFORE loading data to ensure attached units get the reference
+		stat.player = self
 		stat.on_load_data(unit_data.stat)
-		
+
 		var unit : Unit = create_unit(stat, unit_data.position)
+		if unit == null:
+			print("[ERROR] Failed to create unit during load. Type: ", stat.unit_type, " Level: ", stat.level)
+			continue
 
 #endregion
 

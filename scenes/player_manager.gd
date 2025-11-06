@@ -55,8 +55,13 @@ func on_save_data() -> Dictionary:
 	for npc: NPC in npcs:
 		npc_data.append(npc.on_save_data())
 
+	# -- Package diplomacy (with null safety)..
+	var diplomacy_data : Dictionary = {}
+	if diplomacy != null:
+		diplomacy_data = diplomacy.on_save_data()
+
 	return {
-		"diplomacy" : diplomacy.on_save_data(),
+		"diplomacy" : diplomacy_data,
 		"player"    : player.on_save_data(),
 		"npcs"      : npc_data,
 	}
@@ -67,9 +72,12 @@ func on_load_data(_data: Dictionary) -> void:
 	# -- Load player..
 	player.on_load_data(_data["player"])
 
-	# -- Load diplomacy..
+	# -- Load diplomacy (with null safety)..
 	diplomacy = Diplomacy.new()
-	diplomacy.on_load_data(_data["diplomacy"])
+	if not _data["diplomacy"].is_empty():
+		diplomacy.on_load_data(_data["diplomacy"])
+	else:
+		diplomacy.new_game()
 
 	# -- Load NPCs..
 	for npc_data: Dictionary in _data["npcs"]:
