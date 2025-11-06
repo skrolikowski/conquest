@@ -33,17 +33,7 @@ func end_turn() -> void:
 
 #region COLONIES
 func begin_turn_for_colonies() -> void:
-	# Skip colony processing on turn 0 (initial game setup)
-	if Def.get_world().turn_number == 0:
-		return
-
-	for colony:CenterBuilding in get_colonies():
-		if colony.building_state == Term.BuildingState.NEW:
-			colony.building_state = Term.BuildingState.ACTIVE
-		else:
-			if colony.building_state == Term.BuildingState.UPGRADE:
-				colony.upgrade_building(colony)
-
+	for colony: CenterBuilding in get_colonies():
 		colony.begin_turn()
 
 

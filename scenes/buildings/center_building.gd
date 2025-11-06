@@ -587,6 +587,12 @@ func can_commission_leader() -> bool:
 
 #region TURN MANAGEMENT
 func begin_turn() -> void:
+	"""
+	Begin turn for colony center building.
+	"""
+
+	# Process colony center state transitions (moved from Player)
+	_process_building_state()
 
 	# -- Update population details..
 	population = population + get_immigration()
@@ -609,8 +615,25 @@ func begin_turn() -> void:
 	refresh_bank()
 
 
+func _process_building_state() -> void:
+	"""
+	Handle colony center building state transitions.
+	"""
+
+	# Skip state processing on turn 0 (initial game setup)
+	if Def.get_world().turn_number == 0:
+		return
+
+	# State transition: NEW -> ACTIVE
+	if building_state == Term.BuildingState.NEW:
+		building_state = Term.BuildingState.ACTIVE
+	# State transition: UPGRADE (process upgrade)
+	elif building_state == Term.BuildingState.UPGRADE:
+		upgrade_building(self)
+
+
 func end_turn() -> void:
-	
+
 	# -- Military Research
 	commit_military_research()
 
