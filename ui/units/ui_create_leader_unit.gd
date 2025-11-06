@@ -15,7 +15,7 @@ func _ready() -> void:
 	btn_close.pressed.connect(_on_cancel_pressed)
 	btn_cancel.pressed.connect(_on_cancel_pressed)
 
-	Def.get_world_canvas().block_other_ui(self)
+	WorldService.get_world_canvas().block_other_ui(self)
 
 
 func _set_leader(_leader: UnitStats) -> void:
@@ -25,15 +25,15 @@ func _set_leader(_leader: UnitStats) -> void:
 
 
 func _on_submit_pressed() -> void:
-	Def.get_world_canvas().close_ui(self)
+	WorldService.get_world_canvas().close_ui(self)
 
 
 func _on_cancel_pressed() -> void:
 	building.commission_leader = false
 
-	Def.get_world_canvas().close_sub_ui(self)
+	WorldService.get_world_canvas().close_sub_ui(self)
 
 
 func _on_unready() -> void:
-	Def.get_world_canvas().refresh_current_ui()
-	Def.get_world_canvas().unblock_all_ui()
+	WorldService.get_world_canvas().refresh_current_ui()
+	WorldService.get_world_canvas().unblock_all_ui()

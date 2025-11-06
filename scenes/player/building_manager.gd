@@ -7,6 +7,7 @@ class_name BuildingManager
 
 @export var colony : CenterBuilding
 
+var world_manager    : WorldManager
 var placing_building : Building
 var placing_tile     : Vector2i
 
@@ -16,7 +17,8 @@ var buildings    : Array[Building] = []
 	
 
 func _ready() -> void:
-	Def.get_world().world_selector.connect("cursor_updated", _on_cursor_updated)
+	world_manager = Def.get_world() as WorldManager
+	world_manager.world_selector.connect("cursor_updated", _on_cursor_updated)
 
 
 func _draw() -> void:
@@ -70,7 +72,7 @@ func add_temp_building(_building: Building) -> void:
 	placing_building = _building
 	_refresh_build_tiles()
 
-	Def.get_world().map_set_focus_node(placing_building)
+	world_manager.map_set_focus_node(placing_building)
 	
 	add_building(_building)
 	
@@ -101,7 +103,7 @@ func _update_temp_building(_tile: Vector2i) -> void:
 
 	# --
 	# -- status information..
-	Def.get_world().map_set_focus_node(placing_building)
+	world_manager.map_set_focus_node(placing_building)
 
 
 func _can_place_temp_building() -> bool:
@@ -177,14 +179,14 @@ func _place_temp_building() -> void:
 		ghost_timer.connect("timeout", cb.bind(placing_building), CONNECT_ONE_SHOT)
 		ghost_timer.start()
 
-		Def.get_world_canvas().refresh_current_ui()
+		WorldService.get_world_canvas().refresh_current_ui()
 
 	# -- clear
 	placing_building = null
 	placing_tile     = Vector2i.ZERO
 
 	# --
-	Def.get_world().map_set_focus_node(null)
+	world_manager.map_set_focus_node(null)
 	
 	queue_redraw()
 

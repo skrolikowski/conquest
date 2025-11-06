@@ -244,4 +244,4 @@ func _on_accept_pressed() -> void:
 
 
 func _on_close_pressed() -> void:
-	Def.get_world_canvas().close_sub_ui(self)
+	WorldService.get_world_canvas().close_sub_ui(self)

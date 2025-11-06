@@ -21,4 +21,6 @@ unique_name_in_owner = true
 
 [node name="PlayerManager" parent="." instance=ExtResource("5_bk1bu")]
 
-[node name="WorldSelector" parent="." instance=ExtResource("3_bk1bu")]
+[node name="WorldSelector" parent="." node_paths=PackedStringArray("world", "world_canvas") instance=ExtResource("3_bk1bu")]
+world = NodePath("..")
+world_canvas = NodePath("../WorldCanvas")

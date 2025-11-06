@@ -56,8 +56,8 @@ func create_colony() -> void:
 	
 	_refresh_placing_tiles(Vector2i.ZERO)
 	
-	Def.get_world_canvas().close_all_ui()
-	# Def.get_world().map_set_focus_node(null)
+	WorldService.get_world_canvas().close_all_ui()
+	# WorldService.get_world().map_set_focus_node(null)
 
 
 func undo_create_colony(_building: CenterBuilding) -> void:
@@ -75,7 +75,7 @@ func undo_create_colony(_building: CenterBuilding) -> void:
 		# -- Remove colony..
 		remove_colony(_building)
 
-		Def.get_world_canvas().close_all_ui()
+		WorldService.get_world_canvas().close_all_ui()
 
 #endregion
 
@@ -117,7 +117,7 @@ func found_colony(_tile: Vector2i, _position: Vector2, _stats: UnitStats) -> voi
 
 	_refresh_placing_tiles(_tile)
 
-	Def.get_world_canvas().open_found_colony_menu(self)
+	WorldService.get_world_canvas().open_found_colony_menu(self)
 	# Def.get_world_selector().clear_selection()
 	Def.get_world().map_set_focus_node(placing_colony)
 
@@ -134,7 +134,7 @@ func cancel_found_colony() -> void:
 
 	_refresh_placing_tiles(Vector2i.ZERO)
 	
-	Def.get_world_canvas().close_all_ui()
+	WorldService.get_world_canvas().close_all_ui()
 	# Def.get_world().map_set_focus_node(null)
 
 

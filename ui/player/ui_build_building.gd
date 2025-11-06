@@ -48,16 +48,16 @@ func create_button(_building_type : Term.BuildingType) -> void:
 func _on_button_pressed(_building_type: Term.BuildingType) -> void:
 	colony.create_building(_building_type)
 
-	Def.get_world_canvas().close_sub_ui(self)
+	WorldService.get_world_canvas().close_sub_ui(self)
 
 
 func _on_button_entered(_building_type: Term.BuildingType) -> void:
-	Def.get_world_canvas().update_status(Print.build_building_type(_building_type))
+	WorldService.get_world_canvas().update_status(Print.build_building_type(_building_type))
 
 
 func _on_button_exited() -> void:
-	Def.get_world_canvas().clear_status()
+	WorldService.get_world_canvas().clear_status()
 
 
 func _on_close_pressed() -> void:
-	Def.get_world_canvas().close_sub_ui(self)
+	WorldService.get_world_canvas().close_sub_ui(self)

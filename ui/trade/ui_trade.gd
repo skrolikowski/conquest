@@ -29,8 +29,8 @@ func _set_player(_player: Player) -> void:
 
 
 func _on_new_trade_pressed() -> void:
-	Def.get_world_canvas().open_new_trade_menu(colony)
+	WorldService.get_world_canvas().open_new_trade_menu(colony)
 
 
 func _on_close_pressed() -> void:
-	Def.get_world_canvas().close_all_sub_ui()
+	WorldService.get_world_canvas().close_all_sub_ui()

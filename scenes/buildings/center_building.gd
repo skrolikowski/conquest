@@ -561,7 +561,7 @@ func set_commission_leader(_commission_leader: bool) -> void:
 		bank.resource_credit(unit_cost)
 
 	# --
-	Def.get_world_canvas().refresh_current_ui()
+	WorldService.get_world_canvas().refresh_current_ui()
 
 
 func create_leader_unit() -> void:

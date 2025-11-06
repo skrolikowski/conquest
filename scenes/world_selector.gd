@@ -1,6 +1,8 @@
 extends Node2D
 class_name WorldSelector
 
+@export var world : WorldManager
+@export var world_canvas : WorldCanvas
 
 signal cursor_updated(mouse_pos: Vector2)
 
@@ -49,7 +51,7 @@ func clear_selection() -> void:
 
 
 func _input(_event: InputEvent) -> void:
-	if Def.get_world_canvas().locking_ui != null:
+	if world_canvas.locking_ui != null:
 		"""
 			Dev-note:
 			If locking_ui is open, we don't want to process any input events until it's closed..
@@ -70,11 +72,11 @@ func _input(_event: InputEvent) -> void:
 					clear_selection()
 
 					if selected is Unit:
-						Def.get_world_canvas().open_unit_menu(selected as Unit)
+						world_canvas.open_unit_menu(selected as Unit)
 					elif selected is Building:
-						Def.get_world_canvas().open_building_menu(selected as Building)
+						world_canvas.open_building_menu(selected as Building)
 					elif selected is Village:
-						Def.get_world_canvas().open_village_menu(selected as Village)
+						world_canvas.open_village_menu(selected as Village)
 
 			elif mouse_event.pressed:
 				"""
@@ -148,7 +150,7 @@ func set_selected(_selected: Node) -> void:
 			selected.selected = true
 
 		if selected is Building or selected is Village:
-			Def.get_world().map_set_focus_node(selected)
+			world.map_set_focus_node(selected)
 			clear_selection()
 		elif selected is Unit and not selected in selection:
 			clear_selection()

@@ -42,7 +42,7 @@ func refresh_ui() -> void:
 
 
 func _on_cargo_pressed() -> void:
-	Def.get_world_canvas().open_carrier_unit_list(unit)
+	WorldService.get_world_canvas().open_carrier_unit_list(unit)
 
 
 func _on_explore_pressed() -> void:

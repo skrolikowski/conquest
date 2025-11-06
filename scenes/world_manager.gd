@@ -157,7 +157,7 @@ func end_turn() -> void:
 func _on_end_turn() -> void:
 	print("[NOTE] End Turn")
 
-	Def.get_world_canvas().close_all_ui()
+	world_canvas.close_all_ui()
 	# unselect_all()
 
 	turn_number += 1

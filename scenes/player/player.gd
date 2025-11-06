@@ -189,6 +189,8 @@ func debug() -> void:
 	# var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(shore_tile)
 	var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(Vector2i(53, 32))
 	var ship_unit  : Unit = create_unit(ship, ship_pos)
+	
+	# Set camera to player ship..
 	Def.get_world().world_camera.position = ship_unit.position
 	
 	# var e1      : UnitStats = UnitStats.New_Unit(Term.UnitType.EXPLORER, 1)

@@ -51,4 +51,4 @@ func _set_village(_village: Village) -> void:
 
 
 func _on_close_pressed() -> void:
-	Def.get_world_canvas().close_all_ui()
+	WorldService.get_world_canvas().close_all_ui()

@@ -156,19 +156,19 @@ func _on_building_upgrade_toggled(toggled_on:bool) -> void:
 
 
 func _on_build_building_pressed() -> void:
-	Def.get_world_canvas().open_colony_build_building_menu(building)
+	WorldService.get_world_canvas().open_colony_build_building_menu(building)
 
 
 func _on_trade_pressed() -> void:
-	Def.get_world_canvas().open_trade_menu(building)
+	WorldService.get_world_canvas().open_trade_menu(building)
 
 
 func _on_population_details_pressed() -> void:
-	Def.get_world_canvas().open_colony_population_detail(building)
+	WorldService.get_world_canvas().open_colony_population_detail(building)
 
 
 func _on_commodity_details_pressed() -> void:
-	Def.get_world_canvas().open_colony_commodity_detail(building)
+	WorldService.get_world_canvas().open_colony_commodity_detail(building)
 
 
 func _on_leader_commission_toggled(_toggled_on:bool) -> void:
@@ -176,15 +176,15 @@ func _on_leader_commission_toggled(_toggled_on:bool) -> void:
 
 
 func _on_leader_commission_entered() -> void:
-	Def.get_world_canvas().update_status(Print.buy_unit_type(Term.UnitType.LEADER))
+	WorldService.get_world_canvas().update_status(Print.buy_unit_type(Term.UnitType.LEADER))
 
 
 func _on_leader_commission_exited() -> void:
-	Def.get_world_canvas().clear_status()
+	WorldService.get_world_canvas().clear_status()
 
 
 func _on_building_list_pressed() -> void:
-	Def.get_world_canvas().open_colony_building_list(building)
+	WorldService.get_world_canvas().open_colony_building_list(building)
 
 
 func _on_undo_found_colony_pressed() -> void:
@@ -195,8 +195,8 @@ func _on_undo_found_colony_pressed() -> void:
 
 
 func _on_colony_contents_pressed() -> void:
-	Def.get_world_canvas().open_building_unit_list(building)
+	WorldService.get_world_canvas().open_building_unit_list(building)
 
 
 func _on_close_pressed() -> void:
-	Def.get_world_canvas().close_all_ui()
+	WorldService.get_world_canvas().close_all_ui()
