@@ -1,6 +1,8 @@
-extends Node2D
+extends PlayerAgent
 class_name Player
 
+## Represents the human player in the game.
+## Extends PlayerAgent base class and implements ITurnParticipant interface.
 
 @onready var unit_list := $UnitList as Node2D
 @onready var timer     := $Timer as Timer
@@ -10,7 +12,16 @@ var units  : Array[Unit] = []
 var trades : Array[Trade] = []
 
 
-#region TURN MANAGEMENT
+func _ready() -> void:
+	is_human = true
+	agent_name = "Player"
+	agent_color = Color.BLUE
+
+
+#region TURN MANAGEMENT (ITurnParticipant Interface)
+
+## Begin turn processing for the player
+## Part of ITurnParticipant interface
 func begin_turn() -> void:
 	print("[NOTE] Begin Turn - Player")
 
@@ -25,8 +36,36 @@ func begin_turn() -> void:
 	FogOfWarService.reveal_around_player_units(self)
 
 
+## End turn processing for the player
+## Part of ITurnParticipant interface
 func end_turn() -> void:
 	pass
+
+
+# Note: get_turn_priority() and get_participant_name() are inherited from PlayerAgent
+
+#endregion
+
+
+#region PLAYERAGENT INTERFACE IMPLEMENTATIONS
+
+## Get all controlled units - implements PlayerAgent interface
+func get_controlled_units() -> Array:
+	return units
+
+
+## Get all settlements - implements PlayerAgent interface
+func get_settlements() -> Array:
+	return cm.get_colonies()
+
+
+## Check if can afford a resource cost - implements PlayerAgent interface
+func can_afford(cost: Transaction) -> bool:
+	# Delegate to bank if we have colonies
+	if get_colonies().size() > 0:
+		var colony : CenterBuilding = get_colonies()[0] as CenterBuilding
+		return colony.bank.can_afford(cost)
+	return false
 
 #endregion
 
@@ -126,6 +165,9 @@ func new_game() -> void:
 func on_save_data() -> Dictionary:
 	print("[Player] Save Player")
 
+	# Get base agent data
+	var data : Dictionary = super.on_save_data()
+
 	# -- Package units..
 	var unit_data : Array[Dictionary] = []
 	for unit: Unit in units:
@@ -134,14 +176,18 @@ func on_save_data() -> Dictionary:
 			"stat" : unit.stat.on_save_data(),
 		})
 
-	return {
-		"colony_manager" : cm.on_save_data(),
-		"units": unit_data,
-	}
+	# Add player-specific data
+	data["colony_manager"] = cm.on_save_data()
+	data["units"] = unit_data
+
+	return data
 
 
 func on_load_data(_data: Dictionary) -> void:
 	print("[Player] Load Player")
+
+	# Load base agent data
+	super.on_load_data(_data)
 
 	# -- Load colonies..
 	cm.on_load_data(_data["colony_manager"])

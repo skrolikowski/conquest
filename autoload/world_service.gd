@@ -18,7 +18,6 @@ var _world_canvas: WorldCanvas = null
 var _world_manager: WorldManager = null
 var _world_gen: WorldGen = null
 var _world_selector: WorldSelector = null
-var _player_manager: PlayerManager = null
 
 
 func get_world_canvas() -> WorldCanvas:
@@ -57,15 +56,6 @@ func get_world_map() -> WorldGen:
 	return _world_gen
 
 
-func get_player_manager() -> PlayerManager:
-	"""Get PlayerManager from WorldManager. Cached after first access."""
-	if not _player_manager or not is_instance_valid(_player_manager):
-		var world : WorldManager = get_world()
-		if world:
-			_player_manager = world.player_manager
-	return _player_manager
-
-
 func get_world_tile_map() -> TileMapLayer:
 	"""Get land layer TileMapLayer from WorldGen. Not cached (derived property)."""
 	var world_map : WorldGen = get_world_map()
@@ -80,4 +70,3 @@ func clear_cache() -> void:
 	_world_manager = null
 	_world_gen = null
 	_world_selector = null
-	_player_manager = null

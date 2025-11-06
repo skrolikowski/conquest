@@ -23,28 +23,19 @@ image = SubResource("Image_8k6pl")
 script = ExtResource("1_0vpj5")
 texture = SubResource("ImageTexture_akmxj")
 falloff_start = 0.75
-falloff_end = 1.0
 metadata/_custom_type_script = "uid://cbb0ljhm51ypn"
 
 [sub_resource type="Resource" id="Resource_p5nkq"]
 script = ExtResource("4_pxdy5")
-type = 0
 tilemap_layer = 2
-source_id = 0
 atlas_coord = Vector2i(10, 1)
-alternative_tile = 0
-id = ""
 layer = 2
 metadata/_custom_type_script = "uid://cpeeigoklgbik"
 
 [sub_resource type="Resource" id="Resource_kra2y"]
 script = ExtResource("4_8k6pl")
 border_tile_info = SubResource("Resource_p5nkq")
-mode = 0
-remove_single_walls = false
-enabled = true
 affected_layers = Array[int]([1])
-filter_type = 0
 metadata/_custom_type_script = "uid://cmk51d1iame13"
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_8k6pl"]
@@ -54,13 +45,8 @@ frequency = 0.03
 
 [sub_resource type="Resource" id="Resource_0vpj5"]
 script = ExtResource("4_pxdy5")
-type = 0
-tilemap_layer = 0
 source_id = 2
 atlas_coord = Vector2i(9, 2)
-alternative_tile = 0
-id = ""
-layer = 0
 metadata/_custom_type_script = "uid://cpeeigoklgbik"
 
 [sub_resource type="Resource" id="Resource_8k6pl"]
@@ -68,16 +54,11 @@ resource_name = "water"
 script = ExtResource("3_0vpj5")
 title = "water"
 tile = SubResource("Resource_0vpj5")
-min = -1.0
-max = 1.0
 
 [sub_resource type="Resource" id="Resource_pxdy5"]
 script = ExtResource("4_pxdy5")
 type = 1
 tilemap_layer = 1
-terrain_set = 0
-terrain = 0
-id = ""
 layer = 1
 metadata/_custom_type_script = "uid://cpeeigoklgbik"
 
@@ -87,15 +68,11 @@ script = ExtResource("3_0vpj5")
 title = "land"
 tile = SubResource("Resource_pxdy5")
 min = 0.0
-max = 1.0
 
 [sub_resource type="Resource" id="Resource_jdhv2"]
 script = ExtResource("4_pxdy5")
 type = 1
 tilemap_layer = 3
-terrain_set = 0
-terrain = 0
-id = ""
 layer = 2
 metadata/_custom_type_script = "uid://cpeeigoklgbik"
 
@@ -111,9 +88,7 @@ max = 0.28
 script = ExtResource("4_pxdy5")
 type = 1
 tilemap_layer = 3
-terrain_set = 0
 terrain = 1
-id = ""
 layer = 2
 metadata/_custom_type_script = "uid://cpeeigoklgbik"
 
@@ -130,7 +105,6 @@ resource_name = "Settings"
 script = ExtResource("2_pxdy5")
 tiles = Array[ExtResource("3_0vpj5")]([SubResource("Resource_8k6pl"), SubResource("Resource_akmxj"), SubResource("Resource_llrrj"), SubResource("Resource_e677s")])
 noise = SubResource("FastNoiseLite_8k6pl")
-infinite = false
 world_size = Vector2i(64, 64)
 falloff_enabled = true
 falloff_map = SubResource("Resource_7adbe")

@@ -5,12 +5,13 @@ class_name WorldManager
 @onready var world_camera   := %WorldCamera as WorldCamera
 @onready var world_gen      := %WorldGen as WorldGen
 @onready var world_canvas   := %WorldCanvas as CanvasLayer
-@onready var player_manager := $PlayerManager as PlayerManager
+
+# Turn orchestrator (created programmatically)
+var turn_orchestrator: TurnOrchestrator = null
 
 # --
 var focus_tile  : Vector2i
 var focus_node  : Node
-var turn_number : int = 0
 
 
 func _ready() -> void:
@@ -25,6 +26,10 @@ func _ready() -> void:
 
 	# Initialize FogOfWarService
 	FogOfWarService.initialize(world_gen, Preload.C.FOG_OF_WAR_ENABLED)
+	
+	# Initialize TurnOrchestrator
+	turn_orchestrator = TurnOrchestrator.new()
+	add_child(turn_orchestrator)
 
 	# --
 	# print("[WorldManager] New Game")
@@ -35,18 +40,18 @@ func _ready() -> void:
 
 func _on_map_loaded() -> void:
 	print("[WorldManager] Map Loaded")
-	
+
 	if Persistence.is_new_game:
-		player_manager.new_game()
+		turn_orchestrator.new_game()
 	else:
 		var game_data : Dictionary = Persistence.load_section(Persistence.SECTION.GAME)
 		on_load_data(game_data)
 
 		var camera_data : Dictionary = Persistence.load_section(Persistence.SECTION.CAMERA)
 		world_camera.on_load_data(camera_data)
-		
+
 		var player_data : Dictionary = Persistence.load_section(Persistence.SECTION.PLAYER)
-		player_manager.on_load_data(player_data)
+		turn_orchestrator.on_load_data(player_data)
 
 
 #region MAP INFORMATION / CURSOR
@@ -140,45 +145,41 @@ func map_set_focus_node(_node: Node) -> void:
 func begin_turn() -> void:
 	print("[WorldManager] Begin Turn")
 
-	# -- Update canvas..
-	world_canvas.turn_number = turn_number
+	# Update canvas with current turn from orchestrator
+	world_canvas.turn_number = turn_orchestrator.current_turn
 	world_canvas.refresh_current_ui()
 
-	player_manager.begin_turn()
+	# Delegate to TurnOrchestrator
+	turn_orchestrator.begin_turn()
 
 
 func end_turn() -> void:
 	print("[WorldManager] End Turn")
 
-	# -- End turn for all players..
-	player_manager.end_turn()
-
-	# -- repeat..
-	begin_turn()
+	# Delegate to TurnOrchestrator (which will call begin_turn automatically)
+	turn_orchestrator.end_turn()
 
 
 func _on_end_turn() -> void:
 	print("[NOTE] End Turn")
 
 	world_canvas.close_all_ui()
-	# unselect_all()
 
-	turn_number += 1
-
-	# --
+	# Delegate to turn system
 	end_turn()
-	
+
 #endregion
 
 
 #region GAME PERSISTENCE
 func on_save_data() -> Dictionary:
 	return {
-		"turn_number": turn_number,
+		"turn_number": turn_orchestrator.current_turn,
 	}
 
 
 func on_load_data(_data: Dictionary) -> void:
-	turn_number = _data["turn_number"]
+	# Turn number is loaded by TurnOrchestrator
+	pass
 
 #endregion

@@ -188,7 +188,7 @@ func _on_building_list_pressed() -> void:
 
 
 func _on_undo_found_colony_pressed() -> void:
-	Def.get_player_manager().player.undo_found_colony(building)
+	Def.get_world().turn_orchestrator.player.undo_found_colony(building)
 	Def.get_world_selector().clear_selection()
 	
 	queue_free()

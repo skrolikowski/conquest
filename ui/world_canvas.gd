@@ -15,6 +15,8 @@ signal camera_zoom(_direction:int)
 @onready var btn_end_turn  := %BtnEndTurn as Button
 @onready var btn_menu      := %BtnMenu as Button
 
+@export var world_manager : WorldManager
+
 var current_ui     : PanelContainer
 var locking_ui     : PanelContainer
 var current_sub_ui : Array[PanelContainer] = []
@@ -279,7 +281,7 @@ func open_trade_menu(_colony:CenterBuilding) -> void:
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)
 	
-	ui.player = Def.get_player_manager().player
+	ui.player = world_manager.turn_orchestrator.player
 	ui.colony = _colony
 	current_sub_ui.append(ui)
 
@@ -296,7 +298,7 @@ func open_new_trade_menu(_colony:CenterBuilding) -> void:
 	%Panels.move_child(ui, 0)
 	
 	ui.colony = _colony
-	ui.player = Def.get_player_manager().player
+	ui.player = world_manager.turn_orchestrator.player
 	current_sub_ui.append(ui)
 
 #endregion

@@ -1,6 +1,11 @@
 extends Node
 class_name Term
 
+enum TurnPriority {
+	PLAYER = 10,   # Human player processes first
+	NPC = 20,      # AI/NPC players process second
+}
+
 enum CollisionMask {
 	OBJECT    = 1 << 0,
 	CARRIER   = 1 << 1,

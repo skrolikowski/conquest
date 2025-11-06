@@ -55,7 +55,7 @@ func _ready() -> void:
 			trade_resource.add_item(i.capitalize())
 
 	# -- Setup NPC options..
-	for npc: NPC in Def.get_player_manager().npcs:
+	for npc: NPC in Def.get_world().turn_orchestrator.npcs:
 		npc_options.append(npc)
 
 

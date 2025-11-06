@@ -29,10 +29,6 @@ func get_world_map() -> WorldGen:
 	return WorldService.get_world_map()
 
 
-func get_player_manager() -> PlayerManager:
-	return WorldService.get_player_manager()
-
-
 func get_world_tile_map() -> TileMapLayer:
 	return WorldService.get_world_tile_map()
 
