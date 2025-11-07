@@ -34,6 +34,30 @@ func add_resource_amount_by_type(_resource_type: Term.ResourceType, _amount: int
 		resources[_resource_type] = _amount
 
 
+func add_transaction(_transaction: Transaction) -> void:
+	"""
+	Add the resources and amounts from another transaction to this one.
+
+	Example:
+	```
+	var transaction1 = Transaction.new()
+	transaction1.add_resource(Term.ResourceType.GOLD, 100)
+
+	var transaction2 = Transaction.new()
+	transaction2.add_resource(Term.ResourceType.GOLD, 50)
+
+	transaction1.add_transaction(transaction2)
+	```
+	"""
+	for i:Term.ResourceType in _transaction.resources:
+		var resource_amount : int = _transaction.resources[i]
+
+		if resources.has(i):
+			resources[i] += resource_amount
+		else:
+			resources[i] = resource_amount
+
+
 func get_resource_amount(_resource_type: Term.ResourceType) -> int:
 	return resources[_resource_type]
 
@@ -51,6 +75,9 @@ func add_resources(_resources: Dictionary) -> void:
 		var resource_type : Term.ResourceType = PreloadsRef.TR.resource_type_from_code(i)
 		var resource_amount : int = _resources[i]
 		resources[resource_type] = resource_amount
+
+func cleanup() -> void:
+	resources.clear()
 
 
 #func merge_with(_transaction: Transaction) -> void:
