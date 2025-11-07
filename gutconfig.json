@@ -1,0 +1,16 @@
+{
+  "dirs": ["res://test/unit/"],
+  "include_subdirs": true,
+  "log_level": 1,
+  "should_maximize": false,
+  "compact_mode": false,
+  "show_help": false,
+  "disable_colors": false,
+  "junit_xml_file": "res://test/results/junit.xml",
+  "junit_xml_timestamp": false,
+  "panel_options": {
+    "font_size": 20,
+    "font_color": {"r": 1, "g": 1, "b": 1, "a": 1},
+    "background_color": {"r": 0, "g": 0, "b": 0, "a": 1}
+  }
+}

@@ -49,7 +49,7 @@ version_control/autoload_on_startup=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/buttons/plugin.cfg", "res://addons/gaea/plugin.cfg")
+enabled=PackedStringArray("res://addons/buttons/plugin.cfg", "res://addons/gaea/plugin.cfg", "res://addons/gut/plugin.cfg")
 
 [input]
 
