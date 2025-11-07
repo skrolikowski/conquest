@@ -624,16 +624,259 @@ Building {
 
 ---
 
+## Coding Standards & Best Practices
+
+### **Static Typing (REQUIRED)**
+
+This project uses **strict static typing** throughout all GDScript code. The project is configured with:
+```gdscript
+# project.godot
+[debug]
+gdscript/warnings/untyped_declaration=2  # Error level
+```
+
+#### **Type Annotation Requirements**
+
+**Variables:**
+```gdscript
+// ✅ CORRECT - Always type variables
+var health: int = 100
+var player_name: String = "Alice"
+var position: Vector2i = Vector2i(0, 0)
+var transaction: Transaction = Transaction.new()
+var buildings: Array[Building] = []
+
+// ❌ WRONG - No type inference
+var health = 100
+var player_name = "Alice"
+var position = Vector2i(0, 0)
+```
+
+**Function Parameters:**
+```gdscript
+// ✅ CORRECT - Type all parameters and returns
+func calculate_damage(attacker: Unit, defender: Unit) -> int:
+    return attacker.strength - defender.defense
+
+func get_building_cost(building_type: Term.BuildingType, level: int) -> Transaction:
+    return costs[building_type][level]
+
+// ❌ WRONG - Missing types
+func calculate_damage(attacker, defender):
+    return attacker.strength - defender.defense
+```
+
+**Arrays with Type Hints:**
+```gdscript
+// ✅ CORRECT - Typed arrays
+var units: Array[Unit] = []
+var colonies: Array[CenterBuilding] = []
+var resource_types: Array[Term.ResourceType] = [
+    Term.ResourceType.GOLD,
+    Term.ResourceType.WOOD,
+]
+
+// ❌ WRONG - Untyped arrays
+var units = []
+var colonies = []
+```
+
+**Loop Variables:**
+```gdscript
+// ✅ CORRECT - Type loop variables
+for building: Building in buildings:
+    building.update()
+
+for i: int in range(10):
+    process_turn(i)
+
+for resource_type: Term.ResourceType in Term.ResourceType.values():
+    print(resource_type)
+
+// ❌ WRONG - Untyped loop variables
+for building in buildings:
+    building.update()
+```
+
+**Constants:**
+```gdscript
+// ✅ CORRECT - Type constants
+const MAX_LEVEL: int = 4
+const TILE_SIZE: Vector2i = Vector2i(48, 48)
+const DEFAULT_POPULATION: int = 100
+
+// ❌ WRONG - Untyped constants
+const MAX_LEVEL = 4
+const TILE_SIZE = Vector2i(48, 48)
+```
+
+**Null/Optional Types:**
+```gdscript
+// ✅ CORRECT - Can be null (no initializer)
+var colony: CenterBuilding  # Can be null
+var transaction: Transaction  # Can be null
+
+// ✅ CORRECT - Cannot be null (initialized)
+var colony: CenterBuilding = null  # Explicitly null initially
+var transaction: Transaction = Transaction.new()  # Always valid
+
+// Use null checks when needed
+if colony != null:
+    colony.process_turn()
+```
+
+#### **When Types Can Be Inferred**
+
+Only in these specific cases can you omit explicit types:
+
+**@onready variables (type inferred from node path):**
+```gdscript
+// ✅ ACCEPTABLE - Type inferred from scene tree
+@onready var world_camera := %WorldCamera as WorldCamera
+@onready var world_gen := %WorldGen as WorldGen
+@onready var player_label := $PlayerLabel as Label
+
+// Note: Still use 'as Type' for clarity
+```
+
+**Enum values in match statements:**
+```gdscript
+// ✅ ACCEPTABLE - Type known from context
+match building_state:
+    Term.BuildingState.NEW:
+        setup_building()
+    Term.BuildingState.ACTIVE:
+        process_production()
+```
+
+#### **Benefits of Static Typing**
+
+1. **Compile-time error detection** - Catch bugs before runtime
+2. **Better IDE autocomplete** - Full method/property suggestions
+3. **Self-documenting code** - Types clarify intent
+4. **Refactoring safety** - Changes propagate correctly
+5. **Performance** - Minor optimizations from type knowledge
+
+#### **Enforcement**
+
+- **All new code MUST follow these standards**
+- **All modified code SHOULD be updated to follow these standards**
+- **Project will not merge code with type warnings**
+- **CI/CD will reject untyped code**
+
+---
+
+### **Testing Standards**
+
+#### **Unit Tests with GUT**
+- All new features require unit tests
+- Test files located in `test/unit/`
+- Use GUT testing framework (installed in `addons/gut/`)
+- Follow Arrange-Act-Assert pattern
+
+#### **Memory Management in Tests**
+**IMPORTANT:** All Node-based objects must be freed to prevent memory leaks.
+
+```gdscript
+// ✅ CORRECT - Use autofree() for Node objects
+func test_transaction():
+    var transaction: Transaction = autofree(Transaction.new())
+    var cost: Transaction = autofree(GameData.get_building_cost(Term.BuildingType.FARM, 1))
+    var cloned: Transaction = autofree(transaction.clone())
+
+    # All objects auto-freed after test
+
+// ❌ WRONG - Memory leaks (orphans)
+func test_transaction():
+    var transaction = Transaction.new()  # Orphan!
+    var cost = GameData.get_building_cost(Term.BuildingType.FARM, 1)  # Orphan!
+```
+
+**When to use `autofree()`:**
+- Any `Transaction.new()`
+- Any `.clone()` operations
+- Any `GameData.get_*()` calls that return Transactions
+- Any Node-based object instantiation in tests
+
+**See also:**
+- [test/MEMORY_MANAGEMENT_GUIDE.md](test/MEMORY_MANAGEMENT_GUIDE.md)
+- [test/AUTOFREE_CHEATSHEET.md](test/AUTOFREE_CHEATSHEET.md)
+
+#### **Test Coverage Requirements**
+- **Goal:** 0 orphans after all tests run
+- **Check:** GUT panel shows `Orphans: 0`
+- **Documentation:** All tests documented with docstrings
+
+---
+
+### **Code Style**
+
+#### **Naming Conventions**
+- **Classes:** PascalCase (`CenterBuilding`, `WorldManager`)
+- **Variables:** snake_case (`building_type`, `current_turn`)
+- **Constants:** SCREAMING_SNAKE_CASE (`MAX_LEVEL`, `TILE_SIZE`)
+- **Private variables:** Prefix with `_` (`_internal_state`)
+- **Signals:** snake_case (`cursor_updated`, `map_loaded`)
+
+#### **File Organization**
+- Group related functionality with `#region` tags
+- Order: constants → exports → variables → lifecycle → public methods → private methods
+- Use docstrings for classes and public methods
+
+#### **Comments & Documentation**
+```gdscript
+## Class-level documentation
+## Describes purpose and responsibilities
+class_name MyClass extends Node
+
+## Public method documentation
+## Describes what the method does, parameters, and return value
+func calculate_production(building: Building, bonus: float) -> int:
+    # Inline comment explaining complex logic
+    var base_production: int = building.get_base_production()
+    return int(base_production * (1.0 + bonus))
+```
+
+---
+
+### **Performance Guidelines**
+
+- **Avoid excessive allocations** - Reuse objects where possible
+- **Use object pooling** for frequently created/destroyed objects
+- **Profile before optimizing** - Don't guess at bottlenecks
+- **Prefer signals over polling** - Event-driven architecture
+
+---
+
+### **Git Commit Standards**
+
+- **Descriptive commits** - Explain the "why", not just the "what"
+- **Atomic commits** - One logical change per commit
+- **Test before commit** - All tests must pass
+- **Include co-author** when using Claude Code:
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  ```
+
+---
+
 ## Getting Started for Developers
 
 1. **Main entry point**: `scenes/world_manager.tscn` - Start here
 2. **Game flow**: Follow WorldManager.begin_turn() -> end_turn()
-3. **Adding features**:
+3. **Coding standards**: Review section above - **static typing required**
+4. **Testing setup**: See [test/README.md](test/README.md) and [test/QUICKSTART.md](test/QUICKSTART.md)
+5. **Adding features**:
    - New building type: Add to Term.BuildingType, define in buildings.json, create scene
    - New unit type: Add to Term.UnitType, define in units.json, create scene
    - New UI: Create panel in ui/, add to WorldCanvas, connect signals
-4. **Debugging**: Use Print singleton or GDScript print() statements
-5. **Saving**: Ensure new systems implement on_save_data() and on_load_data()
+   - Write unit tests in `test/unit/` for all new code
+6. **Debugging**: Use Print singleton or GDScript print() statements
+7. **Saving**: Ensure new systems implement on_save_data() and on_load_data()
+8. **Running tests**:
+   - Open GUT panel in Godot Editor (bottom panel)
+   - Click "Run All" to execute all tests
+   - Verify `Orphans: 0` (no memory leaks)
 
 ---
 
@@ -644,4 +887,6 @@ Building {
 - Unit types: 7
 - Core scenes: ~50+ scene files
 - Config: Godot 4.4, Canvas2D rendering
+- **Static typing: Required** (warning level = error)
+- **Test framework: GUT v9.3.0**
 
