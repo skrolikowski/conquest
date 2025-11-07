@@ -1,67 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="GutTests" failures="0" tests="30" >
-  <testsuite name="test/unit/test_building_definitions.gd" tests="15" failures="0" skipped="0" time="0.005859" >
-      <testcase name="test_all_building_types_have_definitions" assertions="12" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000718" >
-      </testcase>
-      <testcase name="test_farm_has_correct_level_1_definition" assertions="3" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000394" >
-      </testcase>
-      <testcase name="test_building_costs_increase_with_level" assertions="2" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000376" >
-      </testcase>
-      <testcase name="test_building_production_scales_with_level" assertions="2" status="pass" classname="test/unit/test_building_definitions.gd" time="0.00036" >
-      </testcase>
-      <testcase name="test_mill_produces_wood" assertions="2" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000364" >
-      </testcase>
-      <testcase name="test_mine_produces_metal" assertions="2" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000355" >
-      </testcase>
-      <testcase name="test_commerce_produces_goods" assertions="2" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000356" >
-      </testcase>
-      <testcase name="test_mill_consumes_nothing" assertions="5" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000461" >
-      </testcase>
-      <testcase name="test_buildings_without_consumption" assertions="1" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000344" >
-      </testcase>
-      <testcase name="test_buildings_have_labor_demand" assertions="1" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000332" >
-      </testcase>
-      <testcase name="test_labor_demand_scales_with_level" assertions="3" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000342" >
-      </testcase>
-      <testcase name="test_buildings_support_max_level_4" assertions="3" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000405" >
-      </testcase>
-      <testcase name="test_center_building_definition" assertions="1" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000351" >
-      </testcase>
-      <testcase name="test_fort_building_definition" assertions="1" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000346" >
-      </testcase>
-      <testcase name="test_building_cost_affordability" assertions="1" status="pass" classname="test/unit/test_building_definitions.gd" time="0.000355" >
-      </testcase>
-      </testsuite>
-  <testsuite name="test/unit/test_transaction.gd" tests="15" failures="0" skipped="0" time="0.005822" >
-      <testcase name="test_transaction_initializes_with_zero_resources" assertions="5" status="pass" classname="test/unit/test_transaction.gd" time="0.000443" >
-      </testcase>
-      <testcase name="test_transaction_contains_all_resource_types" assertions="5" status="pass" classname="test/unit/test_transaction.gd" time="0.000354" >
-      </testcase>
-      <testcase name="test_add_resource_amount_by_type_increases_resource" assertions="1" status="pass" classname="test/unit/test_transaction.gd" time="0.000361" >
-      </testcase>
-      <testcase name="test_add_resource_amount_by_type_accumulates" assertions="1" status="pass" classname="test/unit/test_transaction.gd" time="0.000365" >
-      </testcase>
-      <testcase name="test_add_multiple_different_resources" assertions="3" status="pass" classname="test/unit/test_transaction.gd" time="0.000404" >
-      </testcase>
-      <testcase name="test_add_resources_from_dictionary" assertions="3" status="pass" classname="test/unit/test_transaction.gd" time="0.000404" >
-      </testcase>
-      <testcase name="test_clone_creates_independent_copy" assertions="4" status="pass" classname="test/unit/test_transaction.gd" time="0.000433" >
-      </testcase>
-      <testcase name="test_add_transaction_merges_resources" assertions="3" status="pass" classname="test/unit/test_transaction.gd" time="0.000408" >
-      </testcase>
-      <testcase name="test_add_transaction_does_not_modify_source" assertions="1" status="pass" classname="test/unit/test_transaction.gd" time="0.000372" >
-      </testcase>
-      <testcase name="test_negative_resource_amounts" assertions="1" status="pass" classname="test/unit/test_transaction.gd" time="0.000362" >
-      </testcase>
-      <testcase name="test_zero_resource_amount" assertions="1" status="pass" classname="test/unit/test_transaction.gd" time="0.000357" >
-      </testcase>
-      <testcase name="test_large_resource_amounts" assertions="1" status="pass" classname="test/unit/test_transaction.gd" time="0.000359" >
-      </testcase>
-      <testcase name="test_building_cost_transaction" assertions="3" status="pass" classname="test/unit/test_transaction.gd" time="0.000401" >
-      </testcase>
-      <testcase name="test_production_calculation" assertions="1" status="pass" classname="test/unit/test_transaction.gd" time="0.000382" >
-      </testcase>
-      <testcase name="test_resource_transfer_between_entities" assertions="3" status="pass" classname="test/unit/test_transaction.gd" time="0.000417" >
+<testsuites name="GutTests" failures="0" tests="1" >
+  <testsuite name="test/integration/test_game_persistence.gd" tests="1" failures="0" skipped="0" time="0.429295" >
+      <testcase name="test_can_setup_basic_world" assertions="3" status="pass" classname="test/integration/test_game_persistence.gd" time="0.429295" >
       </testcase>
       </testsuite>
   </testsuites>

@@ -31,9 +31,16 @@ test/
 │   ├── test_building_definitions.gd  # Building metadata tests
 │   └── [more tests...]
 ├── integration/            # Integration tests (system interactions)
+│   ├── test_colony_production.gd     # Colony production workflows
+│   ├── test_game_persistence.gd      # Save/load system tests
+│   └── [more tests...]
+├── scenarios/              # Saved game states for scenario testing
 ├── results/                # Test output (JUnit XML, logs)
+├── integration/
+│   └── integration_test_base.gd  # Base class for integration tests
 ├── colony_test_menu.tscn   # Manual testing UI
 ├── colony_debug_overlay.gd # In-game debug overlay
+├── INTEGRATION_TESTING_GUIDE.md  # Complete integration testing guide
 └── COLONY_TESTING_CHECKLIST.md  # Manual test checklist
 ```
 
@@ -144,13 +151,24 @@ Test individual components in isolation:
 - **test_building_definitions.gd** - JSON metadata loading
 - Future: test_population_growth.gd, test_labor_distribution.gd
 
+**When to write unit tests:**
+- Testing a single class or function
+- Testing math/calculation logic
+- Testing data structures
+
 ### Integration Tests (`test/integration/`)
 
-Test system interactions:
+Test system interactions across multiple components:
 
-- Colony + Building + Resources
-- Production chains (Farm → Mill)
-- Save/Load persistence
+- **test_colony_production.gd** - Colony + buildings + resource production workflows
+- **test_game_persistence.gd** - Save/Load system and scenario loading
+
+**When to write integration tests:**
+- Testing complete game workflows
+- Testing multiple systems working together
+- Testing scenarios (e.g., "colony with farm produces crops")
+
+**See:** [INTEGRATION_TESTING_GUIDE.md](INTEGRATION_TESTING_GUIDE.md) for complete guide
 
 ### Manual Tests
 
@@ -162,12 +180,15 @@ Test system interactions:
 ## Test Coverage Goals
 
 ### Current Coverage
-- ✅ Transaction system (100%)
-- ✅ Building definitions (metadata)
-- 🟡 Colony management (partial - manual tests)
-- ❌ Population system (todo)
-- ❌ Production calculations (todo)
-- ❌ Save/Load system (todo)
+- ✅ Transaction system (100% - unit tests)
+- ✅ Building definitions (metadata - unit tests)
+- ✅ Colony production workflows (integration tests)
+- ✅ Game persistence basics (integration tests)
+- 🟡 Population system (partial - manual tests)
+- 🟡 Save/Load complete scenarios (partial)
+- ❌ Production bonuses (terrain + specialization - todo)
+- ❌ Labor distribution (todo)
+- ❌ Combat system (todo)
 
 ### Priority Tests to Add
 1. Population growth formulas
