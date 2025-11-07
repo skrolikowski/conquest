@@ -40,14 +40,23 @@ func save_game() -> void:
 		config.set_value(SECTION.PLAYER, key, player_data[key])
 
 	# --
-	config.save(SAVE_PATH)
-
+	var err : Error = config.save(SAVE_PATH)
+	if err != OK:
+		print("Error saving save file: " + str(err))
+		return
 
 func load_game() -> void:
 	var config : ConfigFile = ConfigFile.new()
 	var err    : Error = config.load(SAVE_PATH)
-	if err != OK:
-		print("Error loading save file: " + str(err))
+	if err == OK:
+		print("[Persistence] Load Game Successful")
+	else:
+		if err == ERR_FILE_NOT_FOUND:
+			print("[Persistence] No Save File Found, Starting New Game")
+		elif err == ERR_PARSE_ERROR:
+			print("Error parsing save file: " + str(err))
+		else:
+			print("Error loading save file: " + str(err))
 		return
 
 	# -- Load Map..
