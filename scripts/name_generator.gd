@@ -1,5 +1,7 @@
-extends Node
-# https://github.com/xsellier/godot-name-generator
+## Static utility class for procedural name generation
+## Based on: https://github.com/xsellier/godot-name-generator
+class_name NameGenerator
+extends RefCounted
 
 const MIN_LENGTH:int = 4
 const MAX_LENGTH:int = 8

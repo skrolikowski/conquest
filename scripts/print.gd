@@ -1,5 +1,7 @@
-extends Node2D
-class_name PrintRef
+## Static utility class for building formatted text strings for UI display
+## Handles cost text, building info, and unit info formatting
+class_name Print
+extends RefCounted
 
 
 static func build_building_type(_building_type: Term.BuildingType) -> String:
