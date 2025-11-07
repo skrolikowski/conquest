@@ -410,6 +410,33 @@ func update_tile_status(_status: String) -> void:
 	%TileStatus.text = _status
 
 
+func update_tile_focus(tile_info: Dictionary) -> void:
+	"""
+	Update tile status display from tile information dictionary
+	Handles formatting of tile data for display
+	"""
+	var tile_status: PackedStringArray = PackedStringArray()
+
+	# Position
+	if tile_info.has("position"):
+		tile_status.append(str(tile_info["position"]))
+
+	# Height
+	if tile_info.has("height"):
+		tile_status.append(str(snapped(tile_info["height"], 0.01)))
+
+	# Industry modifiers
+	if tile_info.has("modifiers") and tile_info["modifiers"].size() > 0:
+		var mod_data: Dictionary = tile_info["modifiers"]
+		var mod_text: PackedStringArray = PackedStringArray()
+		mod_text.append("Farm: " + str(mod_data[Term.IndustryType.FARM]) + "%")
+		mod_text.append("Mill: " + str(mod_data[Term.IndustryType.MILL]) + "%")
+		mod_text.append("Mine: " + str(mod_data[Term.IndustryType.MINE]) + "%")
+		tile_status.append(", ".join(mod_text))
+
+	update_tile_status(Preload.C.STATUS_SEP.join(tile_status))
+
+
 func clear_tile_status() -> void:
 	%TileStatus.text = ""
 

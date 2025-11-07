@@ -5,6 +5,7 @@ class_name WorldSelector
 @export var world_canvas : WorldCanvas
 
 signal cursor_updated(mouse_pos: Vector2)
+signal node_selected(node: Node)
 
 var mouse_pos : Vector2 = Vector2.ZERO
 
@@ -149,8 +150,10 @@ func set_selected(_selected: Node) -> void:
 			selected = _selected
 			selected.selected = true
 
+		# Emit signal instead of directly calling WorldManager
+		node_selected.emit(selected)
+
 		if selected is Building or selected is Village:
-			world.map_set_focus_node(selected)
 			clear_selection()
 		elif selected is Unit and not selected in selection:
 			clear_selection()
@@ -158,6 +161,8 @@ func set_selected(_selected: Node) -> void:
 		if selected:
 			clear_selected()
 			clear_selection()
+			# Emit signal to notify that nothing is selected
+			node_selected.emit(null)
 
 
 #region VIEWPORT CLICK DETECTION

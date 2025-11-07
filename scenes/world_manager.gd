@@ -6,27 +6,34 @@ class_name WorldManager
 @onready var world_gen      := %WorldGen as WorldGen
 @onready var world_canvas   := %WorldCanvas as CanvasLayer
 
-# Turn orchestrator (created programmatically)
+# Service instances (created programmatically)
 var turn_orchestrator: TurnOrchestrator = null
-
-# --
-var focus_tile  : Vector2i
-var focus_node  : Node
+var focus_service: FocusService = null
 
 
 func _ready() -> void:
 	world_camera.reset()
 
-	world_selector.connect("cursor_updated", _on_cursor_updated)
-
 	world_gen.connect("map_loaded", _on_map_loaded)
-
 	world_canvas.connect("end_turn", _on_end_turn)
 	world_canvas.connect("camera_zoom", world_camera.change_zoom)
 
 	# Initialize FogOfWarService
 	FogOfWarService.initialize(world_gen, Preload.C.FOG_OF_WAR_ENABLED)
-	
+
+	# Initialize FocusService
+	focus_service = FocusService.new()
+	focus_service.world_gen = world_gen
+	add_child(focus_service)
+
+	# Connect FocusService signals
+	focus_service.connect("focus_tile_changed", _on_focus_tile_changed)
+	focus_service.connect("focus_node_changed", _on_focus_node_changed)
+
+	# Connect WorldSelector signals to FocusService
+	world_selector.connect("cursor_updated", _on_cursor_updated)
+	world_selector.connect("node_selected", focus_service.set_focus_node)
+
 	# Initialize TurnOrchestrator
 	turn_orchestrator = TurnOrchestrator.new()
 	add_child(turn_orchestrator)
@@ -54,89 +61,37 @@ func _on_map_loaded() -> void:
 		turn_orchestrator.on_load_data(player_data)
 
 
-#region MAP INFORMATION / CURSOR
+#region FOCUS MANAGEMENT
 func _on_cursor_updated(_cursor_position: Vector2) -> void:
-	var tile_coords : Vector2i = world_gen.get_local_to_map_position(_cursor_position)
-	if focus_tile != tile_coords:
-		map_set_focus_tile(tile_coords)
+	"""Handle cursor movement - update focused tile"""
+	var tile_coords: Vector2i = world_gen.get_local_to_map_position(_cursor_position)
+	focus_service.set_focus_tile(tile_coords)
 
 
-func map_set_focus_tile(_tile: Vector2i) -> void:
-	focus_tile = _tile
-
-	map_refresh_cursor()
-	map_refresh_tile_status()
-
-
-func map_refresh_cursor() -> void:
+func _on_focus_tile_changed(tile: Vector2i, _previous_tile: Vector2i) -> void:
+	"""Handle tile focus changes - update cursor and UI"""
+	# Update cursor visualization
 	world_gen.clear_cursor_tiles()
+	if focus_service.current_node == null:
+		world_gen.set_cursor_tile(tile)
 
-	if focus_node == null:
-		world_gen.set_cursor_tile(focus_tile)
+	# Update tile status in UI
+	var tile_info: Dictionary = focus_service.get_tile_info(tile)
+	world_canvas.update_tile_focus(tile_info)
 
 
-func map_refresh_status() -> void:
-	if focus_node != null:
-		# if focus_node is Unit:
-		# 	var node : Unit = focus_node as Unit
-		# 	var info : String = node.get_status_information(focus_tile)
-		# 	world_canvas.update_status(info)
-		if focus_node is Building:
-			var node : Building = focus_node as Building
-			var info : String = node.get_status_information(focus_tile)
+func _on_focus_node_changed(node: Node, _previous_node: Node) -> void:
+	"""Handle node focus changes - update status display"""
+	if node != null:
+		if node is Building:
+			var building: Building = node as Building
+			var info: String = building.get_status_information(focus_service.current_tile)
 			world_canvas.update_status(info)
 	else:
-		# --
-		var status_text : PackedStringArray = PackedStringArray()
-		status_text.append("Tile: " + str(focus_tile))
-		
+		# No node focused - show basic tile info
+		var status_text: PackedStringArray = PackedStringArray()
+		status_text.append("Tile: " + str(focus_service.current_tile))
 		world_canvas.update_status(Preload.C.STATUS_SEP.join(status_text))
-
-
-func map_refresh_tile_status() -> void:
-	var tile_status : PackedStringArray = PackedStringArray()
-
-	# -- Tile index..
-	# var _cd : String = ""
-	# if world_gen.is_water_tile(focus_tile):
-	# 	_cd += "W"
-	# else:
-	# 	_cd += "L"
-	# if world_gen.is_ocean_tile(focus_tile):
-	# 	_cd += "O"
-	# elif world_gen.is_river_tile(focus_tile):
-	# 	_cd += "R"
-	# else:
-	# 	_cd += "-"
-	# if world_gen.is_shore_tile(focus_tile):
-	# 	_cd += "S"
-	# else:
-	# 	_cd += "-"
-	# if world_gen.has_ocean_access_tile(focus_tile):
-	# 	_cd += "A"
-	# else:
-	# 	_cd += "-"
-	tile_status.append(str(focus_tile))# + " " + str(_cd))
-
-	# -- Tile height..
-	var tile_height : float = world_gen.get_tile_height(focus_tile)
-	tile_status.append(str(snapped(tile_height, 0.01)))
-
-	# -- Industry modifiers..
-	var mod_data : Dictionary = world_gen.get_terrain_modifier_by_industry_type(focus_tile)
-	if mod_data.size() > 0:
-		var mod_text : PackedStringArray = PackedStringArray()
-		mod_text.append("Farm: " + str(mod_data[Term.IndustryType.FARM]) + "%")
-		mod_text.append("Mill: " + str(mod_data[Term.IndustryType.MILL]) + "%")
-		mod_text.append("Mine: " + str(mod_data[Term.IndustryType.MINE]) + "%")
-		tile_status.append(", ".join(mod_text))
-
-	world_canvas.update_tile_status(Preload.C.STATUS_SEP.join(tile_status))
-
-
-func map_set_focus_node(_node: Node) -> void:
-	focus_node = _node
-	map_refresh_status()
 
 #endregion
 

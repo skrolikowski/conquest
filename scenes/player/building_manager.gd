@@ -72,10 +72,10 @@ func add_temp_building(_building: Building) -> void:
 	placing_building = _building
 	_refresh_build_tiles()
 
-	world_manager.map_set_focus_node(placing_building)
-	
+	world_manager.focus_service.set_focus_node(placing_building)
+
 	add_building(_building)
-	
+
 	queue_redraw()
 
 
@@ -103,7 +103,7 @@ func _update_temp_building(_tile: Vector2i) -> void:
 
 	# --
 	# -- status information..
-	world_manager.map_set_focus_node(placing_building)
+	world_manager.focus_service.set_focus_node(placing_building)
 
 
 func _can_place_temp_building() -> bool:
@@ -186,8 +186,8 @@ func _place_temp_building() -> void:
 	placing_tile     = Vector2i.ZERO
 
 	# --
-	world_manager.map_set_focus_node(null)
-	
+	world_manager.focus_service.set_focus_node(null)
+
 	queue_redraw()
 
 #endregion

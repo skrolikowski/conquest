@@ -132,7 +132,7 @@ func found_colony(_tile: Vector2i, _position: Vector2, _stats: UnitStats) -> voi
 
 	WorldService.get_world_canvas().open_found_colony_menu(self)
 	# Def.get_world_selector().clear_selection()
-	Def.get_world().map_set_focus_node(placing_colony)
+	Def.get_world().focus_service.set_focus_node(placing_colony)
 
 
 func cancel_found_colony() -> void:
