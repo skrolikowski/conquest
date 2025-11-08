@@ -8,9 +8,12 @@ class_name GameSession
 ## - Manages WorldManager instance (scene container)
 ## - Handles game lifecycle (start, load, save, end)
 ## - Manages turn progression (begin_turn, end_turn)
-## - Coordinates focus/cursor updates
+## - Converts input to state (cursor position -> tile coords)
 ## - Connects signals between systems
 ## - Save/load methods (kept for Persistence.gd compatibility)
+##
+## NOT Responsible For (delegated to WorldManager):
+## - Focus UI updates (cursor visualization, status display)
 ##
 ## Usage:
 ##   var session = GameSession.new()
@@ -48,6 +51,9 @@ func _create_services() -> void:
 	focus_service.world_gen = world_manager.world_gen
 	add_child(focus_service)
 
+	# Delegate focus UI updates to WorldManager
+	world_manager.connect_focus_signals(focus_service)
+
 	# TurnOrchestrator (instance - owned by this session)
 	turn_orchestrator = TurnOrchestrator.new()
 	add_child(turn_orchestrator)
@@ -63,11 +69,7 @@ func _connect_signals() -> void:
 	# Camera zoom stays in WorldManager since it's pure scene management
 	# world_manager.world_canvas.connect("camera_zoom", world_manager.world_camera.change_zoom)
 
-	# FocusService signals
-	focus_service.connect("focus_tile_changed", _on_focus_tile_changed)
-	focus_service.connect("focus_node_changed", _on_focus_node_changed)
-
-	# WorldSelector signals
+	# WorldSelector signals (input -> FocusService state)
 	world_manager.world_selector.connect("cursor_updated", _on_cursor_updated)
 	world_manager.world_selector.connect("node_selected", focus_service.set_focus_node)
 
@@ -161,13 +163,9 @@ func end_session() -> void:
 	"""Clean up and end the current session."""
 	print("[GameSession] Ending session")
 
-	# Disconnect signals
+	# Disconnect signals (GameSession owns these connections)
 	if world_manager and world_manager.world_gen:
 		world_manager.world_gen.disconnect("map_loaded", _on_map_loaded)
-
-	if focus_service:
-		focus_service.disconnect("focus_tile_changed", _on_focus_tile_changed)
-		focus_service.disconnect("focus_node_changed", _on_focus_node_changed)
 
 	if world_manager and world_manager.world_selector:
 		world_manager.world_selector.disconnect("cursor_updated", _on_cursor_updated)
@@ -179,6 +177,7 @@ func end_session() -> void:
 		turn_orchestrator = null
 
 	if focus_service:
+		# Note: WorldManager owns focus UI signal connections
 		focus_service.queue_free()
 		focus_service = null
 
@@ -228,7 +227,7 @@ func end_turn() -> void:
 #endregion
 
 
-#region SIGNAL HANDLERS (moved from WorldManager)
+#region SIGNAL HANDLERS
 
 func _on_map_loaded() -> void:
 	"""
@@ -239,35 +238,14 @@ func _on_map_loaded() -> void:
 
 
 func _on_cursor_updated(_cursor_position: Vector2) -> void:
-	"""Handle cursor movement - update focused tile"""
+	"""
+	Handle cursor movement - convert input position to tile coords.
+
+	This is input -> state conversion (GameSession responsibility).
+	UI updates are handled by WorldManager (via FocusService signals).
+	"""
 	var tile_coords: Vector2i = world_manager.world_gen.get_local_to_map_position(_cursor_position)
 	focus_service.set_focus_tile(tile_coords)
-
-
-func _on_focus_tile_changed(tile: Vector2i, _previous_tile: Vector2i) -> void:
-	"""Handle tile focus changes - update cursor and UI"""
-	# Update cursor visualization
-	world_manager.world_gen.clear_cursor_tiles()
-	if focus_service.current_node == null:
-		world_manager.world_gen.set_cursor_tile(tile)
-
-	# Update tile status in UI
-	var tile_info: Dictionary = focus_service.get_tile_info(tile)
-	world_manager.world_canvas.update_tile_focus(tile_info)
-
-
-func _on_focus_node_changed(node: Node, _previous_node: Node) -> void:
-	"""Handle node focus changes - update status display"""
-	if node != null:
-		if node is Building:
-			var building: Building = node as Building
-			var info: String = building.get_status_information(focus_service.current_tile)
-			world_manager.world_canvas.update_status(info)
-	else:
-		# No node focused - show basic tile info
-		var status_text: PackedStringArray = PackedStringArray()
-		status_text.append("Tile: " + str(focus_service.current_tile))
-		world_manager.world_canvas.update_status(Preload.C.STATUS_SEP.join(status_text))
 
 #endregion
 
