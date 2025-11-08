@@ -76,7 +76,8 @@ func test_world_manager_has_required_components() -> void:
 	assert_not_null(world_manager.world_gen, "WorldGen should exist")
 	assert_not_null(world_manager.world_camera, "WorldCamera should exist")
 	assert_not_null(world_manager.world_canvas, "WorldCanvas should exist")
-	assert_not_null(world_manager.turn_orchestrator, "TurnOrchestrator should exist")
+	assert_not_null(game_session.turn_orchestrator, "TurnOrchestrator should exist in GameSession")
+	assert_not_null(game_session.focus_service, "FocusService should exist in GameSession")
 
 
 func test_player_has_required_managers() -> void:

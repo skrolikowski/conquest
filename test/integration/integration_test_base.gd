@@ -19,7 +19,13 @@ class_name IntegrationTestBase
 
 #region TEST WORLD MANAGEMENT
 
-## Reference to the instantiated WorldManager for this test
+## Reference to the GameController for this test
+var game_controller: GameController = null
+
+## Reference to the GameSession for this test
+var game_session: GameSession = null
+
+## Reference to the WorldManager for this test
 var world_manager: WorldManager = null
 
 ## Reference to player for convenience
@@ -29,18 +35,24 @@ var player: Player = null
 ## Sets up a minimal game world for testing
 ## Call this in before_each() or at the start of each test
 func setup_world() -> void:
-	# Instantiate the main game scene
-	var world_scene: PackedScene = load("res://scenes/world_manager.tscn")
-	world_manager = autofree(world_scene.instantiate()) as WorldManager
+	# Create GameController (root orchestrator)
+	game_controller = autofree(GameController.new())
+	add_child_autofree(game_controller)
 
-	# Add to scene tree so autoloads can find it
-	add_child_autofree(world_manager)
+	# Start a new test game (this creates WorldManager and GameSession internally)
+	# Note: We're bypassing GameController._ready() auto-load to control initialization
+	game_controller._setup_game()
+	await wait_frames(1)
+
+	# Get references to created instances
+	game_session = game_controller.game_session
+	world_manager = game_controller.world_manager
 
 	# Initialize with minimal map
-	_initialize_minimal_world()
+	await _initialize_minimal_world()
 
-	# Get player reference
-	player = world_manager.turn_orchestrator.player as Player
+	# Get player reference from TurnOrchestrator
+	player = game_session.turn_orchestrator.player as Player
 
 	# Wait for everything to initialize
 	await wait_frames(2)
@@ -77,20 +89,50 @@ func load_scenario(scenario_name: String) -> bool:
 		setup_world()
 		await wait_frames(1)
 
+	# Load game data
+	var game_data: Dictionary = {}
+	for key: String in config.get_section_keys(Persistence.SECTION.GAME):
+		game_data[key] = config.get_value(Persistence.SECTION.GAME, key)
+
 	# Load world data
 	var world_data: Dictionary = {}
 	for key: String in config.get_section_keys(Persistence.SECTION.WORLD):
 		world_data[key] = config.get_value(Persistence.SECTION.WORLD, key)
-	world_manager.world_gen.on_load_data(world_data)
+
+	# Load camera data
+	var camera_data: Dictionary = {}
+	for key: String in config.get_section_keys(Persistence.SECTION.CAMERA):
+		camera_data[key] = config.get_value(Persistence.SECTION.CAMERA, key)
 
 	# Load player data
 	var player_data: Dictionary = {}
 	for key: String in config.get_section_keys(Persistence.SECTION.PLAYER):
 		player_data[key] = config.get_value(Persistence.SECTION.PLAYER, key)
-	world_manager.turn_orchestrator.on_load_data(player_data)
+
+	# Load data into components (matches GameSession.load_game pattern)
+	world_manager.world_gen.on_load_data(world_data)
+	world_manager.world_camera.on_load_data(camera_data)
+	game_session.turn_orchestrator.on_load_data(game_data, player_data)
 
 	await wait_frames(2)
 	return true
+
+#endregion
+
+
+#region HELPER UTILITIES
+
+## Convert string resource name to ResourceType enum
+func _string_to_resource_type(resource_name: String) -> Term.ResourceType:
+	match resource_name.to_lower():
+		"gold": return Term.ResourceType.GOLD
+		"wood": return Term.ResourceType.WOOD
+		"crops": return Term.ResourceType.CROPS
+		"metal": return Term.ResourceType.METAL
+		"goods": return Term.ResourceType.GOODS
+		_:
+			push_error("Unknown resource type: " + resource_name)
+			return Term.ResourceType.NONE
 
 #endregion
 
@@ -115,12 +157,9 @@ func create_test_colony(tile_pos: Vector2i, starting_resources: Dictionary = {})
 			"goods": 1000
 		}
 
-	# Create settler stats with resources
-	var settler_stats: UnitStats = UnitStats.new()
-	settler_stats.unit_type = Term.UnitType.SETTLER
-	settler_stats.level = 1
+	# Create settler stats (without resources - those are in player's bank)
+	var settler_stats: UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, 1)
 	settler_stats.player = player
-	settler_stats.resources.add_resources(starting_resources)
 
 	# Found the colony through ColonyManager
 	var world_pos: Vector2 = world_manager.world_gen.get_map_to_local_position(tile_pos)
@@ -128,9 +167,15 @@ func create_test_colony(tile_pos: Vector2i, starting_resources: Dictionary = {})
 
 	await wait_frames(1)
 
-	# Get the colony that was just added (should be the last one)
+	# Get the colony that was just added (should be the placing_colony)
 	var colony: CenterBuilding = player.cm.placing_colony
 	assert_not_null(colony, "Colony should have been created")
+
+	# Add starting resources to the colony's bank
+	for resource_name: String in starting_resources:
+		var resource_type: Term.ResourceType = _string_to_resource_type(resource_name)
+		colony.bank.set_resource_value(resource_type, starting_resources[resource_name])
+
 	return colony
 
 
@@ -145,8 +190,8 @@ func create_test_building(colony: CenterBuilding, building_type: Term.BuildingTy
 	assert_not_null(colony, "Colony cannot be null")
 	assert_true(level >= 1 and level <= 4, "Building level must be 1-4")
 
-	# Get building scene
-	var building_scene: PackedScene = Def.get_building_scene_by_type(building_type)
+	# Get building scene (using updated API)
+	var building_scene: PackedScene = PreloadsRef.get_building_scene(building_type)
 	var building: Building = building_scene.instantiate() as Building
 
 	# Set building properties
@@ -202,7 +247,7 @@ func create_test_unit(unit_type: Term.UnitType, tile_pos: Vector2i, level: int =
 ## @param num_turns: Number of turns to simulate
 func simulate_turns(num_turns: int) -> void:
 	for i: int in range(num_turns):
-		world_manager.end_turn()
+		game_session.end_turn()
 		await wait_frames(1)
 
 
@@ -248,8 +293,8 @@ func assert_building_exists(colony: CenterBuilding, building_type: Term.Building
 ## Asserts that a colony has at least the specified resources
 func assert_colony_resources(colony: CenterBuilding, expected: Dictionary, message: String = "") -> void:
 	for resource_name: String in expected:
-		var resource_type: Term.ResourceType = Def._convert_to_resource_type(resource_name)
-		var actual: int = colony.bank.get_resource_amount(resource_type)
+		var resource_type: Term.ResourceType = _string_to_resource_type(resource_name)
+		var actual: int = colony.bank.get_resource_value(resource_type)
 		var expected_amount: int = expected[resource_name]
 
 		var msg: String = message if message != "" else resource_name + " should be at least " + str(expected_amount)
@@ -259,7 +304,7 @@ func assert_colony_resources(colony: CenterBuilding, expected: Dictionary, messa
 ## Asserts that a production transaction matches expected values
 func assert_production(actual: Transaction, expected: Dictionary, message: String = "") -> void:
 	for resource_name: String in expected:
-		var resource_type: Term.ResourceType = Def._convert_to_resource_type(resource_name)
+		var resource_type: Term.ResourceType = _string_to_resource_type(resource_name)
 		var actual_amount: int = actual.get_resource_amount(resource_type)
 		var expected_amount: int = expected[resource_name]
 
@@ -278,6 +323,8 @@ func before_each() -> void:
 
 func after_each() -> void:
 	# Cleanup is automatic via autofree
+	game_controller = null
+	game_session = null
 	world_manager = null
 	player = null
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites name="GutTests" failures="0" tests="1" >
-  <testsuite name="test/integration/test_game_persistence.gd" tests="1" failures="0" skipped="0" time="0.429295" >
-      <testcase name="test_can_setup_basic_world" assertions="3" status="pass" classname="test/integration/test_game_persistence.gd" time="0.429295" >
+  <testsuite name="test/integration/test_game_persistence.gd" tests="1" failures="0" skipped="0" time="0.501081" >
+      <testcase name="test_can_setup_basic_world" assertions="3" status="pass" classname="test/integration/test_game_persistence.gd" time="0.501081" >
       </testcase>
       </testsuite>
   </testsuites>
