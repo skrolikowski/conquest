@@ -121,26 +121,26 @@ func on_save_data() -> Dictionary:
 	}
 
 
-func on_load_data(_data: Dictionary) -> void:
+func on_load_data(_game_data: Dictionary, _player_data: Dictionary) -> void:
 	print("[TurnOrchestrator] Load Data")
 
 	# Load turn number
-	current_turn = _data.get("turn_number", 0)
+	current_turn = _game_data.get("turn_number", 0)
 
 	# Load player
-	if player != null and _data.has("player"):
-		player.on_load_data(_data["player"])
+	if player != null and _player_data.has("player"):
+		player.on_load_data(_player_data["player"])
 
 	# Load diplomacy (with null safety)
 	diplomacy = Diplomacy.new()
-	if _data.has("diplomacy") and not _data["diplomacy"].is_empty():
-		diplomacy.on_load_data(_data["diplomacy"])
+	if _player_data.has("diplomacy") and not _player_data["diplomacy"].is_empty():
+		diplomacy.on_load_data(_player_data["diplomacy"])
 	else:
 		diplomacy.new_game()
 
 	# Load NPCs
-	if _data.has("npcs"):
-		for npc_data : Dictionary in _data["npcs"]:
+	if _player_data.has("npcs"):
+		for npc_data : Dictionary in _player_data["npcs"]:
 			var npc_scene: PackedScene = Preload.npc_scene as PackedScene
 			var npc: NPC = npc_scene.instantiate() as NPC
 			add_child(npc)

@@ -52,7 +52,7 @@ func clear_selection() -> void:
 
 
 func _input(_event: InputEvent) -> void:
-	if world_canvas.locking_ui != null:
+	if world_canvas && world_canvas.locking_ui != null:
 		"""
 			Dev-note:
 			If locking_ui is open, we don't want to process any input events until it's closed..

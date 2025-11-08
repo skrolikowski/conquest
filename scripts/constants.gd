@@ -2,6 +2,8 @@
 ## This is a pure constants file (no class_name, no extends) for maximum compatibility
 ## All files can reference these constants at compile-time
 
+const DEBUG_MODE: bool = true
+
 # Rendering
 const TILE_SIZE: Vector2i = Vector2i(48, 48)
 const STATUS_SEP: String = "; "

@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cgefuq1iqth28"]
-
-[ext_resource type="Script" uid="uid://cq7weilpxil66" path="res://scenes/world_selector.gd" id="1_53j04"]
-
-[node name="WorldSelector" type="Node2D"]
-script = ExtResource("1_53j04")

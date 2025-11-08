@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Conquest"
-run/main_scene="res://scenes/world_manager.tscn"
+run/main_scene="uid://car4f1bgerq6a"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 

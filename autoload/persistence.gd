@@ -1,6 +1,6 @@
 extends Node
 
-const SAVE_PATH : String = "user://conquest_save_01.ini"
+const SAVE_PATH_PREFIX : String = "conquest_save_"
 
 const SECTION : Dictionary = {
 	GAME   = "game",
@@ -10,15 +10,32 @@ const SECTION : Dictionary = {
 }
 
 var is_new_game : bool = false
+var game_name   : String = ""  # ← Track current game name
+
 
 func new_game() -> void:
+	"""
+	Set flag for new game.
+
+	Note: Map generation is handled by GameSession/WorldGen.
+	This just sets the flag for save/load logic.
+	"""
+	print("[Persistence] Starting New Game")
 	is_new_game = true
-	
-	var world_manager : WorldManager = Def.get_world() as WorldManager
-	world_manager.world_gen.new_game()
 
+func has_save_file() -> bool:
+	"""
+	Check if a save file exists for the current game.
+	"""
+	assert(game_name != "", "[Persistence] `game_name` not found - remember to set Persistence.game_name")
+	var save_path : String = "user://" + SAVE_PATH_PREFIX + game_name + ".ini"
+	return FileAccess.file_exists(save_path)
 
-func save_game() -> void:
+func save_game() -> bool:
+	"""
+	Save the current game state to file.
+	"""
+	assert(game_name != "", "[Persistence] `game_name` not found - remember to set Persistence.game_name")
 	var world_manager : WorldManager = Def.get_world() as WorldManager
 	var turn_orchestrator : TurnOrchestrator = world_manager.turn_orchestrator as TurnOrchestrator
 	var config : ConfigFile = ConfigFile.new()
@@ -40,14 +57,20 @@ func save_game() -> void:
 		config.set_value(SECTION.PLAYER, key, player_data[key])
 
 	# --
-	var err : Error = config.save(SAVE_PATH)
+	var save_path : String = "user://" + SAVE_PATH_PREFIX + game_name + ".ini"
+	var err : Error = config.save(save_path)
 	if err != OK:
 		print("Error saving save file: " + str(err))
-		return
+		return false
 
-func load_game() -> void:
+	print("[Persistence] Save Game Successful")
+	return true
+
+
+func load_game() -> bool:
 	var config : ConfigFile = ConfigFile.new()
-	var err    : Error = config.load(SAVE_PATH)
+	var save_path : String = "user://" + SAVE_PATH_PREFIX + game_name + ".ini"
+	var err : Error = config.load(save_path)
 	if err == OK:
 		print("[Persistence] Load Game Successful")
 	else:
@@ -57,19 +80,19 @@ func load_game() -> void:
 			print("Error parsing save file: " + str(err))
 		else:
 			print("Error loading save file: " + str(err))
-		return
-
-	# -- Load Map..
-	var world_data : Dictionary = {}
-	for key in config.get_section_keys(SECTION.WORLD):
-		world_data[key] = config.get_value(SECTION.WORLD, key)
-
-	Def.get_world_map().on_load_data(world_data)
+		return false
+		
+	return true
 
 
 func load_section(_section: String) -> Dictionary:
+	"""
+	Load a specific section of the save file.
+	"""
+	assert(game_name != "", "No game loaded to load section from")
 	var config : ConfigFile = ConfigFile.new()
-	var err    : Error = config.load(SAVE_PATH)
+	var save_path : String = "user://" + SAVE_PATH_PREFIX + game_name + ".ini"
+	var err : Error = config.load(save_path)
 	if err != OK:
 		print("Error loading save file: " + str(err))
 		return {}
