@@ -83,11 +83,11 @@ func _set_biome(_biome: WorldGen.TileCategory) -> void:
 		movement_modifiers[Term.UnitMovement.OTHER]    = 12
 
 
-func add_terrain_modifier(_industry_type: Term.ResourceType, _value: int) -> void:
+func add_terrain_modifier(_industry_type: Term.IndustryType, _value: int) -> void:
 	terrain_modifiers[_industry_type] += _value
 
 
-func get_terrain_modifier(_industry_type: Term.ResourceType) -> int:
+func get_terrain_modifier(_industry_type: Term.IndustryType) -> int:
 	return terrain_modifiers[_industry_type]
 
 

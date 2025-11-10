@@ -27,17 +27,17 @@ func _ready() -> void:
 
 #region REGISTRATION MANAGEMENT
 
-## Register an NPC participant
-func register_npc(_npc: NPC) -> void:
-	if not npcs.has(_npc):
-		npcs.append(_npc)
-		print("[TurnOrchestrator] NPC registered: ", _npc.get_participant_name())
+# ## Register an NPC participant
+# func register_npc(_npc: NPC) -> void:
+# 	if not npcs.has(_npc):
+# 		npcs.append(_npc)
+# 		print("[TurnOrchestrator] NPC registered: ", _npc.get_participant_name())
 
 
-## Unregister an NPC participant
-func unregister_npc(_npc: NPC) -> void:
-	npcs.erase(_npc)
-	print("[TurnOrchestrator] NPC unregistered: ", _npc.get_participant_name())
+# ## Unregister an NPC participant
+# func unregister_npc(_npc: NPC) -> void:
+# 	npcs.erase(_npc)
+# 	print("[TurnOrchestrator] NPC unregistered: ", _npc.get_participant_name())
 
 #endregion
 
@@ -54,11 +54,11 @@ func begin_turn() -> void:
 		participant_turn_ended.emit(player.get_participant_name())
 
 	# NPC turns (priority 20)
-	for npc in npcs:
-		if npc != null:
-			participant_turn_started.emit(npc.get_participant_name())
-			npc.begin_turn()
-			participant_turn_ended.emit(npc.get_participant_name())
+	# for npc in npcs:
+	# 	if npc != null:
+	# 		participant_turn_started.emit(npc.get_participant_name())
+	# 		npc.begin_turn()
+	# 		participant_turn_ended.emit(npc.get_participant_name())
 
 
 ## End the current turn and advance to next
@@ -69,9 +69,9 @@ func end_turn() -> void:
 	if player != null:
 		player.end_turn()
 
-	for npc in npcs:
-		if npc != null:
-			npc.end_turn()
+	# for npc in npcs:
+	# 	if npc != null:
+	# 		npc.end_turn()
 
 	turn_ended.emit(current_turn)
 	current_turn += 1
@@ -87,8 +87,8 @@ func new_game() -> void:
 	current_turn = 0
 
 	# Initialize diplomacy
-	diplomacy = Diplomacy.new()
-	diplomacy.new_game()
+	# diplomacy = Diplomacy.new()
+	# diplomacy.new_game()
 
 	# Initialize player
 	if player != null:
