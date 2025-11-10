@@ -462,6 +462,104 @@ func get_random_height_range_tile(_min_height: float, _max_height: float) -> Vec
 	return select_tiles[randi() % select_tiles.size()]
 
 
+func get_optimal_colony_location() -> Vector2i:
+	"""
+	Finds an optimal location for founding a colony based on:
+	- Shore access (for trade/ocean access)
+	- River proximity (high resource bonuses)
+	- Terrain modifiers (accumulated production bonuses)
+	- Balanced resources (farm, mine, mill)
+	"""
+	var candidate_tiles: Array[Vector2i] = []
+	var best_score: float = 0.0
+	var best_tile: Vector2i = Vector2i.ZERO
+
+	# First pass: Find shore tiles with ocean access
+	for tile: Vector2i in get_shore_tiles():
+		if not is_land_tile(tile):
+			continue
+		if not has_ocean_access_tile(tile):
+			# Check if adjacent to ocean
+			var has_ocean_neighbor: bool = false
+			for neighbor: Vector2i in get_water_layer().get_surrounding_cells(tile):
+				if is_ocean_tile(neighbor):
+					has_ocean_neighbor = true
+					break
+			if not has_ocean_neighbor:
+				continue
+
+		candidate_tiles.append(tile)
+
+	# Fallback to all land tiles if no good shore tiles
+	if candidate_tiles.is_empty():
+		print("Warning: No shore tiles with ocean access found, using all land tiles")
+		candidate_tiles = get_land_tiles()
+
+	# Score each candidate
+	for tile: Vector2i in candidate_tiles:
+		var tile_data: TileCustomData = tile_custom_data[tile]
+
+		# Skip mountains (can't build farms)
+		if tile_data.biome == TileCategory.MOUNTAIN:
+			continue
+
+		var score: float = 0.0
+
+		# 1. River bonus (huge advantage)
+		if tile_data.is_river or is_river_tile(tile):
+			score += 100.0
+
+		# Check for river neighbors
+		var river_neighbors: int = 0
+		for neighbor: Vector2i in get_land_layer().get_surrounding_cells(tile):
+			if is_river_tile(neighbor):
+				river_neighbors += 1
+		score += river_neighbors * 25.0
+
+		# 2. Terrain production modifiers (most important)
+		var farm_modifier: int = tile_data.terrain_modifiers[Term.IndustryType.FARM]
+		var mine_modifier: int = tile_data.terrain_modifiers[Term.IndustryType.MINE]
+		var mill_modifier: int = tile_data.terrain_modifiers[Term.IndustryType.MILL]
+
+		# Weight farm higher (food is critical)
+		score += farm_modifier * 2.0
+		score += mine_modifier * 1.5
+		score += mill_modifier * 1.5
+
+		# Bonus for balanced resources (avoid specialization)
+		var min_modifier: int = mini(farm_modifier, mini(mine_modifier, mill_modifier))
+		var max_modifier: int = maxi(farm_modifier, maxi(mine_modifier, mill_modifier))
+		if max_modifier - min_modifier < 50:  # Fairly balanced
+			score += 50.0
+
+		# 3. Biome bonuses
+		match tile_data.biome:
+			TileCategory.GRASS:
+				score += 30.0  # Good for farms
+			TileCategory.SWAMP:
+				score += 10.0  # Mixed
+			TileCategory.FOREST:
+				score += 20.0  # Good for mills
+			TileCategory.MOUNTAIN:
+				score += 0.0   # Skip (handled above)
+
+		# 4. Shore access (already pre-filtered, but give bonus)
+		if tile_data.is_shore:
+			score += 40.0
+
+		# Track best
+		if score > best_score:
+			best_score = score
+			best_tile = tile
+
+	if best_tile == Vector2i.ZERO:
+		push_error("Could not find optimal colony location, using fallback")
+		return get_random_starting_tile()
+
+	print("Found optimal colony location at %s with score %.1f" % [best_tile, best_score])
+	return best_tile
+
+
 #endregion
 
 

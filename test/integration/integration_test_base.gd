@@ -25,7 +25,7 @@ class_name IntegrationTestBase
 """
 Run generate_test_scenario.gd
 """
-const TEST_MAP: String = "test"
+const TEST_MAP: String = "conquest_save_test_01"
 
 ## Reference to the GameController for this test
 var game_controller: GameController = null
@@ -96,20 +96,21 @@ func load_scenario(scenario_name: String) -> bool:
 		setup_world()
 		await wait_physics_frames(1)
 
-	# Load game data
-	var game_data: Dictionary = {}
-	for key: String in config.get_section_keys(Persistence.SECTION.GAME):
-		game_data[key] = config.get_value(Persistence.SECTION.GAME, key)
+	# Load session data
+	var session_data: Dictionary = {}
+	for key: String in config.get_section_keys(Persistence.SECTION.SESSION):
+		session_data[key] = config.get_value(Persistence.SECTION.SESSION, key)
 
-	# Load world data
+	# Load world data (includes camera state)
 	var world_data: Dictionary = {}
 	for key: String in config.get_section_keys(Persistence.SECTION.WORLD):
 		world_data[key] = config.get_value(Persistence.SECTION.WORLD, key)
 
-	# Load camera data
-	var camera_data: Dictionary = {}
-	for key: String in config.get_section_keys(Persistence.SECTION.CAMERA):
-		camera_data[key] = config.get_value(Persistence.SECTION.CAMERA, key)
+	# Extract camera data from world section
+	var camera_data: Dictionary = {
+		"position": world_data.get("camera_position", Vector2.ZERO),
+		"zoom_val": world_data.get("camera_zoom_val", 1.0),
+	}
 
 	# Load player data
 	var player_data: Dictionary = {}
@@ -117,7 +118,7 @@ func load_scenario(scenario_name: String) -> bool:
 		player_data[key] = config.get_value(Persistence.SECTION.PLAYER, key)
 
 	# Load data into components (matches GameSession.load_game pattern)
-	game_session.turn_orchestrator.current_turn = game_data.get("turn_number", 0)
+	game_session.turn_orchestrator.current_turn = session_data.get("turn_number", 0)
 	world_manager.world_gen.on_load_data(world_data)
 	world_manager.world_camera.on_load_data(camera_data)
 	game_session.turn_orchestrator.player.on_load_data(player_data)
