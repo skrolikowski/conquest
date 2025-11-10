@@ -50,7 +50,7 @@ func setup_world(_map_name: String = TEST_MAP) -> void:
 	# Start a new test game (this creates WorldManager and GameSession internally)
 	# Note: We're bypassing GameController._ready() auto-load to control initialization
 	game_controller._setup_game()
-	await wait_frames(1)
+	await wait_physics_frames(1)
 
 	# Get references to created instances
 	game_session = game_controller.game_session
@@ -63,13 +63,13 @@ func setup_world(_map_name: String = TEST_MAP) -> void:
 	player = game_session.turn_orchestrator.player as Player
 
 	# Wait for everything to initialize
-	await wait_frames(2)
+	await wait_physics_frames(2)
 
 
 ## Initialize a minimal world (small map, no fancy generation)
 func _initialize_minimal_world(_map_name: String) -> void:
 	game_session.load_game(_map_name)
-	await wait_frames(1)
+	await wait_physics_frames(1)
 
 
 ## Loads a test scenario from a saved game file
@@ -94,7 +94,7 @@ func load_scenario(scenario_name: String) -> bool:
 	# Setup world if not already done
 	if world_manager == null:
 		setup_world()
-		await wait_frames(1)
+		await wait_physics_frames(1)
 
 	# Load game data
 	var game_data: Dictionary = {}
@@ -121,7 +121,7 @@ func load_scenario(scenario_name: String) -> bool:
 	world_manager.world_camera.on_load_data(camera_data)
 	game_session.turn_orchestrator.on_load_data(game_data, player_data)
 
-	await wait_frames(2)
+	await wait_physics_frames(2)
 	return true
 
 #endregion
@@ -172,7 +172,7 @@ func create_test_colony(tile_pos: Vector2i, starting_resources: Dictionary = {})
 	var world_pos: Vector2 = world_manager.world_gen.get_map_to_local_position(tile_pos)
 	player.cm.found_colony(tile_pos, world_pos, settler_stats)
 
-	await wait_frames(1)
+	await wait_physics_frames(1)
 
 	# Get the colony that was just added (should be the placing_colony)
 	var colony: CenterBuilding = player.cm.placing_colony
@@ -216,7 +216,7 @@ func create_test_building(colony: CenterBuilding, building_type: Term.BuildingTy
 	colony.bm.add_child(building)
 	colony.bm.buildings.append(building)
 
-	await wait_frames(1)
+	await wait_physics_frames(1)
 	return building
 
 
@@ -241,7 +241,7 @@ func create_test_unit(unit_type: Term.UnitType, tile_pos: Vector2i, level: int =
 	var world_pos: Vector2 = world_manager.world_gen.get_map_to_local_position(tile_pos)
 	var unit: Unit = player.create_unit(unit_stats, world_pos)
 
-	await wait_frames(1)
+	await wait_physics_frames(1)
 	return unit
 
 #endregion
@@ -255,7 +255,7 @@ func create_test_unit(unit_type: Term.UnitType, tile_pos: Vector2i, level: int =
 func simulate_turns(num_turns: int) -> void:
 	for i: int in range(num_turns):
 		game_session.end_turn()
-		await wait_frames(1)
+		await wait_physics_frames(1)
 
 
 ## Processes a single turn for all colonies
@@ -263,7 +263,7 @@ func simulate_turns(num_turns: int) -> void:
 func process_colony_turn() -> void:
 	for colony: CenterBuilding in player.cm.colonies:
 		colony.begin_turn()
-	await wait_frames(1)
+	await wait_physics_frames(1)
 
 #endregion
 
