@@ -15,8 +15,6 @@ class_name WorldManager
 ## - Service creation (TurnOrchestrator, FocusService)
 ## - Game lifecycle (start_new_game, load_game, save_game)
 ## - Focus state management (handled by FocusService)
-##
-## Note: In DEBUG_MODE, can be used standalone for quick scene testing.
 
 @onready var world_selector := $WorldSelector as WorldSelector
 @onready var world_camera   := %WorldCamera as WorldCamera

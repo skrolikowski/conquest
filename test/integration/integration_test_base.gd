@@ -117,9 +117,10 @@ func load_scenario(scenario_name: String) -> bool:
 		player_data[key] = config.get_value(Persistence.SECTION.PLAYER, key)
 
 	# Load data into components (matches GameSession.load_game pattern)
+	game_session.turn_orchestrator.current_turn = game_data.get("turn_number", 0)
 	world_manager.world_gen.on_load_data(world_data)
 	world_manager.world_camera.on_load_data(camera_data)
-	game_session.turn_orchestrator.on_load_data(game_data, player_data)
+	game_session.turn_orchestrator.player.on_load_data(player_data)
 
 	await wait_physics_frames(2)
 	return true

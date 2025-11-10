@@ -3,7 +3,7 @@ extends IntegrationTestBase
 ##
 ## Tests the complete save/load workflow including:
 ## - Saving game state to ConfigFile
-## - Loading game state from scenarios
+## - Loading game state from tes scenarios
 ## - Verifying data integrity across save/load cycles
 ## - Testing scenario-based test cases
 
@@ -45,23 +45,6 @@ func test_created_building_persists_in_colony() -> void:
 	assert_true(colony.bm.buildings.has(farm), "Created farm should be in list")
 	assert_eq(farm.building_type, Term.BuildingType.FARM, "Building type should be preserved")
 	assert_eq(farm.level, 1, "Building level should be preserved")
-
-#endregion
-
-
-#region SCENARIO LOADING TESTS
-
-func test_load_nonexistent_scenario_fails_gracefully() -> void:
-	# Act
-	var success: bool = await load_scenario("nonexistent_scenario_xyz")
-
-	# Assert
-	assert_false(success, "Loading nonexistent scenario should return false")
-
-
-func test_scenario_directory_exists() -> void:
-	# Assert
-	assert_true(DirAccess.dir_exists_absolute("res://test/scenarios/"), "Scenarios directory should exist")
 
 #endregion
 

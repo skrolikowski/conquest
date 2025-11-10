@@ -102,6 +102,10 @@ scroll_left={
 2d_physics/layer_2="Carrier"
 2d_navigation/layer_2="Sea"
 
+[navigation]
+
+2d/warnings/navmesh_edge_merge_errors=false
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

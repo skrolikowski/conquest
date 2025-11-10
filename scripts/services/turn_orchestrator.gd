@@ -17,8 +17,8 @@ signal participant_turn_ended(participant_name: String)
 
 var current_turn: int = 0
 var player: Player = null
-var npcs: Array[NPC] = []
-var diplomacy: Diplomacy = null
+# var npcs: Array[NPC] = []
+# var diplomacy: Diplomacy = null
 
 func _ready() -> void:
 	player = Preload.player_scene.instantiate() as Player
@@ -99,14 +99,14 @@ func on_save_data() -> Dictionary:
 	print("[TurnOrchestrator] Save Data")
 
 	# Package NPCs
-	var npc_data: Array[Dictionary] = []
-	for npc in npcs:
-		npc_data.append(npc.on_save_data())
+	# var npc_data: Array[Dictionary] = []
+	# for npc in npcs:
+	# 	npc_data.append(npc.on_save_data())
 
 	# Package diplomacy (with null safety)
-	var diplomacy_data: Dictionary = {}
-	if diplomacy != null:
-		diplomacy_data = diplomacy.on_save_data()
+	# var diplomacy_data: Dictionary = {}
+	# if diplomacy != null:
+	# 	diplomacy_data = diplomacy.on_save_data()
 
 	# Package player
 	var player_data: Dictionary = {}
@@ -115,9 +115,9 @@ func on_save_data() -> Dictionary:
 
 	return {
 		"turn_number": current_turn,
-		"diplomacy": diplomacy_data,
+		# "diplomacy": diplomacy_data,
 		"player": player_data,
-		"npcs": npc_data,
+		# "npcs": npc_data,
 	}
 
 
@@ -131,22 +131,22 @@ func on_load_data(_game_data: Dictionary, _player_data: Dictionary) -> void:
 	if player != null and _player_data:
 		player.on_load_data(_player_data)
 
-	# Load diplomacy (with null safety)
-	diplomacy = Diplomacy.new()
-	if _player_data.has("diplomacy") and not _player_data["diplomacy"].is_empty():
-		diplomacy.on_load_data(_player_data["diplomacy"])
-	else:
-		diplomacy.new_game()
+	# # Load diplomacy (with null safety)
+	# diplomacy = Diplomacy.new()
+	# if _player_data.has("diplomacy") and not _player_data["diplomacy"].is_empty():
+	# 	diplomacy.on_load_data(_player_data["diplomacy"])
+	# else:
+	# 	diplomacy.new_game()
 
-	# Load NPCs
-	if _player_data.has("npcs"):
-		for npc_data : Dictionary in _player_data["npcs"]:
-			var npc_scene: PackedScene = Preload.npc_scene as PackedScene
-			var npc: NPC = npc_scene.instantiate() as NPC
-			add_child(npc)
+	# # Load NPCs
+	# if _player_data.has("npcs"):
+	# 	for npc_data : Dictionary in _player_data["npcs"]:
+	# 		var npc_scene: PackedScene = Preload.npc_scene as PackedScene
+	# 		var npc: NPC = npc_scene.instantiate() as NPC
+	# 		add_child(npc)
 
-			npc.on_load_data(npc_data)
-			register_npc(npc)
+	# 		npc.on_load_data(npc_data)
+	# 		register_npc(npc)
 
 #endregion
 
