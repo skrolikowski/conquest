@@ -176,6 +176,7 @@ func _on_new_world_generated() -> void:
 	#HACK: delay to allow tilemap layers to be generated
 	call_deferred("on_new_world_generated")
 
+
 func on_new_world_generated() -> void:
 	set_map_data()
 	refresh_water_navigation()
@@ -200,102 +201,6 @@ func on_new_world_generated() -> void:
 
 	# --
 	map_loaded.emit()
-
-
-## Generates a simple, deterministic test map for fast integration testing
-## This bypasses the expensive noise generation, river/mountain systems
-func generate_test_map() -> void:
-	# Wait for tilemap layers to be ready
-	call_deferred("_generate_test_map_deferred")
-
-
-func _generate_test_map_deferred() -> void:
-	# Create a small 48x48 test map with predictable layout
-	var map_size: int = 48
-	var water_layer: TileMapLayer = get_water_layer()
-	var land_layer: TileMapLayer = get_land_layer()
-	var shore_layer: TileMapLayer = get_shore_layer()
-	var biome_layer: TileMapLayer = get_biome_layer()
-
-	# Clear any existing tiles
-	water_layer.clear()
-	land_layer.clear()
-	shore_layer.clear()
-	biome_layer.clear()
-
-	# Generate simple grid pattern:
-	# - Outer edge: Ocean (2 tiles deep)
-	# - Shore: Tiles adjacent to land
-	# - Inner area: Land with some variety
-	var shore_tiles: Array[Vector2i] = []
-
-	for x: int in range(map_size):
-		for y: int in range(map_size):
-			var tile: Vector2i = Vector2i(x, y)
-
-			# Ocean border (2 tiles deep)
-			if x < 2 or x >= map_size - 2 or y < 2 or y >= map_size - 2:
-				water_layer.set_cell(tile, 0, Vector2i(0, 0))
-				tile_heights[tile] = -0.5
-
-				# Check if this water tile is adjacent to land (shore)
-				# Shore is at exactly x/y = 2 or map_size-3 (inner edge of water border)
-				if x == 2 or x == map_size - 3 or y == 2 or y == map_size - 3:
-					shore_tiles.append(tile)
-			else:
-				# Land area - use simple grass terrain
-				land_layer.set_cell(tile, 1, Vector2i(0, 0))
-
-				# Create some height variation for testing
-				var height: float = 0.3 + (float(x + y) / float(map_size * 2)) * 0.3
-				tile_heights[tile] = height
-
-				# Add a small forest patch in one corner for variety
-				if x >= 5 and x <= 8 and y >= 5 and y <= 8:
-					biome_layer.set_cells_terrain_connect([tile], TerrainSet.DEFAULT, BiomeTerrain.FOREST, false)
-
-				# Add a small mountain in another corner
-				if x >= 12 and x <= 14 and y >= 12 and y <= 14:
-					biome_layer.set_cells_terrain_connect([tile], TerrainSet.DEFAULT, BiomeTerrain.MOUNTAINS, false)
-					tile_heights[tile] = 0.85
-
-	# Add shore tiles (using terrain connection for proper autotiling)
-	if shore_tiles.size() > 0:
-		for shore_tile: Vector2i in shore_tiles:
-			shore_layer.set_cell(shore_tile, 0, Vector2i(0, 0))
-
-	# Initialize basic map data
-	set_map_data()
-	refresh_water_navigation()
-	init_tile_custom_data()
-
-	# Set simple terrain modifiers (skip complex calculations)
-	_set_simple_test_terrain_modifiers()
-
-	# Generate fog of war if enabled
-	generate_fog_of_war()
-
-	# Emit map loaded signal
-	map_loaded.emit()
-
-
-## Sets simple terrain modifiers for test map (no complex calculations)
-func _set_simple_test_terrain_modifiers() -> void:
-	# Give all land tiles a baseline modifier of 10 for each industry type
-	for tile: Vector2i in get_land_tiles():
-		if tile_custom_data.has(tile):
-			tile_custom_data[tile].terrain_modifiers[Term.IndustryType.FARM] = 10
-			tile_custom_data[tile].terrain_modifiers[Term.IndustryType.MILL] = 10
-			tile_custom_data[tile].terrain_modifiers[Term.IndustryType.MINE] = 10
-
-			# Boost modifiers for specific biomes
-			match tile_custom_data[tile].biome:
-				TileCategory.FOREST:
-					tile_custom_data[tile].terrain_modifiers[Term.IndustryType.MILL] = 25
-				TileCategory.MOUNTAIN:
-					tile_custom_data[tile].terrain_modifiers[Term.IndustryType.MINE] = 30
-				TileCategory.GRASS:
-					tile_custom_data[tile].terrain_modifiers[Term.IndustryType.FARM] = 20
 
 
 func set_map_data() -> void:
