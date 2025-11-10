@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c3yl6d6aum2u7"]
+
+[ext_resource type="Script" uid="uid://bxiwd04kwqm8y" path="res://test/tools/generate_test_scenario.gd" id="1_test_scenario_generator"]
+
+[node name="GenerateTestScenario" type="Node"]
+script = ExtResource("1_test_scenario_generator")

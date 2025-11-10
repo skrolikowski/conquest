@@ -25,7 +25,7 @@ var world_manager_scene: PackedScene = preload("res://scenes/world_manager.tscn"
 func _ready() -> void:
 	# PHASE 4: Skip menu for now, auto-start game
 	"""Temporary: Auto-start game without menu (for testing)"""
-	load_saved_game("debug")
+	load_saved_game("test")
 
 	# PHASE 5: Will be replaced with:
 	# show_main_menu()

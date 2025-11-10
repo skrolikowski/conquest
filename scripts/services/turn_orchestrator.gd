@@ -128,8 +128,8 @@ func on_load_data(_game_data: Dictionary, _player_data: Dictionary) -> void:
 	current_turn = _game_data.get("turn_number", 0)
 
 	# Load player
-	if player != null and _player_data.has("player"):
-		player.on_load_data(_player_data["player"])
+	if player != null and _player_data:
+		player.on_load_data(_player_data)
 
 	# Load diplomacy (with null safety)
 	diplomacy = Diplomacy.new()

@@ -5,19 +5,27 @@ class_name IntegrationTestBase
 ## Integration tests load full game scenes and test system interactions.
 ## This base class provides utilities for:
 ## - Loading test scenarios (saved game states)
-## - Setting up world manager and game systems
+## - Setting up world manager and game systems with fast test map generation
 ## - Creating entities (colonies, buildings, units)
 ## - Cleaning up after tests
+##
+## Performance: Uses WorldGen.skip_generation flag to generate a simple 48x48
+## test map instead of expensive procedural generation (no rivers, mountains, etc.)
 ##
 ## Usage:
 ##   extends IntegrationTestBase
 ##   func test_my_scenario():
-##       setup_world()
+##       setup_world()  # Uses fast test map by default
 ##       var colony = create_test_colony(Vector2i(10, 10))
 ##       # ... test logic
 
 
 #region TEST WORLD MANAGEMENT
+
+"""
+Run generate_test_scenario.gd
+"""
+const TEST_MAP: String = "test"
 
 ## Reference to the GameController for this test
 var game_controller: GameController = null
@@ -34,7 +42,7 @@ var player: Player = null
 
 ## Sets up a minimal game world for testing
 ## Call this in before_each() or at the start of each test
-func setup_world() -> void:
+func setup_world(_map_name: String = TEST_MAP) -> void:
 	# Create GameController (root orchestrator)
 	game_controller = autofree(GameController.new())
 	add_child_autofree(game_controller)
@@ -49,7 +57,7 @@ func setup_world() -> void:
 	world_manager = game_controller.world_manager
 
 	# Initialize with minimal map
-	await _initialize_minimal_world()
+	await _initialize_minimal_world(_map_name)
 
 	# Get player reference from TurnOrchestrator
 	player = game_session.turn_orchestrator.player as Player
@@ -59,9 +67,8 @@ func setup_world() -> void:
 
 
 ## Initialize a minimal world (small map, no fancy generation)
-func _initialize_minimal_world() -> void:
-	# For now, just initialize with default map generation
-	# TODO: Add skip_generation flag and generate_test_map() to WorldGen
+func _initialize_minimal_world(_map_name: String) -> void:
+	game_session.load_game(_map_name)
 	await wait_frames(1)
 
 

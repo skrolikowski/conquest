@@ -90,7 +90,7 @@ func start_new_game(game_name: String) -> void:
 	Persistence.new_game()
 
 	# Generate new map
-	world_manager.world_gen.new_game()
+	world_manager.world_gen.new_world()
 	await world_manager.world_gen.map_loaded
 
 	# Map loaded, initialize turn system
@@ -151,8 +151,16 @@ func save_game() -> bool:
 	"""
 	print("[GameSession] Saving game...")
 
+	# var turn_data : Dictionary = turn_orchestrator.on_save_data()
+
+	var save_data : Dictionary = {}
+	save_data[Persistence.SECTION.GAME] = { "turn_number": turn_orchestrator.current_turn }
+	save_data[Persistence.SECTION.WORLD] = world_manager.world_gen.on_save_data()
+	save_data[Persistence.SECTION.CAMERA] = world_manager.world_camera.on_save_data()
+	save_data[Persistence.SECTION.PLAYER] = turn_orchestrator.player.on_save_data()
+
 	# Use Persistence.save_game() which handles everything
-	var success: bool = Persistence.save_game()
+	var success: bool = Persistence.save_game(self, save_data)
 	if success:
 		game_saved.emit()
 

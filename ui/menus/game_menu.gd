@@ -17,22 +17,24 @@ func _on_new_game() -> void:
 
 
 func _on_save_exit() -> void:
-	if Persistence.save_game():
-		#TODO: Show "Game Saved!" notification
-		get_tree().quit()
-		pass
-	else:
-		#TODO: Show "Save Failed!" error
-		pass
+	#if Persistence.save_game():
+		##TODO: Show "Game Saved!" notification
+		#get_tree().quit()
+		#pass
+	#else:
+		##TODO: Show "Save Failed!" error
+		#pass
+	pass
 
 
 func _on_save_game() -> void:
-	if Persistence.save_game():
-		# Show "Game Saved!" notification
-		pass
-	else:
-		# Show "Save Failed!" error
-		pass
+	#if Persistence.save_game():
+		## Show "Game Saved!" notification
+		#pass
+	#else:
+		## Show "Save Failed!" error
+		#pass
+	pass
 
 
 func _on_exit_game() -> void:
