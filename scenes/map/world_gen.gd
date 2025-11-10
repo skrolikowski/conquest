@@ -5,7 +5,7 @@ class_name WorldGen
 signal map_loaded
 
 func _add_inspector_buttons() -> Array:
-	var buttons : Array = []
+	var buttons: Array[Dictionary] = []
 	buttons.push_back({
 		"name": "Generate Rivers",
 		"pressed": _generate_rivers
@@ -207,9 +207,15 @@ func set_map_data() -> void:
 	tile_cols = get_water_layer().get_used_rect().size.x
 	tile_rows = get_water_layer().get_used_rect().size.y
 
-	var land_tiles   : Array[Vector2i] = get_land_tiles()
-	var max_height   : float = 0.0
-	var total_height : float = 0.0
+	var land_tiles: Array[Vector2i] = get_land_tiles()
+	if land_tiles.is_empty():
+		push_error("No land tiles found - map generation failed")
+		avg_land_height = 0.0
+		highest_height = 0.0
+		return
+
+	var max_height: float = 0.0
+	var total_height: float = 0.0
 
 	for tile: Vector2i in land_tiles:
 		tile_heights[tile] = get_tile_height(tile)
@@ -219,7 +225,7 @@ func set_map_data() -> void:
 			max_height = tile_heights[tile]
 
 	avg_land_height = total_height / land_tiles.size()
-	highest_height  = max_height
+	highest_height = max_height
 
 
 func refresh_water_navigation() -> void:
@@ -273,8 +279,8 @@ func init_tile_custom_data() -> void:
 
 
 func _flood_fill_ocean_tiles(_tile: Vector2i) -> void:
-	var queue : Array = [_tile]
-	var visited : Dictionary = {}
+	var queue: Array[Vector2i] = [_tile]
+	var visited: Dictionary = {}
 
 	while queue.size() > 0:
 		var tile : Vector2i = queue.pop_front()
@@ -380,15 +386,19 @@ func get_tile_height(_tile: Vector2i) -> float:
 	return noise
 
 
-func _get_lowest_neighbor(_tile:Vector2i) -> Vector2i:
-	var lowest_neighbor : Vector2i
-	var lowest_height   : float = 1.0
-	
-	for neighbor : Vector2i in get_land_layer().get_surrounding_cells(_tile):
-		var neighbor_height : float = get_tile_height(neighbor)
+func _get_lowest_neighbor(_tile: Vector2i) -> Vector2i:
+	var surrounding_cells: Array[Vector2i] = get_land_layer().get_surrounding_cells(_tile)
+	if surrounding_cells.is_empty():
+		return Vector2i(-1, -1)  # Sentinel value indicating no neighbor found
+
+	var lowest_neighbor: Vector2i = surrounding_cells[0]
+	var lowest_height: float = get_tile_height(lowest_neighbor)
+
+	for neighbor: Vector2i in surrounding_cells:
+		var neighbor_height: float = get_tile_height(neighbor)
 		if neighbor_height < lowest_height:
 			lowest_neighbor = neighbor
-			lowest_height   = neighbor_height
+			lowest_height = neighbor_height
 
 	return lowest_neighbor
 
@@ -432,17 +442,23 @@ func get_tiles_in_radius(_pos:Vector2, _radius:float, _mapLayer:MapLayer = MapLa
 
 
 func get_random_starting_tile() -> Vector2i:
-	var shore_tiles : Array[Vector2i] = get_shore_tiles()
+	var shore_tiles: Array[Vector2i] = get_shore_tiles()
 	#TODO: filter out non ocean-access tiles..
+	if shore_tiles.is_empty():
+		push_error("No shore tiles available for starting position")
+		return Vector2i.ZERO
 	return shore_tiles[randi() % shore_tiles.size()]
 
 
-func get_random_height_range_tile(_min_height:float, _max_height:float) -> Vector2i:
-	var select_tiles : Array[Vector2i] = []
-	for tile:Vector2i in get_land_tiles():
-		var height : float = get_tile_height(tile)
+func get_random_height_range_tile(_min_height: float, _max_height: float) -> Vector2i:
+	var select_tiles: Array[Vector2i] = []
+	for tile: Vector2i in get_land_tiles():
+		var height: float = get_tile_height(tile)
 		if height >= _min_height and height <= _max_height:
 			select_tiles.append(tile)
+	if select_tiles.is_empty():
+		push_error("No tiles found in height range [%.2f, %.2f]" % [_min_height, _max_height])
+		return Vector2i.ZERO
 	return select_tiles[randi() % select_tiles.size()]
 
 
@@ -483,17 +499,17 @@ func _generate_mountain_sources() -> Array[Vector2i]:
 	return source_tiles
 
 
-func _generate_mountain_range(_tile: Vector2i, _range : Array[Vector2i] = []) -> MountainRange:
-	var tile_data : TileCustomData = tile_custom_data[_tile]
-	
+func _generate_mountain_range(_tile: Vector2i, _range: Array[Vector2i] = []) -> MountainRange:
+	var tile_data: TileCustomData = tile_custom_data[_tile]
+
 	if tile_data.is_water or tile_data.biome == TileCategory.MOUNTAIN:
 		print("Mountain ended by.. water or mountain. Size: " + str(_range.size()))
 		return MountainRange.create(self, _range)
 	if tile_heights[_tile] <= highest_height - highest_height * 0.65:
 		print("Mountain ended by.. height " + str(highest_height - highest_height * 0.45) + ". Size: " + str(_range.size()))
 		return MountainRange.create(self, _range)
-	var lowest_neighbor : Vector2i = _get_lowest_neighbor(_tile)
-	if lowest_neighbor == null:
+	var lowest_neighbor: Vector2i = _get_lowest_neighbor(_tile)
+	if lowest_neighbor == Vector2i(-1, -1):
 		print("Mountain ended by.. no lowest neighbor. Size: " + str(_range.size()))
 		return MountainRange.create(self, _range)
 
@@ -528,12 +544,12 @@ func _add_rivers_to_map() -> void:
 		get_biome_layer().set_cells_terrain_path(river.tiles, TerrainSet.DEFAULT, BiomeTerrain.NONE, true)
 
 
-func _generate_river(_tile: Vector2i, _river : Array[Vector2i] = []) -> River:
+func _generate_river(_tile: Vector2i, _river: Array[Vector2i] = []) -> River:
 	if is_water_tile(_tile):
 		return River.create(self, _river)
 
-	var lowest_neighbor : Vector2i = _get_lowest_neighbor(_tile)
-	if lowest_neighbor == null:
+	var lowest_neighbor: Vector2i = _get_lowest_neighbor(_tile)
+	if lowest_neighbor == Vector2i(-1, -1):
 		return River.create(self, _river)
 
 	# --
@@ -571,7 +587,7 @@ func _generate_ocean_access_tiles() -> void:
 
 
 func _flood_fill_ocean_access_tiles(_tile: Vector2i) -> void:
-	var queue : Array = [ _tile ]
+	var queue : Array[Vector2i] = [ _tile ]
 	var visited : Dictionary = { }
 
 	while queue.size() > 0:
@@ -645,32 +661,43 @@ func terraform_biome_tiles(_tiles: Array[Vector2i], _from_terrain: BiomeTerrain,
 
 #region TERRAIN MODIFIERS
 func set_terrain_modifiers() -> void:
-	for tile: Vector2i in get_land_tiles():
-		if not tile_custom_data[tile].is_river:
-			var tile_pos : Vector2 = get_water_layer().map_to_local(tile)
+	var land_tiles: Array[Vector2i] = get_land_tiles()
+	var water_layer: TileMapLayer = get_water_layer()
 
-			# -- For farm productivity..
-			if tile_custom_data[tile].biome == TileCategory.MOUNTAIN:
-				pass
-			else:
-				for tile_in_range : Vector2i in get_tiles_in_rect(tile_pos, Preload.C.TILE_SIZE * 1.5):
-					if tile_custom_data.has(tile_in_range):
-						var industry_modifiers : Dictionary = tile_custom_data[tile_in_range].industry_modifiers
-						tile_custom_data[tile].add_terrain_modifier(Term.IndustryType.FARM, industry_modifiers[Term.IndustryType.FARM])
-				
-			# -- For mill productivity..
-			tile_pos = get_water_layer().map_to_local(tile)
-			for tile_in_range : Vector2i in get_tiles_in_rect(tile_pos, Preload.C.TILE_SIZE * 2):
-				if tile_custom_data.has(tile_in_range):
-					var industry_modifiers : Dictionary = tile_custom_data[tile_in_range].industry_modifiers
-					tile_custom_data[tile].add_terrain_modifier(Term.IndustryType.MILL, industry_modifiers[Term.IndustryType.MILL])
+	# Define radius thresholds once
+	var FARM_RADIUS: float = Preload.C.TILE_SIZE.x * 1.5
+	var MILL_RADIUS: float = Preload.C.TILE_SIZE.x * 2.0
+	var MINE_RADIUS: float = Preload.C.TILE_SIZE.x * 2.5
+	var MAX_RADIUS: float = MINE_RADIUS  # Largest radius
 
-			# -- For mine productivity..
-			tile_pos = get_water_layer().map_to_local(tile)
-			for tile_in_range : Vector2i in get_tiles_in_rect(tile_pos, Preload.C.TILE_SIZE * 2.5):
-				if tile_custom_data.has(tile_in_range):
-					var industry_modifiers : Dictionary = tile_custom_data[tile_in_range].industry_modifiers
-					tile_custom_data[tile].add_terrain_modifier(Term.IndustryType.MINE, industry_modifiers[Term.IndustryType.MINE])
+	for tile: Vector2i in land_tiles:
+		if tile_custom_data[tile].is_river:
+			continue
+
+		var tile_pos: Vector2 = water_layer.map_to_local(tile)
+		var tile_data: TileCustomData = tile_custom_data[tile]
+
+		# Skip farm calculations for mountains
+		var skip_farm: bool = (tile_data.biome == TileCategory.MOUNTAIN)
+
+		# Single pass through all tiles in max radius
+		var tiles_in_range: Array[Vector2i] = get_tiles_in_rect(tile_pos, Vector2(MAX_RADIUS, MAX_RADIUS))
+
+		for tile_in_range: Vector2i in tiles_in_range:
+			if not tile_custom_data.has(tile_in_range):
+				continue
+
+			var range_tile_pos: Vector2 = water_layer.map_to_local(tile_in_range)
+			var distance: float = tile_pos.distance_to(range_tile_pos)
+			var modifiers: Dictionary = tile_custom_data[tile_in_range].industry_modifiers
+
+			# Apply modifiers based on distance thresholds
+			if not skip_farm and distance <= FARM_RADIUS:
+				tile_data.add_terrain_modifier(Term.IndustryType.FARM, modifiers[Term.IndustryType.FARM])
+			if distance <= MILL_RADIUS:
+				tile_data.add_terrain_modifier(Term.IndustryType.MILL, modifiers[Term.IndustryType.MILL])
+			if distance <= MINE_RADIUS:
+				tile_data.add_terrain_modifier(Term.IndustryType.MINE, modifiers[Term.IndustryType.MINE])
 
 
 func get_terrain_modifier_by_industry_type(_tile: Vector2i) -> Dictionary:
@@ -684,164 +711,4 @@ func get_terrain_modifier_value_by_industry_type(_tile: Vector2i, _industry_type
 		return tile_custom_data[_tile].terrain_modifiers[_industry_type]
 	return 0
 
-"""
-func generate_terrain_modifiers() -> void:
-
-	# -- Industry modifiers based on land height..
-	generate_industry_modifier(Term.IndustryType.MINE)
-	generate_industry_modifier(Term.IndustryType.MILL)
-	generate_industry_modifier(Term.IndustryType.FARM)
-
-
-func generate_industry_modifier(_industry_type:Term.IndustryType) -> void:
-	var data : Dictionary = get_source_tiles_by_industry_type(_industry_type)
-	
-	for source: Vector2i in data:
-		var resource_type : Term.ResourceType = data[source].resource_type
-		var bonus : int = data[source].bonus
-
-		# -- add modifier to source tile..
-		add_terrain_modifier(source, resource_type, bonus)
-		if not terrain_modifier.has(source):
-			terrain_modifier[source] = Transaction.new()
-
-		# -- ..and to surrounding tiles
-		var tiles : Array[Vector2i] = get_land_layer().get_surrounding_cells(source)
-		for tile : Vector2i in tiles:
-			if bonus > 0:
-				add_terrain_modifier(tile, resource_type, floor(bonus * 0.5))
-
-	# -- Rivers.. enrich surrounding land tiles
-	for river : River in rivers:
-		for river_tile : Vector2i in river.tiles:
-			for tile : Vector2i in get_land_layer().get_surrounding_cells(river_tile):
-				if not tile_custom_data[tile].is_water and not tile_custom_data[tile].is_river_enriched:
-					var rng : RandomNumberGenerator = RandomNumberGenerator.new()
-					add_terrain_modifier(tile, Term.ResourceType.CROPS, rng.randi_range(0, 5))
-					add_terrain_modifier(tile, Term.ResourceType.WOOD, rng.randi_range(0, 5))
-					add_terrain_modifier(tile, Term.ResourceType.METAL, rng.randi_range(0, 5))
-					tile_custom_data[tile].is_river_enriched = true
-
-
-func add_terrain_modifier(_tile:Vector2i, _resource_type:Term.ResourceType, _bonus:float) -> void:
-	if not terrain_modifier.has(_tile):
-		terrain_modifier[_tile] = Transaction.new()
-
-	# -- add bonus
-	var transaction : Transaction = terrain_modifier[_tile]
-	transaction.add_resource_amount_by_type(_resource_type, _bonus)
-
-
-func get_terrain_modifier(_tile:Vector2i) -> Transaction:
-	if terrain_modifier.has(_tile):
-		return terrain_modifier[_tile]
-	return Transaction.new()
-
-
-func get_terrain_modifier_value_by_industry_type(_tile:Vector2i, _industry_type:Term.IndustryType) -> int:
-	if terrain_modifier.has(_tile):
-		var source : Transaction = terrain_modifier[_tile]
-		for i:String in Term.ResourceType:
-			var resource_type  : Term.ResourceType = Term.ResourceType[i]
-			var resource_value : int = source.get_resource_amount(resource_type)
-			
-			if _industry_type == Term.IndustryType.MINE and resource_type == Term.ResourceType.METAL:
-				return resource_value
-			if _industry_type == Term.IndustryType.MILL and resource_type == Term.ResourceType.WOOD:
-				return resource_value
-			if _industry_type == Term.IndustryType.FARM and resource_type == Term.ResourceType.CROPS:
-				return resource_value
-	
-	return 0
-
-func get_terrain_modifier_by_industry_type(_tile: Vector2i) -> Dictionary:}
-	 var source : Transaction = get_terrain_modifier(_tile)
-	 var result : Dictionary = {}
-	
-	 for i:String in Term.ResourceType:
-	 	var resource_type  : Term.ResourceType = Term.ResourceType[i]
-	 	var resource_value : int = source.get_resource_amount(resource_type)
-
-	 	if resource_type == Term.ResourceType.METAL:
-	 		result[Term.IndustryType.MINE] = resource_value
-	 	elif resource_type == Term.ResourceType.WOOD:
-	 		result[Term.IndustryType.MILL] = resource_value
-	 	elif resource_type == Term.ResourceType.CROPS:
-	 		result[Term.IndustryType.FARM] = resource_value
-	
-	 return result
-
-func get_source_tiles_by_industry_type(_industry_type: Term.IndustryType) -> Dictionary:
-	var tiles          : Dictionary = {}
-	var rng            : RandomNumberGenerator = RandomNumberGenerator.new()
-	var swamp_biome    : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.SWAMP]
-	var forest_biome   : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.FOREST]
-	var mountain_biome : NoiseGeneratorData = noise_gen.settings.tiles[NoiseGenLayer.MOUNTAINS]
-	
-	for tile: Vector2i in get_land_tiles():
-		var height : float = tile_heights[tile]
-
-		if _industry_type == Term.IndustryType.MINE:
-			
-			# Threshold: SWAMP-
-			if height < swamp_biome.max:
-				tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": 0 }
-
-			# Threshold: MOUNTAINS-
-			elif height < mountain_biome.min:
-				if randf() > 0.75:
-					tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": rng.randi_range(0, 5) }
-				else:
-					tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": 0 }
-
-			# Threshold: MOUNTAINS
-			elif height >= mountain_biome.min and height <= mountain_biome.max:
-				if randf() > 0.75:
-					tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": rng.randi_range(35, 65) }
-				else:
-					tiles[tile] = { "resource_type": Term.ResourceType.METAL, "bonus": rng.randi_range(10, 35) }
-
-				#TODO: boost if next to river tile
-			
-
-		elif _industry_type == Term.IndustryType.MILL:
-
-			# Threshold: FOREST-
-			if height > 0 and height < forest_biome.min:
-				tiles[tile] = { "resource_type": Term.ResourceType.WOOD, "bonus": rng.randi_range(5, 25) }
-
-			# Threshold: FOREST
-			elif height >= forest_biome.min and height <= forest_biome.max:
-				if randf() > 0.75:
-					tiles[tile] = { "resource_type": Term.ResourceType.WOOD, "bonus": rng.randi_range(35, 50) }
-				else:
-					tiles[tile] = { "resource_type": Term.ResourceType.WOOD, "bonus": rng.randi_range(25, 35) }
-
-			# Threshold: FOREST+
-			elif height > forest_biome.min:
-				tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": rng.randi_range(0, 25) }
-
-		elif _industry_type == Term.IndustryType.FARM:
-
-			# Threshold: SWAMP
-			if height >= swamp_biome.min and height <= swamp_biome.max:
-				if randf() > 0.75:
-					tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": rng.randi_range(35, 50) }
-				else:
-					tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": rng.randi_range(25, 35) }
-			
-			# Threshold: Swamp / Forest
-			elif height > swamp_biome.max and height < forest_biome.min:
-				tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": rng.randi_range(5, 25) }
-
-			# Threshold: FOREST
-			elif height >= forest_biome.min and height <= forest_biome.max:
-				tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": rng.randi_range(0, 15) }
-
-			# Threshold: FOREST+
-			elif height > forest_biome.min:
-				tiles[tile] = { "resource_type": Term.ResourceType.CROPS, "bonus": -100 }
-
-	return tiles
-"""
 #endregion
