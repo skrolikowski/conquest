@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="GutTests" failures="0" tests="1" >
-  <testsuite name="test/integration/test_game_persistence.gd" tests="1" failures="0" skipped="0" time="0.558315" >
-      <testcase name="test_can_setup_basic_world" assertions="3" status="pass" classname="test/integration/test_game_persistence.gd" time="0.558315" >
-      </testcase>
+<testsuites name="GutTests" failures="1" tests="1" >
+  <testsuite name="test/integration/test_game_persistence.gd" tests="1" failures="1" skipped="0" time="0.691345" >
+      <testcase name="test_simulate_single_turn" assertions="2" status="fail" classname="test/integration/test_game_persistence.gd" time="0.691345" >
+      <failure message="failed"><![CDATA[Unexpected Errors:
+      [1] <engine-1>Navigation map synchronization had 14316 edge error(s).
+      More than 2 edges tried to occupy the same map rasterization space.
+      This causes a logical error in the navigation mesh geometry and is commonly caused by overlap or too densely placed edges.
+      Consider baking with a higher 'cell_size', greater geometry margin, and less detailed bake objects to cause fewer edges.
+      Consider lowering the 'navigation/2d/merge_rasterizer_cell_scale' in the project settings.
+      This warning can be toggled under 'navigation/2d/warnings/navmesh_edge_merge_errors' in the project settings.
+            at line 106]]></failure></testcase>
       </testsuite>
   </testsuites>

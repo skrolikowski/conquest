@@ -247,14 +247,14 @@ func test_fort_building_definition() -> void:
 
 func test_building_cost_affordability() -> void:
 	# Arrange - Create a bank with resources
-	var bank_resources:Transaction = autofree(Transaction.new())
+	var bank_resources: Transaction = Transaction.new()
 	bank_resources.add_resources({
 		"wood": 100,
 		"crops": 100,
 		"gold": 50
 	})
 
-	var farm_cost:Transaction = autofree(GameData.get_building_cost(Term.BuildingType.FARM, 1))
+	var farm_cost: Transaction = GameData.get_building_cost(Term.BuildingType.FARM, 1)
 
 	# Act - Check if we can afford the farm
 	var can_afford:bool = true

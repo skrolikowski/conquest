@@ -1,15 +1,21 @@
 # Memory Management in GUT Tests
 
-## The Problem
+## ✅ Transaction is Now RefCounted (Fixed!)
 
-Your `Transaction` class extends `Node`, which requires manual memory management:
+**Good news:** `Transaction` has been converted from `Node` to `RefCounted`:
 
 ```gdscript
-extends Node  # ← Nodes need to be freed manually
+extends RefCounted  # ← Automatic memory management!
 class_name Transaction
 ```
 
-When you create `Transaction.new()` in tests, these Node objects become **orphans** if not freed.
+**You no longer need `autofree()` for Transaction objects!** They are automatically freed when no longer referenced.
+
+---
+
+## Legacy Information (For Other Node Objects)
+
+If you need to work with Node-based objects in tests:
 
 ---
 

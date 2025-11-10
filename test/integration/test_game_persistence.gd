@@ -97,13 +97,13 @@ func test_player_has_required_managers() -> void:
 func test_simulate_single_turn() -> void:
 	# Arrange
 	await setup_world()
-	var starting_turn: int = world_manager.turn_number
+	var starting_turn: int = game_session.turn_orchestrator.current_turn
 
 	# Act
 	await simulate_turns(1)
 
 	# Assert
-	assert_eq(world_manager.turn_number, starting_turn + 1, "Turn number should increment by 1")
+	assert_eq(game_session.turn_orchestrator.current_turn, starting_turn + 1, "Turn number should increment by 1")
 
 
 func test_simulate_multiple_turns() -> void:
@@ -156,7 +156,7 @@ func test_assert_colony_resources_helper() -> void:
 
 func test_assert_production_helper() -> void:
 	# Arrange
-	var production: Transaction = autofree(Transaction.new())
+	var production: Transaction = Transaction.new()
 	production.add_resource_amount_by_type(Term.ResourceType.CROPS, 50)
 	production.add_resource_amount_by_type(Term.ResourceType.GOLD, 10)
 

@@ -4,33 +4,29 @@
 
 ---
 
-## ✅ **Always Wrap These with `autofree()`**
+## 🎉 **Transaction No Longer Needs `autofree()`!**
 
-### Transaction Objects
+**Transaction is now `RefCounted`** - automatic memory management!
+
+### Transaction Objects (No autofree needed!)
 ```gdscript
-// ❌ WRONG - Memory leak
+// ✅ CORRECT - Automatic cleanup
 var transaction = Transaction.new()
 
-// ✅ CORRECT - Auto-freed
+// ✅ Also correct (autofree is harmless but unnecessary)
 var transaction = autofree(Transaction.new())
 ```
 
 ### Cloned Transactions
 ```gdscript
-// ❌ WRONG - clone() creates new Node
+// ✅ CORRECT - Auto-freed by reference counting
 var cloned = original.clone()
-
-// ✅ CORRECT - Wrap the clone
-var cloned = autofree(original.clone())
 ```
 
 ### GameData Method Returns
 ```gdscript
-// ❌ WRONG - Returns new Transaction
+// ✅ CORRECT - No autofree needed
 var cost = GameData.get_building_cost(Term.BuildingType.FARM, 1)
-
-// ✅ CORRECT - Wrap the return value
-var cost = autofree(GameData.get_building_cost(Term.BuildingType.FARM, 1))
 ```
 
 ---

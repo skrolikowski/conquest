@@ -1,5 +1,9 @@
-extends Node
+extends RefCounted
 class_name Transaction
+## Resource transaction container with automatic memory management
+##
+## Transaction is a RefCounted object (not a Node) for efficient memory handling.
+## Instances are automatically freed when no longer referenced.
 
 
 var resources: Dictionary = {}
