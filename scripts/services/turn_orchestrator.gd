@@ -17,8 +17,12 @@ signal participant_turn_ended(participant_name: String)
 
 var current_turn: int = 0
 var player: Player = null
+
+#TODO: Later..
 # var npcs: Array[NPC] = []
+#TODO: Later..
 # var diplomacy: Diplomacy = null
+
 
 func _ready() -> void:
 	player = Preload.player_scene.instantiate() as Player

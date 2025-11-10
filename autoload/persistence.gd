@@ -3,10 +3,8 @@ extends Node
 const SAVE_PATH_PREFIX : String = "conquest_save_"
 
 const SECTION : Dictionary = {
-	GAME   = "game",
-	PLAYER = "player",
-	CAMERA = "camera",
-	WORLD  = "world",
+	SESSION = "session",  # GameSession state (turn number, player, etc)
+	WORLD   = "world",    # WorldManager state (terrain, camera view)
 }
 
 var is_new_game : bool = false
@@ -23,6 +21,7 @@ func new_game() -> void:
 	print("[Persistence] Starting New Game")
 	is_new_game = true
 
+
 func has_save_file() -> bool:
 	"""
 	Check if a save file exists for the current game.
@@ -30,6 +29,7 @@ func has_save_file() -> bool:
 	assert(game_name != "", "[Persistence] `game_name` not found - remember to set Persistence.game_name")
 	var save_path : String = "user://" + SAVE_PATH_PREFIX + game_name + ".ini"
 	return FileAccess.file_exists(save_path)
+
 
 func save_game(_game_session: GameSession, _save_data: Dictionary) -> bool:
 	"""
@@ -91,3 +91,18 @@ func load_section(_section: String) -> Dictionary:
 		data[key] = config.get_value(_section, key)
 
 	return data
+
+
+func delete_save_file(_game_name: String) -> void:
+	"""
+	Delete the current save file.
+	"""
+	assert(_game_name != "", "No game loaded to delete save file from")
+
+	var save_path : String = "user://" + SAVE_PATH_PREFIX + _game_name + ".ini"
+	var dir : DirAccess = DirAccess.open(save_path.get_base_dir())
+	var err : Error = dir.remove(save_path.get_file())
+	if err == OK:
+		print("[Persistence] Save file deleted successfully")
+	else:
+		print("Error deleting save file: " + str(err))

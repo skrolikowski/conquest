@@ -126,15 +126,11 @@ func load_game(game_name: String) -> bool:
 		print("[GameSession] Failed to load world data")
 		return false
 
-	# Now trigger map load (will emit map_loaded when done)
 	var world_data  : Dictionary = Persistence.load_section(Persistence.SECTION.WORLD)
-	var game_data   : Dictionary = Persistence.load_section(Persistence.SECTION.GAME)
-	var camera_data : Dictionary = Persistence.load_section(Persistence.SECTION.CAMERA)
-	var player_data : Dictionary = Persistence.load_section(Persistence.SECTION.PLAYER)
+	world_manager.on_load_data(world_data)
 
-	world_manager.world_gen.on_load_data(world_data)
-	world_manager.world_camera.on_load_data(camera_data)
-	turn_orchestrator.on_load_data(game_data, player_data)
+	var session_data : Dictionary = Persistence.load_section(Persistence.SECTION.SESSION)
+	on_load_data(session_data)
 
 	game_loaded.emit()
 	session_started.emit()
@@ -151,20 +147,16 @@ func save_game() -> bool:
 	"""
 	print("[GameSession] Saving game...")
 
-	# var turn_data : Dictionary = turn_orchestrator.on_save_data()
-
-	var save_data : Dictionary = {}
-	save_data[Persistence.SECTION.GAME] = { "turn_number": turn_orchestrator.current_turn }
-	save_data[Persistence.SECTION.WORLD] = world_manager.world_gen.on_save_data()
-	save_data[Persistence.SECTION.CAMERA] = world_manager.world_camera.on_save_data()
-	save_data[Persistence.SECTION.PLAYER] = turn_orchestrator.player.on_save_data()
-
-	# Use Persistence.save_game() which handles everything
-	var success: bool = Persistence.save_game(self, save_data)
-	if success:
+	if Persistence.save_game(self,
+	{
+		Persistence.SECTION.SESSION: on_save_data(),
+		Persistence.SECTION.WORLD: world_manager.on_save_data()
+	}):
+		# print("[GameSession] Game saved successfully")
 		game_saved.emit()
+		return true
 
-	return success
+	return false
 
 
 func end_session() -> void:
@@ -259,32 +251,32 @@ func _on_cursor_updated(_cursor_position: Vector2) -> void:
 
 
 #region GAME PERSISTENCE
-# Note: Persistence has been moved to GameSession.
-# These methods are kept for legacy Persistence.gd compatibility.
 
 func on_save_data() -> Dictionary:
 	"""
 	Return save data for this manager.
-
-	DEPRECATED: GameSession now handles save coordination.
-	This is kept for Persistence.gd compatibility.
 	"""
 	if turn_orchestrator == null:
 		return {}
 
 	return {
 		"turn_number": turn_orchestrator.current_turn,
+		"player": turn_orchestrator.player.on_save_data(),
 	}
 
 
 func on_load_data(_data: Dictionary) -> void:
 	"""
-	Load saved data.
-
-	DEPRECATED: GameSession now handles load coordination.
-	Turn number is loaded by TurnOrchestrator directly.
+	Load saved data.s
 	"""
-	# Turn number is loaded by TurnOrchestrator in GameSession
-	pass
+	print("[GameSession] Loading session data")
+	# Load turn number
+	if turn_orchestrator != null and _data.has("turn_number"):
+		turn_orchestrator.current_turn = _data["turn_number"]
+		
+	# Load player data
+	if turn_orchestrator != null and _data.has("player"):
+		turn_orchestrator.player.on_load_data(_data["player"])
+
 
 #endregion

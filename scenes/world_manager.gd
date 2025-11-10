@@ -94,3 +94,34 @@ func _on_focus_node_changed(node: Node, _previous_node: Node) -> void:
 		world_canvas.update_status(Preload.C.STATUS_SEP.join(status_text))
 
 #endregion
+
+
+#region GAME PERSISTENCE
+func on_save_data() -> Dictionary:
+	"""
+	Package WorldManager data for saving.
+	Called by GameSession.
+	"""
+	var world_data: Dictionary = {}
+
+	# WorldGen data
+	if world_gen != null:
+		world_data["world_gen"] = world_gen.on_save_data()
+
+	# WorldCamera data
+	if world_camera != null:
+		world_data["world_camera"] = world_camera.on_save_data()
+
+	return world_data
+
+
+func on_load_data(_data: Dictionary) -> void:
+	"""
+	Load WorldManager data from save.
+	Called by GameSession.
+	"""
+	world_gen.on_load_data(_data.get("world_gen", {}))
+
+	world_camera.on_load_data(_data.get("world_camera", {}))
+
+#endregion
