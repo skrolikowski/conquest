@@ -240,6 +240,10 @@ func refresh_occupied_tiles() -> void:
 	Def.get_world_map().terraform_biome_tiles(occupy_tiles, WorldGen.BiomeTerrain.MOUNTAINS, WorldGen.BiomeTerrain.UNMOUNTAIN)
 
 
+func is_tile_occupied(_tile: Vector2i) -> bool:
+	return occupy_tiles.has(_tile)
+
+
 func _unhandled_input(_event: InputEvent) -> void:
 	if _event is InputEventMouseButton:
 		var mouse_event : InputEventMouseButton = _event as InputEventMouseButton

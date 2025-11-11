@@ -13,8 +13,6 @@ signal game_session_started
 signal game_session_ended
 signal returned_to_menu
 
-var test_mode: bool = false
-
 # var main_menu: Control = null
 var game_session : GameSession
 var world_manager : WorldManager
@@ -26,9 +24,10 @@ var world_manager_scene: PackedScene = preload("res://scenes/world_manager.tscn"
 
 func _ready() -> void:
 	# PHASE 4: Skip menu for now, auto-start game
-	"""Temporary: Auto-start game without menu (for testing)"""
-	if not test_mode:
-		load_saved_game("test")
+	
+	#TODO: call load_saved_game or start_new_game based on actual saved games
+	if Preload.C.DEBUG_MODE:
+		load_saved_game("debug")
 
 	# PHASE 5: Will be replaced with:
 	# show_main_menu()
