@@ -16,7 +16,7 @@ const SCENARIOS : Dictionary = {
 
 
 func _ready() -> void:
-	await generate_scenario("02")
+	await generate_scenario("00")
 
 
 func generate_scenario(_scenario_id: String) -> void:
@@ -25,7 +25,6 @@ func generate_scenario(_scenario_id: String) -> void:
 	
 	# Create game controller
 	game_controller = GameController.new()
-	game_controller.test_mode = true  # => blocks natural game flow for testing
 	add_child(game_controller)
 
 	# Setup game systems
@@ -50,7 +49,7 @@ func generate_scenario(_scenario_id: String) -> void:
 	var success: bool = game_session.save_game()
 	if success:
 		print("\n✅ SUCCESS! Test scenario saved!")
-		print("   Location: user://conquest_save_test.ini")
+		print("   Location: user://conquest_save_" + SCENARIO_PREFIX + _scenario_id + ".ini")
 	else:
 		print("\n❌ FAILED to save test scenario")
 		print("   Check console for errors")
@@ -60,6 +59,12 @@ func generate_scenario(_scenario_id: String) -> void:
 	# Exit after a short delay
 	#await get_tree().create_timer(0.25).timeout
 	#get_tree().quit()
+
+func _test_scenario_00() -> Vector2:
+	"""
+	Empty scenario for baseline testing.
+	"""
+	return Vector2.ZERO
 
 
 func _test_scenario_01() -> Vector2:
