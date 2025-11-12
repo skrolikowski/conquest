@@ -25,7 +25,7 @@ class_name IntegrationTestBase
 """
 Run generate_test_scenario.gd
 """
-const TEST_MAP: String = "conquest_save_test_01"
+const TEST_MAP: String = "test_scenario_00"
 
 ## Reference to the GameController for this test
 var game_controller: GameController = null
@@ -266,6 +266,72 @@ func process_colony_turn() -> void:
 	for colony: CenterBuilding in player.cm.colonies:
 		colony.begin_turn()
 	await wait_physics_frames(1)
+
+#endregion
+
+
+#region COLONY FOUNDING HELPERS
+
+## Assert that the colony manager is in the expected workflow state
+func assert_colony_founding_state(cm: ColonyManager, expected_state: ColonyFoundingWorkflow.State, message: String = "") -> void:
+	var msg: String = message if message != "" else "ColonyManager should be in state %s" % ColonyFoundingWorkflow.State.keys()[expected_state]
+	assert_eq(cm.workflow.current_state, expected_state, msg)
+
+
+## Create a mock settler stats for testing colony founding
+func create_mock_settler(level: int = 1) -> UnitStats:
+	var settler: UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, level)
+	settler.player = player
+	return settler
+
+
+## Assert no orphan colonies exist (all colonies have proper parent references)
+func assert_no_orphan_colonies() -> void:
+	for colony: CenterBuilding in player.cm.colonies:
+		assert_not_null(colony.player, "Colony should have player reference")
+		assert_not_null(colony.bm, "Colony should have building manager")
+
+
+## Assert that a settler unit exists at the specified position
+func assert_settler_at_position(position: Vector2, tolerance: float = 5.0, message: String = "") -> Unit:
+	var settler: Unit = null
+	for unit: Unit in player.units:
+		if unit.stat.unit_type == Term.UnitType.SETTLER:
+			if unit.global_position.distance_to(position) < tolerance:
+				settler = unit
+				break
+
+	var msg: String = message if message != "" else "Settler should exist at position " + str(position)
+	assert_not_null(settler, msg)
+	return settler
+
+
+## Assert that colony tiles are marked as occupied
+func assert_colony_tiles_occupied(colony: CenterBuilding, message: String = "") -> void:
+	var tiles: Array[Vector2i] = colony.get_tiles()
+	for tile: Vector2i in tiles:
+		var is_occupied: bool = colony.bm.is_tile_occupied(tile)
+		var msg: String = message if message != "" else "Tile %s should be occupied" % str(tile)
+		assert_true(is_occupied, msg)
+
+
+## Assert that colony tiles are NOT marked as occupied
+func assert_colony_tiles_not_occupied(tiles: Array[Vector2i], message: String = "") -> void:
+	for tile: Vector2i in tiles:
+		var is_occupied: bool = player.cm.get_colonies()[0].bm.is_tile_occupied(tile) if player.cm.get_colonies().size() > 0 else false
+		var msg: String = message if message != "" else "Tile %s should NOT be occupied" % str(tile)
+		assert_false(is_occupied, msg)
+
+
+## Get all tiles that would be occupied by a colony at the given position
+func get_colony_tiles(tile_pos: Vector2i) -> Array[Vector2i]:
+	# Assuming 2x2 colony size
+	return [
+		tile_pos,
+		tile_pos + Vector2i(1, 0),
+		tile_pos + Vector2i(0, 1),
+		tile_pos + Vector2i(1, 1)
+	]
 
 #endregion
 

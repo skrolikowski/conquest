@@ -80,12 +80,12 @@ func get_colonies() -> Array[CenterBuilding]:
 	return cm.get_colonies()
 
 
-func found_colony(_tile : Vector2i, _position: Vector2, _stats:UnitStats) -> void:
-	cm.found_colony(_tile, _position, _stats)
+func found_colony(_tile: Vector2i, _position: Vector2, _stats: UnitStats) -> ColonyFoundingWorkflow.Result:
+	return cm.found_colony(_tile, _position, _stats)
 
 
-func undo_found_colony(_building:CenterBuilding) -> void:
-	cm.undo_create_colony(_building)
+func undo_found_colony(_building: CenterBuilding) -> ColonyFoundingWorkflow.Result:
+	return cm.undo_create_colony(_building)
 
 #endregion
 

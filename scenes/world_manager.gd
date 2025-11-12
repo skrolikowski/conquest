@@ -23,7 +23,6 @@ class_name WorldManager
 
 var focus_service: FocusService = null  # Injected by GameSession
 
-
 func _ready() -> void:
 	_initialize_scene_components()
 	_connect_signals()

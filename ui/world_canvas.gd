@@ -218,13 +218,13 @@ func open_colony_building_list(_building: CenterBuilding) -> void:
 	current_sub_ui.append(ui)
 
 
-func open_found_colony_menu(_cm: ColonyManager) -> void:
+func open_found_colony_menu(_colony_manager: ColonyManager) -> void:
 	# [MAIN UI]
 	# --
 	close_all_ui()
 
 	var ui : UIFoundColony = Preload.ui_found_colony_scene.instantiate() as UIFoundColony
-	ui.colony_manager = _cm
+	ui.colony_manager = _colony_manager
 	
 	%Panels.add_child(ui)
 	%Panels.move_child(ui, 0)

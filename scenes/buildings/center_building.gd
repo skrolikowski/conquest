@@ -621,12 +621,18 @@ func _process_building_state() -> void:
 	"""
 
 	# Skip state processing on turn 0 (initial game setup)
-	if Def.get_world().turn_number == 0:
-		return
+	if player and player.get_parent() is TurnOrchestrator:
+		var turn_orch: TurnOrchestrator = player.get_parent() as TurnOrchestrator
+		if turn_orch.current_turn == 0:
+			return
 
 	# State transition: NEW -> ACTIVE
 	if building_state == Term.BuildingState.NEW:
 		building_state = Term.BuildingState.ACTIVE
+		# Reset the colony founding workflow since the colony is now permanent
+		# Context is no longer needed for undo after this transition
+		if player and player.cm:
+			player.cm.workflow.reset()
 	# State transition: UPGRADE (process upgrade)
 	elif building_state == Term.BuildingState.UPGRADE:
 		upgrade_building(self)

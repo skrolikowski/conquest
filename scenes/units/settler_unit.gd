@@ -10,13 +10,25 @@ func _ready() -> void:
 
 
 #region SETTLER ACTIONS
+
 func can_settle() -> bool:
-	var colony_mgmt : ColonyManager = Def.get_world().turn_orchestrator.player.cm
-	return colony_mgmt.can_settle(get_tile())
+	if stat.player == null:
+		push_error("Settler unit has no player assigned.")
+		return false
+	return stat.player.cm.can_settle(get_tile())
 
 
 func settle() -> void:
-	stat.player.found_colony(get_tile(), global_position, stat)
+	if stat.player == null:
+		push_error("Settler unit has no player assigned.")
+		return
+
+	var result : ColonyFoundingWorkflow.Result = stat.player.found_colony(get_tile(), global_position, stat)
+	if result.is_error():
+		push_error("Failed to found colony: %s" % result.error_message)
+		return
+
+	# Success! Settler unit disappears (into the colony)
 	stat.player.disband_unit(self)
 
 	Def.get_world_selector().clear_selection()

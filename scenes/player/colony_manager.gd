@@ -1,29 +1,62 @@
 extends Node2D
 class_name ColonyManager
 
+@onready var colony_list: Node = $ColonyList
 
-@onready var colony_list : Node = $ColonyList
+@export var player: Player
 
-@export var player : Player
-
-var settler_position : Vector2
-var settler_stats	 : UnitStats
-
-var placing_colony   : CenterBuilding
-var placing_tile     : Vector2i
-var placing_tiles    : Dictionary
-
+# Colony placement and founding workflow
+var workflow : ColonyFoundingWorkflow = ColonyFoundingWorkflow.new()
 var colonies : Array[CenterBuilding] = []
+var placement_preview : Node2D = preload("res://scenes/player/colony_placement_preview.gd").new()
+
+## Read-only access to placing colony (for testing/UI)
+var placing_colony: CenterBuilding:
+	get: return placement_preview.colony
+
+## Service dependencies (can be injected for testing)
+var _ui_service: ColonyFoundingServices.IUIService
+var _focus_service: ColonyFoundingServices.IFocusService
+var _scene_loader: ColonyFoundingServices.ISceneLoader
+var _world_map: ColonyFoundingServices.IWorldMap
 
 
-func _draw() -> void:
-	if placing_colony != null:
-		for tile: Vector2i in placing_tiles:
-			var tile_data : Dictionary = placing_tiles[tile]
-			draw_rect(tile_data.rect, tile_data.color, true)
+func _ready() -> void:
+	# Add placement preview as child for drawing
+	add_child(placement_preview)
+
+	# Initialize with production services by default
+	_initialize_production_services()
+
+
+#region SERVICE INITIALIZATION
+
+## Initialize with production services (called in _ready or can be overridden for testing)
+func _initialize_production_services() -> void:
+	var services: ColonyFoundingServices.ProductionServices = ColonyFoundingServices.ProductionServices.new()
+	_ui_service = services.ui_service
+	_focus_service = services.focus_service
+	_scene_loader = services.scene_loader
+	_world_map = services.world_map
+
+
+## Inject custom services (for testing)
+func inject_services(
+	ui: ColonyFoundingServices.IUIService,
+	focus: ColonyFoundingServices.IFocusService,
+	loader: ColonyFoundingServices.ISceneLoader,
+	world_map: ColonyFoundingServices.IWorldMap
+) -> void:
+	_ui_service = ui
+	_focus_service = focus
+	_scene_loader = loader
+	_world_map = world_map
+
+#endregion
 
 
 #region COLONY MANAGEMENT
+
 func get_colonies() -> Array[CenterBuilding]:
 	return colonies
 
@@ -33,158 +66,224 @@ func add_colony(_building: CenterBuilding) -> void:
 	colony_list.add_child(_building)
 
 
-func remove_colony(_colony: CenterBuilding) -> void:
-	var colony_index : int = colonies.find(_colony)
+func remove_colony(_colony: CenterBuilding) -> ColonyFoundingWorkflow.Result:
+	if _colony == null:
+		return ColonyFoundingWorkflow.Result.error("Cannot remove null colony")
+
+	var colony_index: int = colonies.find(_colony)
 	if colony_index == -1:
-		print("[ERROR] Attempted to remove colony not in colonies array: ", _colony)
-		return
+		return ColonyFoundingWorkflow.Result.error("Colony not found in colonies array")
 
 	# -- Removes any buildings owned by this colony..
 	for building: Building in _colony.bm.get_buildings().duplicate():
 		_colony.bm.remove_building(building)
 
 	# -- Clear references to prevent dangling pointers..
-	if placing_colony == _colony:
-		placing_colony = null
-		placing_tiles = {}
-		settler_stats = null
-		settler_position = Vector2.ZERO
+	if placement_preview.colony == _colony:
+		placement_preview.clear_preview()
+		workflow.reset()  # Clears context (settler_stats and settler_position)
 
 	colonies.remove_at(colony_index)
 	colony_list.remove_child(_colony)
 	_colony.queue_free()
 
+	return ColonyFoundingWorkflow.Result.ok()
 
-func create_colony() -> void:
-	placing_colony.player   = player
-	placing_colony.modulate = Color(1, 1, 1, 1.0)
-	
+
+func create_colony() -> ColonyFoundingWorkflow.Result:
+	# Validate preconditions using workflow
+	if not workflow.is_founding():
+		return ColonyFoundingWorkflow.Result.error("Cannot create colony: not in founding state")
+
+	if placement_preview.colony == null:
+		return ColonyFoundingWorkflow.Result.error("Cannot create colony: placing_colony is null")
+
+	if workflow.context == null or workflow.context.settler_stats == null:
+		return ColonyFoundingWorkflow.Result.error("Cannot create colony: settler_stats is null")
+
+	var colony: CenterBuilding = placement_preview.colony
+	colony.player = player
+	colony.modulate = Color(1, 1, 1, 1.0)
+
 	# -- Set initial resources..
-	var unit_stat  : Dictionary = GameData.get_unit_stat(Term.UnitType.SETTLER, settler_stats.level)
-	placing_colony.set_init_resources(unit_stat.resources)
-	placing_colony.refresh_bank()
-	
-	_refresh_placing_tiles(Vector2i.ZERO)
-	
-	WorldService.get_world_canvas().close_all_ui()
-	# WorldService.get_world().map_set_focus_node(null)
+	var unit_stat: Dictionary = GameData.get_unit_stat(Term.UnitType.SETTLER, workflow.context.settler_stats.level)
+	colony.set_init_resources(unit_stat.resources)
+	colony.refresh_bank()
+
+	# Clear placement preview
+	placement_preview.clear_preview()
+
+	# Complete workflow
+	var result: ColonyFoundingWorkflow.Result = workflow.complete_founding(colony)
+	if result.is_error():
+		return result
+
+	_ui_service.close_all_ui()
+
+	# NOTE: Do NOT reset workflow here - context must persist for undo_create_colony()
+	# Context will be cleared when building transitions to ACTIVE or when removed
+
+	return ColonyFoundingWorkflow.Result.ok(colony)
 
 
-func undo_create_colony(_building: CenterBuilding) -> void:
-	if _building.building_state == Term.BuildingState.NEW:
+func undo_create_colony(_building: CenterBuilding) -> ColonyFoundingWorkflow.Result:
+	if _building == null:
+		return ColonyFoundingWorkflow.Result.error("Cannot undo: building is null")
 
-		# -- Create settler..
-		var settler  : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, settler_stats.level)
-		settler.on_load_data(settler_stats.on_save_data())
-		var settler_pos : Vector2 = _building.global_position - Vector2(Preload.C.TILE_SIZE.x * 0.25, Preload.C.TILE_SIZE.y * 0.25)
-		var settler_unit : Unit = player.create_unit(settler, settler_pos)
-		if settler_unit == null:
-			print("[ERROR] Failed to create settler unit during undo_create_colony")
-			return
+	if _building.building_state != Term.BuildingState.NEW:
+		return ColonyFoundingWorkflow.Result.error("Cannot undo: building is not in NEW state")
 
-		# -- Remove occupied tiles..
-		_building.bm.remove_occupied_tiles(_building.get_tiles())
+	if workflow.context == null or workflow.context.settler_stats == null:
+		return ColonyFoundingWorkflow.Result.error("Cannot undo: settler_stats is null (no saved settler data)")
 
-		# -- Remove colony..
-		remove_colony(_building)
+	# -- Create settler using context..
+	var settler: UnitStats = workflow.context.restore_settler()
+	var settler_pos: Vector2 = _building.global_position - Vector2(Preload.C.TILE_SIZE.x * 0.25, Preload.C.TILE_SIZE.y * 0.25)
+	var settler_unit: Unit = player.create_unit(settler, settler_pos)
+	if settler_unit == null:
+		# CRITICAL: If settler creation fails, don't remove colony (data loss prevention)
+		return ColonyFoundingWorkflow.Result.error("Failed to create settler unit - colony not removed to prevent data loss")
 
-		WorldService.get_world_canvas().close_all_ui()
+	# -- Remove occupied tiles..
+	_building.bm.remove_occupied_tiles(_building.get_tiles())
+
+	# -- Remove colony..
+	var remove_result: ColonyFoundingWorkflow.Result = remove_colony(_building)
+	if remove_result.is_error():
+		# Settler was created but colony removal failed - inconsistent state
+		# This is better than losing both, but should log warning
+		push_warning("Colony removal failed after settler creation: %s" % remove_result.error_message)
+		return remove_result
+
+	_ui_service.close_all_ui()
+
+	# Workflow context no longer needed after successful undo
+	workflow.reset()
+
+	return ColonyFoundingWorkflow.Result.ok(settler_unit)
 
 #endregion
 
 
 #region COLONY PLACEMENT
-func can_settle(_tile : Vector2i) -> bool:
+func can_settle(_tile: Vector2i) -> bool:
+	# Use injected world_map service instead of singleton
+	if _world_map != null:
+		return _world_map.is_valid_colony_tile(_tile)
+
+	# Fallback to direct check if services not initialized yet
 	#TODO: assumes colony size is 2x2
-	var tile_end : Vector2i = _tile + Vector2i(1, 1)
+	var tile_end: Vector2i = _tile + Vector2i(1, 1)
 
 	for x: int in range(_tile.x, tile_end.x + 1):
 		for y: int in range(_tile.y, tile_end.y + 1):
-			var tile : Vector2i = Vector2i(x, y)
+			var tile: Vector2i = Vector2i(x, y)
 
-			var is_land_tile : bool = Def.get_world_map().is_land_tile(tile)
+			var is_land_tile: bool = Def.get_world_map().is_land_tile(tile)
 			if not is_land_tile:
 				return false
 
 	return true
 
 
-func found_colony(_tile: Vector2i, _position: Vector2, _stats: UnitStats) -> void:
-	var building_scene : PackedScene = PreloadsRef.get_building_scene(Term.BuildingType.CENTER)
-	var building       : CenterBuilding = building_scene.instantiate() as CenterBuilding
-	placing_colony = building
+func found_colony(_tile: Vector2i, _position: Vector2, _stats: UnitStats) -> ColonyFoundingWorkflow.Result:
+	# Validate can start new founding
+	if not workflow.can_start_founding():
+		return ColonyFoundingWorkflow.Result.error("Cannot found colony: already founding (state: %s)" % workflow.get_state_name())
 
-	var world_pos : Vector2 = Def.get_world_tile_map().map_to_local(_tile)
-	placing_colony.global_position = world_pos + Vector2(Preload.C.TILE_SIZE.x * 0.5, Preload.C.TILE_SIZE.y * 0.5)
-	placing_colony.player   = player
-	placing_colony.modulate = Color(1, 1, 1, 0.75)
+	if _stats == null:
+		return ColonyFoundingWorkflow.Result.error("Cannot found colony: settler stats are null")
 
-	add_colony(placing_colony)
+	# Validate tile is valid for colony
+	if not can_settle(_tile):
+		return ColonyFoundingWorkflow.Result.error("Cannot found colony: invalid tile (not land or occupied)")
+
+	# Start workflow
+	var start_result: ColonyFoundingWorkflow.Result = workflow.start_founding(_tile, _stats, _position)
+	if start_result.is_error():
+		return start_result
+
+	# Create colony building
+	var building: CenterBuilding = _scene_loader.load_building(Term.BuildingType.CENTER)
+	if building == null:
+		workflow.reset()
+		return ColonyFoundingWorkflow.Result.error("Failed to load colony building scene")
+
+	var world_pos: Vector2 = _world_map.tile_to_world(_tile)
+	building.global_position = world_pos + Vector2(Preload.C.TILE_SIZE.x * 0.5, Preload.C.TILE_SIZE.y * 0.5)
+	building.player = player
+	building.modulate = Color(1, 1, 1, 0.75)
+
+	add_colony(building)
 
 	# -- update occupied tiles..
-	placing_colony.bm.add_occupied_tiles(placing_colony.get_tiles())
-	
-	# -- save for undoing..
-	settler_position = _position
-	settler_stats    = _stats
+	building.bm.add_occupied_tiles(building.get_tiles())
 
-	_refresh_placing_tiles(_tile)
+	# Set up placement preview
+	placement_preview.set_preview(building, _tile)
 
-	WorldService.get_world_canvas().open_found_colony_menu(self)
-	# Def.get_world_selector().clear_selection()
-	Def.get_world().focus_service.set_focus_node(placing_colony)
+	# Transition to confirming state
+	var confirm_result: ColonyFoundingWorkflow.Result = workflow.begin_confirming()
+	if confirm_result.is_error():
+		# Rollback colony creation
+		remove_colony(building)
+		workflow.reset()
+		return confirm_result
+
+	_ui_service.open_found_colony_menu(self)
+	_focus_service.set_focus_node(building)
+
+	return ColonyFoundingWorkflow.Result.ok(building)
 
 
-func cancel_found_colony() -> void:
-	placing_colony.bm.remove_occupied_tiles(placing_colony.get_tiles())
+func cancel_found_colony() -> ColonyFoundingWorkflow.Result:
+	# Validate state
+	if not workflow.is_founding():
+		return ColonyFoundingWorkflow.Result.error("Cannot cancel: not in founding state (current: %s)" % workflow.get_state_name())
 
-	remove_colony(placing_colony)
+	if placement_preview.colony == null:
+		return ColonyFoundingWorkflow.Result.error("Cannot cancel: placing_colony is null")
 
-	# -- create settler..
-	var settler  : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, settler_stats.level)
-	settler.on_load_data(settler_stats.on_save_data())
-	var settler_unit : Unit = player.create_unit(settler, settler_position)
+	if workflow.context == null or workflow.context.settler_stats == null:
+		return ColonyFoundingWorkflow.Result.error("Cannot cancel: settler_stats is null")
+
+	var colony: CenterBuilding = placement_preview.colony
+
+	# Remove occupied tiles first
+	colony.bm.remove_occupied_tiles(colony.get_tiles())
+
+	# Create settler BEFORE removing colony (to prevent data loss if creation fails)
+	var settler: UnitStats = workflow.context.restore_settler()
+	var settler_unit: Unit = player.create_unit(settler, workflow.context.settler_position)
+
 	if settler_unit == null:
-		print("[ERROR] Failed to create settler unit during cancel_found_colony")
-		# Continue cleanup even if settler creation fails
+		# CRITICAL: Settler creation failed
+		# Re-add occupied tiles and keep colony to prevent data loss
+		colony.bm.add_occupied_tiles(colony.get_tiles())
+		return ColonyFoundingWorkflow.Result.error("Failed to create settler unit - colony preserved to prevent data loss")
 
-	_refresh_placing_tiles(Vector2i.ZERO)
+	# Now safe to remove colony
+	var remove_result: ColonyFoundingWorkflow.Result = remove_colony(colony)
+	if remove_result.is_error():
+		# Settler exists but colony removal failed - log but continue
+		push_warning("Colony removal failed during cancel: %s" % remove_result.error_message)
 
-	WorldService.get_world_canvas().close_all_ui()
-	# Def.get_world().map_set_focus_node(null)
+	# Clear placement preview
+	placement_preview.clear_preview()
+
+	# Cancel workflow
+	var cancel_result: ColonyFoundingWorkflow.Result = workflow.cancel_founding()
+	if cancel_result.is_error():
+		return cancel_result
+
+	_ui_service.close_all_ui()
+
+	# Reset workflow
+	workflow.reset()
+
+	return ColonyFoundingWorkflow.Result.ok(settler_unit)
 
 
-func _refresh_placing_tiles(_tile: Vector2i) -> void:
-	var world_map : WorldGen = Def.get_world_map()
-	var tile_size : Vector2i = Preload.C.TILE_SIZE
-	
-	placing_tile   = _tile
-	placing_tiles  = {}
-
-	if placing_tile != Vector2i.ZERO:
-		var build_radius_1 : float = GameData.get_building_stat(Term.BuildingType.CENTER, 1).build_radius * tile_size.x
-		var build_radius_2 : float = GameData.get_building_stat(Term.BuildingType.CENTER, 2).build_radius * tile_size.x
-		var build_radius_3 : float = GameData.get_building_stat(Term.BuildingType.CENTER, 3).build_radius * tile_size.x
-		var build_radius_4 : float = GameData.get_building_stat(Term.BuildingType.CENTER, 4).build_radius * tile_size.x
-	
-		var bounds : Array[Dictionary] = [
-			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, build_radius_1), "color" : Color(Color.WHITE, 0.25) },
-			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, build_radius_2), "color" : Color(Color.BLUE, 0.10) },
-			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, build_radius_3), "color" : Color(Color.WHITE, 0.25) },
-			{ "tiles" : Def.get_world_map().get_tiles_in_radius(placing_colony.global_position, build_radius_4), "color" : Color(Color.BLUE, 0.10) }
-		]
-		
-		for bound: Dictionary in bounds:
-			for tile: Vector2i in bound.tiles:
-				if not tile in placing_tiles:
-					var tile_pos  : Vector2 = world_map.get_map_to_local_position(tile)
-					var tile_tl   : Vector2 = tile_pos - tile_size * 0.5
-					var tile_rect : Rect2 = Rect2(tile_tl, tile_size)
-					
-					placing_tiles[tile] = { "rect": tile_rect, "color": bound.color }
-	
-	# --
-	queue_redraw()
 
 #endregion
 
@@ -193,14 +292,16 @@ func _refresh_placing_tiles(_tile: Vector2i) -> void:
 func on_save_data() -> Dictionary:
 
 	# -- Package colonies..
-	var colony_data : Array[Dictionary] = []
+	var colony_data: Array[Dictionary] = []
 	for colony: CenterBuilding in get_colonies():
 		colony_data.append(colony.on_save_data())
 
 	# -- Package settler data (only if active colony placement)..
-	var settler_data : Dictionary = {}
-	if settler_stats != null:
-		settler_data = settler_stats.on_save_data()
+	var settler_data: Dictionary = {}
+	var settler_position: Vector2 = Vector2.ZERO
+	if workflow.context != null and workflow.context.settler_stats != null:
+		settler_data = workflow.context.settler_stats.on_save_data()
+		settler_position = workflow.context.settler_position
 
 	return {
 		"colonies"         : colony_data,
@@ -211,20 +312,24 @@ func on_save_data() -> Dictionary:
 
 func on_load_data(_data: Dictionary) -> void:
 
-	# -- Load settler data (if applicable)..
-	settler_position = _data["settler_position"]
+	# -- Load settler data (if applicable) into workflow context..
+	var settler_position: Vector2 = _data["settler_position"]
 	if not _data["settler_stats"].is_empty():
-		settler_stats = UnitStats.New_Unit(_data["settler_stats"].unit_type, _data["settler_stats"].level)
+		var settler_stats: UnitStats = UnitStats.New_Unit(_data["settler_stats"].unit_type, _data["settler_stats"].level)
 		settler_stats.on_load_data(_data["settler_stats"])
-	else:
-		settler_stats = null
+
+		# Restore workflow context if there was active founding
+		# Note: We need to extract target_tile from somewhere or reconstruct it
+		# For now, we'll use a placeholder - this may need improvement
+		var target_tile: Vector2i = Vector2i.ZERO  # TODO: May need to save/restore target_tile
+		workflow.context = ColonyFoundingWorkflow.ColonyFoundingContext.new(target_tile, settler_stats, settler_position)
 
 	# -- Load colonies..
 	for colony_data: Dictionary in _data["colonies"]:
-		var building_scene : PackedScene = PreloadsRef.get_building_scene(Term.BuildingType.CENTER)
-		var colony         : CenterBuilding = building_scene.instantiate() as CenterBuilding
+		var building_scene: PackedScene = PreloadsRef.get_building_scene(Term.BuildingType.CENTER)
+		var colony: CenterBuilding = building_scene.instantiate() as CenterBuilding
 		add_colony(colony)
-		
+
 		colony.on_load_data(colony_data)
 		colony.player = player
 
