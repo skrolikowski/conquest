@@ -76,8 +76,8 @@ class MockWorldMap extends ColonyFoundingServices.IWorldMap:
 	func tile_to_world(tile: Vector2i) -> Vector2:
 		return Vector2(tile.x * 48, tile.y * 48) + tile_to_world_offset
 
-	func is_valid_colony_tile(tile: Vector2i) -> bool:
-		# If valid_tiles is empty, all tiles are valid
+	func is_valid_colony_tile(tile: Vector2i, colony_manager: ColonyManager = null) -> bool:
+		# If valid_tiles is empty, all tiles are valid (for backward compatibility)
 		if valid_tiles.is_empty():
 			return true
 		return tile in valid_tiles

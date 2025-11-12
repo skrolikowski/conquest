@@ -41,7 +41,9 @@ class IWorldMap extends RefCounted:
 		return Vector2.ZERO
 
 	## Check if a tile is valid for colony placement
-	func is_valid_colony_tile(_tile: Vector2i) -> bool:
+	## @param tile: Tile coordinates to check
+	## @param colony_manager: ColonyManager reference to check occupied tiles
+	func is_valid_colony_tile(_tile: Vector2i, _colony_manager: ColonyManager = null) -> bool:
 		push_error("IWorldMap.is_valid_colony_tile() not implemented")
 		return false
 
@@ -90,7 +92,7 @@ class ProductionWorldMap extends IWorldMap:
 	func tile_to_world(tile: Vector2i) -> Vector2:
 		return Def.get_world_tile_map().map_to_local(tile)
 
-	func is_valid_colony_tile(tile: Vector2i) -> bool:
+	func is_valid_colony_tile(tile: Vector2i, colony_manager: ColonyManager = null) -> bool:
 		# Check if tile is on land (not water)
 		var world_gen: WorldGen = Def.get_world_map()
 		if not world_gen.tile_heights.has(tile):
@@ -98,4 +100,18 @@ class ProductionWorldMap extends IWorldMap:
 
 		var height: float = world_gen.tile_heights[tile]
 		# Height > -0.01 means land
-		return height > -0.01
+		if height <= -0.01:
+			return false
+
+		#TODO: optimize!!!
+		# Check if tile is occupied by any existing colony (assumes 2x2 colony size)
+		if colony_manager != null:
+			var tile_end: Vector2i = tile + Vector2i(1, 1)
+			for x: int in range(tile.x, tile_end.x + 1):
+				for y: int in range(tile.y, tile_end.y + 1):
+					var check_tile: Vector2i = Vector2i(x, y)
+					for colony: CenterBuilding in colony_manager.colonies:
+						if colony.bm.is_tile_occupied(check_tile):
+							return false
+
+		return true

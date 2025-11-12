@@ -122,8 +122,7 @@ func test_cannot_found_colony_on_occupied_tiles() -> void:
 	await wait_physics_frames(1)
 
 	# Assert - should fail (tiles are occupied)
-	# Note: Current implementation may not check this explicitly, but tile occupation should prevent it
-	# This test documents expected behavior even if not fully implemented yet
+	assert_true(result_2.is_error(), "Should not be able to found colony on occupied tiles")
 	if result_2.is_error():
 		assert_string_contains(result_2.error_message, "occupied", "Error should mention tiles are occupied")
 
@@ -177,12 +176,14 @@ func test_multiple_colonies_track_tiles_independently() -> void:
 
 	var colony_1: CenterBuilding = player.cm.colonies[0]
 
-	# Create second colony
-	var tile_pos_2  : Vector2i = world_manager.world_gen.get_optimal_colony_location()
+	# Create second colony at a different location (offset by 10 tiles to ensure no overlap)
+	var tile_pos_2  : Vector2i = tile_pos_1 + Vector2i(10, 0)  # 10 tiles away to avoid overlap
 	var world_pos_2 : Vector2 = world_manager.world_gen.get_map_to_local_position(tile_pos_2)
 	var settler_2   : UnitStats = autofree(create_mock_settler(1))
 
-	colony_manager.found_colony(tile_pos_2, world_pos_2, settler_2)
+	var result_2: ColonyFoundingWorkflow.Result = colony_manager.found_colony(tile_pos_2, world_pos_2, settler_2)
+	if result_2.is_error():
+		assert_true(false, "Failed to found second colony: %s" % result_2.error_message)
 	await wait_physics_frames(1)
 	colony_manager.create_colony()
 	await wait_physics_frames(1)

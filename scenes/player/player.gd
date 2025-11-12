@@ -159,7 +159,7 @@ func disband_unit(_unit : Unit) -> void:
 func new_game() -> void:
 	print("[Player] New Player")
 	
-	debug()
+	# debug()
 
 
 func on_save_data() -> Dictionary:

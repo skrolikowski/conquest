@@ -175,8 +175,8 @@ func undo_create_colony(_building: CenterBuilding) -> ColonyFoundingWorkflow.Res
 #region COLONY PLACEMENT
 func can_settle(_tile: Vector2i) -> bool:
 	# Use injected world_map service instead of singleton
-	if _world_map != null:
-		return _world_map.is_valid_colony_tile(_tile)
+	# if _world_map != null:
+	# 	return _world_map.is_valid_colony_tile(_tile, self)
 
 	# Fallback to direct check if services not initialized yet
 	#TODO: assumes colony size is 2x2
@@ -189,6 +189,11 @@ func can_settle(_tile: Vector2i) -> bool:
 			var is_land_tile: bool = Def.get_world_map().is_land_tile(tile)
 			if not is_land_tile:
 				return false
+
+			# Check if tile is occupied by any existing colony's buildings
+			for colony: CenterBuilding in colonies:
+				if colony.bm.is_tile_occupied(tile):
+					return false
 
 	return true
 
