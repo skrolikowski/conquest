@@ -13,6 +13,10 @@ var attached_units    : Array[UnitStats] = []
 var commission_leader      : bool
 var commission_leader_unit : UnitStats
 
+# -- Undo data (stored per-colony for NEW state colonies)
+var _undo_settler_stats: UnitStats = null  # Original settler stats for undo
+var _undo_settler_position: Vector2 = Vector2.ZERO  # Original settler position for undo
+
 
 func _ready() -> void:
 	super._ready()
@@ -629,10 +633,9 @@ func _process_building_state() -> void:
 	# State transition: NEW -> ACTIVE
 	if building_state == Term.BuildingState.NEW:
 		building_state = Term.BuildingState.ACTIVE
-		# Reset the colony founding workflow since the colony is now permanent
-		# Context is no longer needed for undo after this transition
-		if player and player.cm:
-			player.cm.workflow.reset()
+		# Clear undo data since colony is now permanent
+		_undo_settler_stats = null
+		_undo_settler_position = Vector2.ZERO
 	# State transition: UPGRADE (process upgrade)
 	elif building_state == Term.BuildingState.UPGRADE:
 		upgrade_building(self)

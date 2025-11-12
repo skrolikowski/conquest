@@ -81,7 +81,8 @@ func remove_colony(_colony: CenterBuilding) -> ColonyFoundingWorkflow.Result:
 	# -- Clear references to prevent dangling pointers..
 	if placement_preview.colony == _colony:
 		placement_preview.clear_preview()
-		workflow.reset()  # Clears context (settler_stats and settler_position)
+		# Note: Do NOT reset workflow here - let the caller manage workflow state
+		# (cancel_found_colony and undo_create_colony handle their own resets)
 
 	colonies.remove_at(colony_index)
 	colony_list.remove_child(_colony)
@@ -105,6 +106,10 @@ func create_colony() -> ColonyFoundingWorkflow.Result:
 	colony.player = player
 	colony.modulate = Color(1, 1, 1, 1.0)
 
+	# -- Store undo data in the colony itself (for multi-colony founding in same turn)
+	colony._undo_settler_stats = workflow.context.settler_stats
+	colony._undo_settler_position = workflow.context.settler_position
+
 	# -- Set initial resources..
 	var unit_stat: Dictionary = GameData.get_unit_stat(Term.UnitType.SETTLER, workflow.context.settler_stats.level)
 	colony.set_init_resources(unit_stat.resources)
@@ -120,8 +125,9 @@ func create_colony() -> ColonyFoundingWorkflow.Result:
 
 	_ui_service.close_all_ui()
 
-	# NOTE: Do NOT reset workflow here - context must persist for undo_create_colony()
-	# Context will be cleared when building transitions to ACTIVE or when removed
+	# Reset workflow immediately - undo data now stored in colony itself
+	# This allows founding multiple colonies in the same turn
+	workflow.reset()
 
 	return ColonyFoundingWorkflow.Result.ok(colony)
 
@@ -133,12 +139,14 @@ func undo_create_colony(_building: CenterBuilding) -> ColonyFoundingWorkflow.Res
 	if _building.building_state != Term.BuildingState.NEW:
 		return ColonyFoundingWorkflow.Result.error("Cannot undo: building is not in NEW state")
 
-	if workflow.context == null or workflow.context.settler_stats == null:
+	# Use per-colony undo data instead of workflow context
+	if _building._undo_settler_stats == null:
 		return ColonyFoundingWorkflow.Result.error("Cannot undo: settler_stats is null (no saved settler data)")
 
-	# -- Create settler using context..
-	var settler: UnitStats = workflow.context.restore_settler()
-	var settler_pos: Vector2 = _building.global_position - Vector2(Preload.C.TILE_SIZE.x * 0.25, Preload.C.TILE_SIZE.y * 0.25)
+	# -- Create settler using colony's undo data..
+	var settler: UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, _building._undo_settler_stats.level)
+	settler.on_load_data(_building._undo_settler_stats.on_save_data())
+	var settler_pos: Vector2 = _building._undo_settler_position
 	var settler_unit: Unit = player.create_unit(settler, settler_pos)
 	if settler_unit == null:
 		# CRITICAL: If settler creation fails, don't remove colony (data loss prevention)
@@ -157,8 +165,7 @@ func undo_create_colony(_building: CenterBuilding) -> ColonyFoundingWorkflow.Res
 
 	_ui_service.close_all_ui()
 
-	# Workflow context no longer needed after successful undo
-	workflow.reset()
+	# Note: No need to reset workflow here - it's already reset in create_colony()
 
 	return ColonyFoundingWorkflow.Result.ok(settler_unit)
 

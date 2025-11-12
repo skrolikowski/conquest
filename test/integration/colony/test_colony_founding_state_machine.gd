@@ -30,6 +30,8 @@ func test_found_colony_transitions_to_founding_then_confirming() -> void:
 
 	# Act - found colony
 	var result: ColonyFoundingWorkflow.Result = colony_manager.found_colony(tile_pos, world_pos, settler)
+	if result.is_error():
+		assert_true(false, "Failed to found colony: %s" % result.get_error())
 	await wait_physics_frames(1)
 
 	# Assert - should be in CONFIRMING (skips FOUNDING internally and goes straight to CONFIRMING)
@@ -48,17 +50,15 @@ func test_create_colony_transitions_to_founded_then_idle() -> void:
 
 	var res1: ColonyFoundingWorkflow.Result = colony_manager.found_colony(tile_pos, world_pos, settler)
 	if res1.is_error():
-		assert_true(false, "Failed to start founding: %s" % res1.get_error())
+		assert_true(false, "Failed to found colony: %s" % res1.get_error())
 	await wait_physics_frames(1)
 
 	assert_colony_founding_state(colony_manager, ColonyFoundingWorkflow.State.CONFIRMING)
 
 	# Act - create colony
 	var res2: ColonyFoundingWorkflow.Result = colony_manager.create_colony()
-	await wait_physics_frames(1)
-
-	# Simulate end of turn to update ColonyFoundingWorkflow state
-	game_session.end_turn()
+	if res2.is_error():
+		assert_true(false, "Failed to create colony: %s" % res2.get_error())
 	await wait_physics_frames(1)
 
 	# Assert - should reset to IDLE after completion
@@ -70,21 +70,25 @@ func test_create_colony_transitions_to_founded_then_idle() -> void:
 
 func test_cancel_colony_transitions_to_cancelled_then_idle() -> void:
 	# Arrange - found a colony first
-	var tile_pos: Vector2i = Vector2i(10, 10)
+	var tile_pos: Vector2i = world_manager.world_gen.get_optimal_colony_location()
 	var world_pos: Vector2 = world_manager.world_gen.get_map_to_local_position(tile_pos)
 	var settler: UnitStats = autofree(create_mock_settler(1))
 
-	player.cm.found_colony(tile_pos, world_pos, settler)
+	var result: ColonyFoundingWorkflow.Result = player.cm.found_colony(tile_pos, world_pos, settler)
+	if result.is_error():
+		assert_true(false, "Failed to start founding: %s" % result.error_message)
 	await wait_physics_frames(1)
 
 	assert_colony_founding_state(player.cm, ColonyFoundingWorkflow.State.CONFIRMING)
 
 	# Act - cancel colony
-	var result: ColonyFoundingWorkflow.Result = player.cm.cancel_found_colony()
+	var cancel_result: ColonyFoundingWorkflow.Result = player.cm.cancel_found_colony()
 	await wait_physics_frames(1)
 
 	# Assert - should reset to IDLE after cancellation
-	assert_true(result.is_ok())
+	assert_true(cancel_result.is_ok(), "Cancel should succeed but got: %s" % cancel_result.error_message)
+	assert_not_null(cancel_result.value, "Cancel should return settler unit")
+	assert_true(cancel_result.value is SettlerUnit, "Cancel should return a SettlerUnit")
 	assert_colony_founding_state(player.cm, ColonyFoundingWorkflow.State.IDLE)
 	assert_false(player.cm.workflow.is_founding(), "Should not be founding after cancel")
 	assert_true(player.cm.workflow.can_start_founding(), "Should be able to start new founding")

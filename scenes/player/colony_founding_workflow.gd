@@ -93,7 +93,9 @@ class ColonyFoundingContext extends RefCounted:
 
 	func _init(tile: Vector2i, settler: UnitStats, pos: Vector2) -> void:
 		target_tile = tile
-		settler_stats = settler
+		# Clone the settler stats to avoid issues with freed references
+		settler_stats = UnitStats.New_Unit(Term.UnitType.SETTLER, settler.level)
+		settler_stats.on_load_data(settler.on_save_data())
 		settler_position = pos
 
 	## Create a new settler with the original stats
