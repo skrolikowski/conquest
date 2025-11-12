@@ -18,7 +18,6 @@ var placing_colony: CenterBuilding:
 var _ui_service: ColonyFoundingServices.IUIService
 var _focus_service: ColonyFoundingServices.IFocusService
 var _scene_loader: ColonyFoundingServices.ISceneLoader
-var _world_map: ColonyFoundingServices.IWorldMap
 
 
 func _ready() -> void:
@@ -37,20 +36,17 @@ func _initialize_production_services() -> void:
 	_ui_service = services.ui_service
 	_focus_service = services.focus_service
 	_scene_loader = services.scene_loader
-	_world_map = services.world_map
 
 
 ## Inject custom services (for testing)
 func inject_services(
 	ui: ColonyFoundingServices.IUIService,
 	focus: ColonyFoundingServices.IFocusService,
-	loader: ColonyFoundingServices.ISceneLoader,
-	world_map: ColonyFoundingServices.IWorldMap
+	loader: ColonyFoundingServices.ISceneLoader
 ) -> void:
 	_ui_service = ui
 	_focus_service = focus
 	_scene_loader = loader
-	_world_map = world_map
 
 #endregion
 
@@ -174,18 +170,15 @@ func undo_create_colony(_building: CenterBuilding) -> ColonyFoundingWorkflow.Res
 
 #region COLONY PLACEMENT
 func can_settle(_tile: Vector2i) -> bool:
-	# Use injected world_map service instead of singleton
-	# if _world_map != null:
-	# 	return _world_map.is_valid_colony_tile(_tile, self)
-
-	# Fallback to direct check if services not initialized yet
-	#TODO: assumes colony size is 2x2
+	# Check if all tiles in the colony footprint are valid
+	# TODO: assumes colony size is 2x2
 	var tile_end: Vector2i = _tile + Vector2i(1, 1)
 
 	for x: int in range(_tile.x, tile_end.x + 1):
 		for y: int in range(_tile.y, tile_end.y + 1):
 			var tile: Vector2i = Vector2i(x, y)
 
+			# Check if tile is land (not water)
 			var is_land_tile: bool = Def.get_world_map().is_land_tile(tile)
 			if not is_land_tile:
 				return false
@@ -221,8 +214,8 @@ func found_colony(_tile: Vector2i, _position: Vector2, _stats: UnitStats) -> Col
 		workflow.reset()
 		return ColonyFoundingWorkflow.Result.error("Failed to load colony building scene")
 
-	var world_pos: Vector2 = _world_map.tile_to_world(_tile)
-	building.global_position = world_pos + Vector2(Preload.C.TILE_SIZE.x * 0.5, Preload.C.TILE_SIZE.y * 0.5)
+	var world_pos: Vector2 = Def.get_world_tile_map().map_to_local(_tile)
+	building.global_position = world_pos
 	building.player = player
 	building.modulate = Color(1, 1, 1, 0.75)
 

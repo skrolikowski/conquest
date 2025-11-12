@@ -68,50 +68,18 @@ class MockSceneLoader extends ColonyFoundingServices.ISceneLoader:
 		should_fail = false
 
 
-## Mock world map that validates tiles
-class MockWorldMap extends ColonyFoundingServices.IWorldMap:
-	var valid_tiles: Array[Vector2i] = []
-	var tile_to_world_offset: Vector2 = Vector2(24, 24)  # Half tile size
-
-	func tile_to_world(tile: Vector2i) -> Vector2:
-		return Vector2(tile.x * 48, tile.y * 48) + tile_to_world_offset
-
-	func is_valid_colony_tile(tile: Vector2i, colony_manager: ColonyManager = null) -> bool:
-		# If valid_tiles is empty, all tiles are valid (for backward compatibility)
-		if valid_tiles.is_empty():
-			return true
-		return tile in valid_tiles
-
-	func add_valid_tile(tile: Vector2i) -> void:
-		if not tile in valid_tiles:
-			valid_tiles.append(tile)
-
-	func add_valid_tiles(tiles: Array[Vector2i]) -> void:
-		for tile: Vector2i in tiles:
-			add_valid_tile(tile)
-
-	func set_only_valid_tiles(tiles: Array[Vector2i]) -> void:
-		valid_tiles = tiles.duplicate()
-
-	func reset() -> void:
-		valid_tiles.clear()
-
-
 ## Container for all mock services
 class MockServices:
 	var ui_service: MockUIService
 	var focus_service: MockFocusService
 	var scene_loader: MockSceneLoader
-	var world_map: MockWorldMap
 
 	func _init() -> void:
 		ui_service = MockUIService.new()
 		focus_service = MockFocusService.new()
 		scene_loader = MockSceneLoader.new()
-		world_map = MockWorldMap.new()
 
 	func reset_all() -> void:
 		ui_service.reset()
 		focus_service.reset()
 		scene_loader.reset()
-		world_map.reset()

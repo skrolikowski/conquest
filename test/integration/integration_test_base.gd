@@ -172,7 +172,12 @@ func create_test_colony(tile_pos: Vector2i, starting_resources: Dictionary = {})
 
 	# Found the colony through ColonyManager
 	var world_pos: Vector2 = world_manager.world_gen.get_map_to_local_position(tile_pos)
-	player.cm.found_colony(tile_pos, world_pos, settler_stats)
+	var result: ColonyFoundingWorkflow.Result = player.cm.found_colony(tile_pos, world_pos, settler_stats)
+
+	# Check if founding succeeded
+	if result.is_error():
+		assert_true(false, "Failed to found colony: %s" % result.error_message)
+		return null
 
 	await wait_physics_frames(1)
 

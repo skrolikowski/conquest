@@ -25,7 +25,7 @@ func test_found_colony_creates_colony_at_tile() -> void:
 	# Assert
 	assert_true(result.is_ok(), "Colony founding should succeed")
 	assert_colony_founding_state(player.cm, ColonyFoundingWorkflow.State.CONFIRMING)
-	assert_not_null(player.cm._placing_colony, "Placing colony should exist")
+	assert_not_null(player.cm.placing_colony, "Placing colony should exist")
 	assert_eq(player.cm.colonies.size(), 1, "Should have 1 colony in colonies array")
 
 
@@ -39,7 +39,7 @@ func test_create_colony_transitions_to_active() -> void:
 	await wait_physics_frames(1)
 
 	assert_colony_founding_state(player.cm, ColonyFoundingWorkflow.State.CONFIRMING)
-	var colony: CenterBuilding = player.cm._placing_colony
+	var colony: CenterBuilding = player.cm.placing_colony
 
 	# Act - confirm the colony
 	var result: ColonyFoundingWorkflow.Result = player.cm.create_colony()
