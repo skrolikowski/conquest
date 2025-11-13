@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="GutTests" failures="0" tests="9" >
-  <testsuite name="test/integration/colony/test_colony_founding_error_cases.gd" tests="9" failures="0" skipped="0" time="2.213192" >
-      <testcase name="test_found_colony_on_water_fails" assertions="4" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.312853" >
+<testsuites name="GutTests" failures="0" tests="12" >
+  <testsuite name="test/integration/colony/test_colony_founding_system_integration.gd" tests="12" failures="0" skipped="0" time="3.081254" >
+      <testcase name="test_colony_founding_marks_tiles_occupied" assertions="8" status="pass" classname="test/integration/colony/test_colony_founding_system_integration.gd" time="0.308125" >
       </testcase>
-      <testcase name="test_create_colony_without_found_colony_fails" assertions="4" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.237562" >
+      <testcase name="test_colony_cancel_removes_occupied_tiles" assertions="8" status="pass" classname="test/integration/colony/test_colony_founding_system_integration.gd" time="0.247164" >
       </testcase>
-      <testcase name="test_cancel_found_colony_twice_fails_gracefully" assertions="4" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.24432" >
+      <testcase name="test_colony_undo_removes_occupied_tiles" assertions="1" status="pass" classname="test/integration/colony/test_colony_founding_system_integration.gd" time="0.242133" >
       </testcase>
-      <testcase name="test_found_colony_with_null_settler_fails" assertions="3" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.231617" >
+      <testcase name="test_cannot_found_colony_on_occupied_tiles" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_system_integration.gd" time="0.268493" >
       </testcase>
-      <testcase name="test_concurrent_found_colony_calls_fail" assertions="5" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.249855" >
+      <testcase name="test_no_orphan_colonies_after_operations" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_system_integration.gd" time="0.249218" >
       </testcase>
-      <testcase name="test_undo_create_colony_on_null_building_fails" assertions="3" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.225032" >
+      <testcase name="test_colony_founding_preserves_settler_level" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_system_integration.gd" time="0.230389" >
       </testcase>
-      <testcase name="test_undo_create_colony_on_active_building_fails" assertions="3" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.243264" >
+      <testcase name="test_multiple_colonies_track_tiles_independently" assertions="13" status="pass" classname="test/integration/colony/test_colony_founding_system_integration.gd" time="0.325402" >
       </testcase>
-      <testcase name="test_remove_null_colony_fails" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.236094" >
+      <testcase name="test_colony_visual_state_changes" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_system_integration.gd" time="0.230363" >
       </testcase>
-      <testcase name="test_remove_non_existent_colony_fails" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.232595" >
+      <testcase name="test_colony_resources_initialized_from_settler" assertions="5" status="pass" classname="test/integration/colony/test_colony_founding_system_integration.gd" time="0.243056" >
+      </testcase>
+      <testcase name="test_placement_preview_cleared_after_colony_creation" assertions="4" status="pass" classname="test/integration/colony/test_colony_founding_system_integration.gd" time="0.241343" >
+      </testcase>
+      <testcase name="test_placement_preview_cleared_after_cancel" assertions="3" status="pass" classname="test/integration/colony/test_colony_founding_system_integration.gd" time="0.246316" >
+      </testcase>
+      <testcase name="test_placement_preview_generates_preview_tiles_in_integration" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_system_integration.gd" time="0.249252" >
       </testcase>
       </testsuite>
   </testsuites>

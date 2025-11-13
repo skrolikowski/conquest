@@ -8,7 +8,7 @@ class_name ColonyManager
 # Colony placement and founding workflow
 var workflow : ColonyFoundingWorkflow = ColonyFoundingWorkflow.new()
 var colonies : Array[CenterBuilding] = []
-var placement_preview : Node2D = preload("res://scenes/player/colony_placement_preview.gd").new()
+var placement_preview : Node2D = preload("res://scenes/player/colony/colony_placement_preview.gd").new()
 
 ## Read-only access to placing colony (for testing/UI)
 var placing_colony: CenterBuilding:

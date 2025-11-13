@@ -11,7 +11,7 @@ var mock_colony: CenterBuilding
 
 func before_each() -> void:
 	# Create preview instance
-	preview = preload("res://scenes/player/colony_placement_preview.gd").new()
+	preview = preload("res://scenes/player/colony/colony_placement_preview.gd").new()
 	add_child_autofree(preview)
 
 	# Create mock colony
