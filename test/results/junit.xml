@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="GutTests" failures="0" tests="1" >
-  <testsuite name="test/integration/colony/test_colony_founding_system_integration.gd" tests="1" failures="0" skipped="0" time="0.433518" >
-      <testcase name="test_cannot_found_colony_on_occupied_tiles" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_system_integration.gd" time="0.433518" >
+<testsuites name="GutTests" failures="0" tests="9" >
+  <testsuite name="test/integration/colony/test_colony_founding_error_cases.gd" tests="9" failures="0" skipped="0" time="2.213192" >
+      <testcase name="test_found_colony_on_water_fails" assertions="4" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.312853" >
+      </testcase>
+      <testcase name="test_create_colony_without_found_colony_fails" assertions="4" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.237562" >
+      </testcase>
+      <testcase name="test_cancel_found_colony_twice_fails_gracefully" assertions="4" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.24432" >
+      </testcase>
+      <testcase name="test_found_colony_with_null_settler_fails" assertions="3" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.231617" >
+      </testcase>
+      <testcase name="test_concurrent_found_colony_calls_fail" assertions="5" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.249855" >
+      </testcase>
+      <testcase name="test_undo_create_colony_on_null_building_fails" assertions="3" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.225032" >
+      </testcase>
+      <testcase name="test_undo_create_colony_on_active_building_fails" assertions="3" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.243264" >
+      </testcase>
+      <testcase name="test_remove_null_colony_fails" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.236094" >
+      </testcase>
+      <testcase name="test_remove_non_existent_colony_fails" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_error_cases.gd" time="0.232595" >
       </testcase>
       </testsuite>
   </testsuites>
