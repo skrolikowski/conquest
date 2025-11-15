@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvq8r5wm7xn3p"]
+
+[ext_resource type="Script" path="res://scenes/player/colony/building_placement_controller.gd" id="1_1"]
+
+[node name="BuildingPlacementController" type="Area2D"]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
+script = ExtResource("1_1")
+
+[node name="GhostTimer" type="Timer" parent="."]
+one_shot = true

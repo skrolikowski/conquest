@@ -1,8 +1,11 @@
 extends Building
 class_name CenterBuilding
 
-@onready var bank := $Bank as Bank
-@onready var bm   := $BuildingManager as BuildingManager
+const BuildingPlacementController: GDScript = preload("res://scenes/player/colony/building_placement_controller.gd")
+
+@onready var bank: Bank = $Bank as Bank
+@onready var bm: BuildingManager = $BuildingManager as BuildingManager
+@onready var placement_controller: BuildingPlacementController = $BuildingPlacementController as BuildingPlacementController
 
 @export var population : int = 0
 
@@ -492,18 +495,18 @@ func calculate_bonus(points: int) -> float:
 
 func create_building(_building_type: Term.BuildingType) -> void:
 	"""
-	Creates to building to place in World.
+	Creates building to place in World.
 	"""
-	var building_scene : PackedScene = PreloadsRef.get_building_scene(_building_type)
-	var building       : Building = building_scene.instantiate() as Building
+	var building_scene: PackedScene = PreloadsRef.get_building_scene(_building_type)
+	var building: Building = building_scene.instantiate() as Building
 	#NOTE: Call _ready on specific building type..
 	building._ready()
-	
+
 	building.colony = self
 	building.player = player
-	
-	# control passed to BuildingManager..
-	bm.add_temp_building(building)
+
+	# Control passed to BuildingPlacementController
+	placement_controller.start_building_placement(building)
 
 
 func purchase_building(_building : Building) -> void:

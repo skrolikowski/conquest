@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://c1u6cxd1powe6"]
+[gd_scene load_steps=8 format=3 uid="uid://c1u6cxd1powe6"]
 
 [ext_resource type="Script" uid="uid://elrl0h6ku7co" path="res://scenes/buildings/center_building.gd" id="1_fstkx"]
 [ext_resource type="PackedScene" uid="uid://duehosmp2o35k" path="res://scenes/player/economy/bank.tscn" id="2_pmawp"]
 [ext_resource type="Texture2D" uid="uid://dnv38mdwarq5t" path="res://assets/maps/WinLu_Fantasy_World/WinLu_Fantasy_World_Buildings.png" id="3_dlgo2"]
 [ext_resource type="PackedScene" uid="uid://mayunnsp8hti" path="res://scenes/player/colony/building_manager.tscn" id="4_0ev27"]
+[ext_resource type="PackedScene" uid="uid://bvq8r5wm7xn3p" path="res://scenes/player/colony/building_placement_controller.tscn" id="5_placement"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e7f07"]
 atlas = ExtResource("3_dlgo2")
@@ -27,8 +28,7 @@ shape = SubResource("RectangleShape2D_gs41h")
 [node name="Bank" parent="." instance=ExtResource("2_pmawp")]
 
 [node name="BuildingManager" parent="." node_paths=PackedStringArray("colony") instance=ExtResource("4_0ev27")]
-collision_layer = 0
-collision_mask = 0
-monitoring = false
-monitorable = false
+colony = NodePath("..")
+
+[node name="BuildingPlacementController" parent="." node_paths=PackedStringArray("colony") instance=ExtResource("5_placement")]
 colony = NodePath("..")

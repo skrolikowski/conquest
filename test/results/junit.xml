@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="GutTests" failures="0" tests="10" >
-  <testsuite name="test/integration/colony/test_colony_founding_state_machine.gd" tests="10" failures="0" skipped="0" time="3.15361" >
-      <testcase name="test_initial_state_is_idle" assertions="3" status="pass" classname="test/integration/colony/test_colony_founding_state_machine.gd" time="0.367364" >
+<testsuites name="GutTests" failures="0" tests="11" >
+  <testsuite name="test/unit/test_colony_placement_preview.gd" tests="11" failures="0" skipped="0" time="0.1648" >
+      <testcase name="test_new_preview_has_no_colony" assertions="4" status="pass" classname="test/unit/test_colony_placement_preview.gd" time="0.000263" >
       </testcase>
-      <testcase name="test_found_colony_transitions_to_founding_then_confirming" assertions="4" status="pass" classname="test/integration/colony/test_colony_founding_state_machine.gd" time="0.335407" >
+      <testcase name="test_set_preview_sets_colony_and_tile" assertions="3" status="pass" classname="test/unit/test_colony_placement_preview.gd" time="0.012998" >
       </testcase>
-      <testcase name="test_create_colony_transitions_to_founded_then_idle" assertions="5" status="pass" classname="test/integration/colony/test_colony_founding_state_machine.gd" time="0.313411" >
+      <testcase name="test_clear_preview_resets_state" assertions="4" status="pass" classname="test/unit/test_colony_placement_preview.gd" time="0.000738" >
       </testcase>
-      <testcase name="test_cancel_colony_transitions_to_cancelled_then_idle" assertions="7" status="pass" classname="test/integration/colony/test_colony_founding_state_machine.gd" time="0.313231" >
+      <testcase name="test_get_colony_returns_colony" assertions="1" status="pass" classname="test/unit/test_colony_placement_preview.gd" time="0.000229" >
       </testcase>
-      <testcase name="test_cannot_skip_states" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_state_machine.gd" time="0.30068" >
+      <testcase name="test_get_colony_returns_null_when_no_preview" assertions="1" status="pass" classname="test/unit/test_colony_placement_preview.gd" time="0.000107" >
       </testcase>
-      <testcase name="test_cannot_cancel_from_idle" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_state_machine.gd" time="0.29753" >
+      <testcase name="test_set_preview_with_no_world_map_handles_gracefully" assertions="1" status="pass" classname="test/unit/test_colony_placement_preview.gd" time="0.040378" >
       </testcase>
-      <testcase name="test_workflow_context_preserved_during_founding" assertions="4" status="pass" classname="test/integration/colony/test_colony_founding_state_machine.gd" time="0.304799" >
+      <testcase name="test_set_preview_with_zero_tile_clears_preview_tiles" assertions="1" status="pass" classname="test/unit/test_colony_placement_preview.gd" time="0.000909" >
       </testcase>
-      <testcase name="test_workflow_context_cleared_after_completion" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_state_machine.gd" time="0.311698" >
+      <testcase name="test_multiple_set_preview_calls_update_state" assertions="3" status="pass" classname="test/unit/test_colony_placement_preview.gd" time="0.042643" >
       </testcase>
-      <testcase name="test_workflow_context_cleared_after_cancel" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_state_machine.gd" time="0.306388" >
+      <testcase name="test_has_preview_reflects_current_state" assertions="3" status="pass" classname="test/unit/test_colony_placement_preview.gd" time="0.000224" >
       </testcase>
-      <testcase name="test_get_state_name_returns_readable_string" assertions="2" status="pass" classname="test/integration/colony/test_colony_founding_state_machine.gd" time="0.303102" >
+      <testcase name="test_set_preview_with_null_colony_handles_gracefully" assertions="2" status="pass" classname="test/unit/test_colony_placement_preview.gd" time="0.032796" >
+      </testcase>
+      <testcase name="test_clear_preview_when_already_clear_is_safe" assertions="2" status="pass" classname="test/unit/test_colony_placement_preview.gd" time="0.033515" >
       </testcase>
       </testsuite>
   </testsuites>
