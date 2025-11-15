@@ -18,7 +18,7 @@ var game_session : GameSession
 var world_manager : WorldManager
 
 # Packed scenes
-var world_manager_scene: PackedScene = preload("res://scenes/world_manager.tscn")
+var world_manager_scene: PackedScene = preload("res://scenes/world/world_manager.tscn")
 # var main_menu_scene: PackedScene = preload("res://ui/main_menu.tscn")  # Phase 5
 
 

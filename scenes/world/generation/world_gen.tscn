@@ -1,12 +1,12 @@
 [gd_scene load_steps=13 format=4 uid="uid://ror8c8gr62y8"]
 
-[ext_resource type="Script" uid="uid://7x5fy7n68ova" path="res://scenes/map/world_gen.gd" id="1_xrrna"]
+[ext_resource type="Script" uid="uid://7x5fy7n68ova" path="res://scenes/world/generation/world_gen.gd" id="1_xrrna"]
 [ext_resource type="Script" uid="uid://b8vr3c8v7wstb" path="res://addons/gaea/generators/2D/noise_generator/noise_generator.gd" id="2_f4342"]
 [ext_resource type="Resource" uid="uid://cro0s3mvoraer" path="res://map/noise_gen_settings.tres" id="3_x2dxf"]
 [ext_resource type="Script" uid="uid://c64t0aufp4gyj" path="res://addons/gaea/renderers/2D/tilemap_gaea_renderer.gd" id="3_yuta8"]
-[ext_resource type="TileSet" uid="uid://cnq856713e1no" path="res://scenes/map/water_layer_tileset.tres" id="5_x2dxf"]
-[ext_resource type="TileSet" uid="uid://dp14aksyru2yj" path="res://scenes/map/biomes_layer_tileset.tres" id="7_gg3rn"]
-[ext_resource type="TileSet" uid="uid://qrtm7ehko5gy" path="res://scenes/map/land_layer_tile_set.tres" id="8_g13xh"]
+[ext_resource type="TileSet" uid="uid://cnq856713e1no" path="res://scenes/world/generation/water_layer_tileset.tres" id="5_x2dxf"]
+[ext_resource type="TileSet" uid="uid://dp14aksyru2yj" path="res://scenes/world/generation/biomes_layer_tileset.tres" id="7_gg3rn"]
+[ext_resource type="TileSet" uid="uid://qrtm7ehko5gy" path="res://scenes/world/generation/land_layer_tile_set.tres" id="8_g13xh"]
 [ext_resource type="Texture2D" uid="uid://wifgmuvrortv" path="res://assets/maps/WinLu_Fantasy_World/Fantasy_World_FogOfWar.png" id="8_iohc0"]
 [ext_resource type="Texture2D" uid="uid://bi17cbgian34v" path="res://assets/maps/WinLu_Fantasy_World/WinLu_Fantasy_Forest.png" id="9_g13xh"]
 
