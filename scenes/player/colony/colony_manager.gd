@@ -57,6 +57,12 @@ func get_colonies() -> Array[CenterBuilding]:
 	return colonies
 
 
+func get_latest_colony() -> CenterBuilding:
+	if colonies.size() == 0:
+		return null
+	return colonies[colonies.size() - 1]
+
+
 func add_colony(_building: CenterBuilding) -> void:
 	colonies.append(_building)
 	colony_list.add_child(_building)

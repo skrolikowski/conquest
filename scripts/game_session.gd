@@ -95,6 +95,7 @@ func start_new_game(game_name: String) -> void:
 
 	# Map loaded, initialize turn system
 	turn_orchestrator.new_game()
+	begin_turn()
 
 	session_started.emit()
 

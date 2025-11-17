@@ -80,6 +80,10 @@ func get_colonies() -> Array[CenterBuilding]:
 	return cm.get_colonies()
 
 
+func get_latest_colony() -> CenterBuilding:
+	return cm.get_latest_colony()
+
+
 func found_colony(_tile: Vector2i, _position: Vector2, _stats: UnitStats) -> ColonyFoundingWorkflow.Result:
 	return cm.found_colony(_tile, _position, _stats)
 
@@ -160,6 +164,20 @@ func new_game() -> void:
 	print("[Player] New Player")
 	
 	# debug()
+	
+	## new game?
+	# var settler       : UnitStats = UnitStats.New_Unit(Term.UnitType.SETTLER, 1)
+	# var settler_unit  : Unit = create_unit(settler, Vector2.ZERO)
+
+	# var ship       : UnitStats = UnitStats.New_Unit(Term.UnitType.SHIP, 1)
+	# var shore_tile : Vector2i = Def.get_world_map().get_random_starting_tile()
+	# var ship_pos   : Vector2 = Def.get_world_tile_map().map_to_local(shore_tile)
+	# var ship_unit  : Unit = create_unit(ship, ship_pos)
+
+	# ship_unit.stat.attached_units.append(settler_unit.stat)
+	
+	# # Set camera to player ship..
+	# Def.get_world().world_camera.position = ship_unit.position
 
 
 func on_save_data() -> Dictionary:

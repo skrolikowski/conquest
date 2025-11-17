@@ -27,7 +27,7 @@ func _ready() -> void:
 	
 	#TODO: call load_saved_game or start_new_game based on actual saved games
 	if Preload.C.DEBUG_MODE:
-		load_saved_game("debug")
+		load_saved_game("test_scenario_02")
 
 	# PHASE 5: Will be replaced with:
 	# show_main_menu()
