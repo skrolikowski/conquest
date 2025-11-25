@@ -3,6 +3,7 @@ extends Node
 var game_controller : GameController
 var game_session    : GameSession
 var world_manager   : WorldManager
+var world_gen       : WorldGen
 var player          : Player
 
 const SCENARIO_PREFIX : String = "test_scenario_"
@@ -61,6 +62,7 @@ func generate_scenario(_scenario_id: String) -> void:
 	# Get references
 	game_session = game_controller.game_session
 	world_manager = game_controller.world_manager
+	world_gen = world_manager.world_gen
 	player = game_session.turn_orchestrator.player
 
 	# Generate the test map
@@ -86,6 +88,7 @@ func generate_scenario(_scenario_id: String) -> void:
 	# Exit after a short delay
 	await get_tree().create_timer(0.25).timeout
 	get_tree().quit()
+
 
 func _test_scenario_00() -> Vector2:
 	"""
@@ -118,7 +121,6 @@ func _test_scenario_02() -> Vector2:
 	Uses realistic starting resources from units.json and deducts building costs.
 	"""
 	# Find optimal colony location (near shore)
-	var world_gen: WorldGen = Def.get_world_map()
 	var optimal_tile: Vector2i = world_gen.get_optimal_colony_location()
 	# var colony_pos: Vector2 = Def.get_world_tile_map().map_to_local(optimal_tile)
 
@@ -402,7 +404,6 @@ func _create_colony_at(tile: Vector2i, settler_level: int, population_override: 
 
 ## Create and place a building at a specific offset from colony
 func _create_and_place_building(colony: CenterBuilding, building_type: Term.BuildingType) -> void:
-	var world_gen: WorldGen = Def.get_world_map()
 	# Create the building
 	var building_scene: PackedScene = PreloadsRef.get_building_scene(building_type)
 	var building: Building = building_scene.instantiate() as Building
@@ -411,6 +412,7 @@ func _create_and_place_building(colony: CenterBuilding, building_type: Term.Buil
 	building.player = player
 
 	# Calculate position
+	colony.placement_controller._refresh_build_tiles()
 	var target_tile: Vector2i = LocationFinder.find_optimal_dock_location(world_gen, colony.placement_controller.build_tiles)
 	var target_pos: Vector2 = Def.get_world_tile_map().map_to_local(target_tile)
 

@@ -422,8 +422,7 @@ func _get_score_for_tile(scored_candidates: Array[Dictionary], tile: Vector2i) -
 
 ## Find optimal dock location (must be on shore/river)
 static func find_optimal_dock_location(_world_gen: WorldGen, build_tiles: Dictionary) -> Vector2i:
-	# var tiles_in_radius: Array[Vector2i] = world_gen.get_tiles_in_radius(colony_position, build_radius_pixels)
-	var scored_candidates: Array[Dictionary] = []
+	var candidates: Array[Vector2i] = []
 
 	for tile: Vector2i in build_tiles:
 		if not _world_gen.tile_custom_data.has(tile):
@@ -431,35 +430,13 @@ static func find_optimal_dock_location(_world_gen: WorldGen, build_tiles: Dictio
 
 		var tile_data: TileCustomData = _world_gen.tile_custom_data[tile]
 
-		# Must be shore or river
-		if not tile_data.is_shore and not tile_data.is_river:
-			continue
+		# Must be shore or river WITH ocean access
+		if (tile_data.is_river or tile_data.is_shore) and _world_gen.has_ocean_access_tile(tile):
+			candidates.append(tile)
 
-		var score: float = 0.0
-
-		# Prefer ocean access over river
-		if tile_data.is_shore and _world_gen.has_ocean_access_tile(tile):
-			score += 100.0
-		elif tile_data.is_river and _world_gen.has_ocean_access_tile(tile):
-			score += 50.0
-
-		# Count adjacent ocean tiles
-		var ocean_neighbors: int = 0
-		for neighbor: Vector2i in _world_gen.get_water_layer().get_surrounding_cells(tile):
-			if _world_gen.is_ocean_tile(neighbor):
-				ocean_neighbors += 1
-		score += ocean_neighbors * 20.0
-
-		if score > 0:
-			scored_candidates.append({"tile": tile, "score": score})
-
-	if scored_candidates.is_empty():
+	if candidates.is_empty():
 		return Vector2i.ZERO
 
-	scored_candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		return a.score > b.score
-	)
-
-	return select_random_top_candidate(scored_candidates, 0.2)
+	return candidates.pick_random()
 
 #endregion
