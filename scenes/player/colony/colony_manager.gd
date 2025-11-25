@@ -5,6 +5,11 @@ class_name ColonyManager
 
 @export var player: Player
 
+const LocationFinder: GDScript = preload("res://scenes/world/generation/location_finder.gd")
+
+var world_gen : WorldGen = null
+var location_finder : LocationFinder = null
+
 # Colony placement and founding workflow
 var workflow : ColonyFoundingWorkflow = ColonyFoundingWorkflow.new()
 var colonies : Array[CenterBuilding] = []
@@ -23,6 +28,9 @@ var _scene_loader: ColonyFoundingServices.ISceneLoader
 func _ready() -> void:
 	# Add placement preview as child for drawing
 	add_child(placement_preview)
+
+	world_gen = Def.get_world_map()
+	location_finder = LocationFinder.new(world_gen)
 
 	# Initialize with production services by default
 	_initialize_production_services()
@@ -176,25 +184,32 @@ func undo_create_colony(_building: CenterBuilding) -> ColonyFoundingWorkflow.Res
 
 #region COLONY PLACEMENT
 func can_settle(_tile: Vector2i) -> bool:
-	# Check if all tiles in the colony footprint are valid
-	# TODO: assumes colony size is 2x2
-	var tile_end: Vector2i = _tile + Vector2i(1, 1)
+	"""
+	Can settle colony at the specified tile + tile footprint?
+	Delegates to LocationFinder for the actual logic.
 
-	for x: int in range(_tile.x, tile_end.x + 1):
-		for y: int in range(_tile.y, tile_end.y + 1):
-			var tile: Vector2i = Vector2i(x, y)
+	@deprecated: Use LocationFinder directly for more control
+	"""
+	return location_finder._has_valid_colony_footprint(_tile)
+	# # Check if all tiles in the colony footprint are valid
+	# # TODO: assumes colony size is 2x2
+	# var tile_end: Vector2i = _tile + Vector2i(1, 1)
 
-			# Check if tile is land (not water)
-			var is_land_tile: bool = Def.get_world_map().is_land_tile(tile)
-			if not is_land_tile:
-				return false
+	# for x: int in range(_tile.x, tile_end.x + 1):
+	# 	for y: int in range(_tile.y, tile_end.y + 1):
+	# 		var tile: Vector2i = Vector2i(x, y)
 
-			# Check if tile is occupied by any existing colony's buildings
-			for colony: CenterBuilding in colonies:
-				if colony.bm.is_tile_occupied(tile):
-					return false
+	# 		# Check if tile is land (not water)
+	# 		var is_land_tile: bool = world_gen.is_land_tile(tile)
+	# 		if not is_land_tile:
+	# 			return false
 
-	return true
+	# 		# Check if tile is occupied by any existing colony's buildings
+	# 		for colony: CenterBuilding in colonies:
+	# 			if colony.bm.is_tile_occupied(tile):
+	# 				return false
+
+	# return true
 
 
 func found_colony(_tile: Vector2i, _position: Vector2, _stats: UnitStats) -> ColonyFoundingWorkflow.Result:
@@ -221,14 +236,14 @@ func found_colony(_tile: Vector2i, _position: Vector2, _stats: UnitStats) -> Col
 		return ColonyFoundingWorkflow.Result.error("Failed to load colony building scene")
 
 	var world_pos: Vector2 = Def.get_world_tile_map().map_to_local(_tile)
-	building.global_position = world_pos
+	building.global_position = world_pos + building.get_size() * 0.5
 	building.player = player
 	building.modulate = Color(1, 1, 1, 0.75)
 
 	add_colony(building)
 
 	# -- update occupied tiles..
-	building.bm.add_occupied_tiles(building.get_tiles())
+	building.bm.add_occupied_tiles(building.get_tiles(), building)
 
 	# Set up placement preview
 	placement_preview.set_preview(building, _tile)
@@ -270,7 +285,7 @@ func cancel_found_colony() -> ColonyFoundingWorkflow.Result:
 	if settler_unit == null:
 		# CRITICAL: Settler creation failed
 		# Re-add occupied tiles and keep colony to prevent data loss
-		colony.bm.add_occupied_tiles(colony.get_tiles())
+		colony.bm.add_occupied_tiles(colony.get_tiles(), colony)
 		return ColonyFoundingWorkflow.Result.error("Failed to create settler unit - colony preserved to prevent data loss")
 
 	# Now safe to remove colony

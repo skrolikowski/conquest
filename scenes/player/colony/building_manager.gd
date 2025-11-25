@@ -60,17 +60,31 @@ func get_buildings_sorted_by_building_type() -> Array[Building]:
 #region TILE OCCUPANCY MANAGEMENT
 
 ## Add tiles to the occupied tiles array and clear terrain
-func add_occupied_tiles(_tiles: Array[Vector2i]) -> void:
+## Also updates TileCustomData occupancy tracking
+func add_occupied_tiles(_tiles: Array[Vector2i], _building: Building = null) -> void:
 	occupy_tiles.append_array(_tiles)
+
+	# Update TileCustomData occupancy
+	var world_gen: WorldGen = Def.get_world_map()
+	for tile: Vector2i in _tiles:
+		if world_gen.tile_custom_data.has(tile):
+			world_gen.tile_custom_data[tile].set_occupied(_building)
 
 	# Clear terrain for building placement
 	TerrainModificationService.clear_terrain_for_building(_tiles)
 
 
 ## Remove tiles from the occupied tiles array and restore terrain
+## Also clears TileCustomData occupancy tracking
 func remove_occupied_tiles(_tiles: Array[Vector2i]) -> void:
 	for tile: Vector2i in _tiles:
 		occupy_tiles.erase(tile)
+
+	# Clear TileCustomData occupancy
+	var world_gen: WorldGen = Def.get_world_map()
+	for tile: Vector2i in _tiles:
+		if world_gen.tile_custom_data.has(tile):
+			world_gen.tile_custom_data[tile].clear_occupied()
 
 	# Restore terrain after building removal
 	TerrainModificationService.restore_terrain_from_building(occupy_tiles)
@@ -78,11 +92,29 @@ func remove_occupied_tiles(_tiles: Array[Vector2i]) -> void:
 
 ## Refresh occupied tiles from all buildings in the colony
 ## Called when loading a saved game
+## Also rebuilds TileCustomData occupancy tracking
 func refresh_occupied_tiles() -> void:
+	# Clear all existing TileCustomData occupancy first
+	var world_gen: WorldGen = Def.get_world_map()
+	for tile: Vector2i in occupy_tiles:
+		if world_gen.tile_custom_data.has(tile):
+			world_gen.tile_custom_data[tile].clear_occupied()
+
+	# Rebuild from colony and buildings
 	occupy_tiles = colony.get_tiles()
 
+	# Set colony center occupancy
+	for tile: Vector2i in colony.get_tiles():
+		if world_gen.tile_custom_data.has(tile):
+			world_gen.tile_custom_data[tile].set_occupied(colony)
+
+	# Set building occupancy
 	for building: Building in get_buildings():
-		occupy_tiles.append_array(building.get_tiles())
+		var building_tiles: Array[Vector2i] = building.get_tiles()
+		occupy_tiles.append_array(building_tiles)
+		for tile: Vector2i in building_tiles:
+			if world_gen.tile_custom_data.has(tile):
+				world_gen.tile_custom_data[tile].set_occupied(building)
 
 	# Clear terrain for all occupied tiles
 	TerrainModificationService.refresh_terrain_for_colony(occupy_tiles)
@@ -91,6 +123,52 @@ func refresh_occupied_tiles() -> void:
 ## Check if a tile is occupied by any building
 func is_tile_occupied(_tile: Vector2i) -> bool:
 	return occupy_tiles.has(_tile)
+
+
+## Check if a single tile is buildable for a given building type
+## Validates: not occupied (via TileCustomData), valid terrain, mountain rules (mines OK, others not)
+func is_tile_buildable(_tile: Vector2i, _building_type: Term.BuildingType = Term.BuildingType.NONE) -> bool:
+	var world_gen: WorldGen = Def.get_world_map()
+	var tile_data: TileCustomData = world_gen.tile_custom_data.get(_tile)
+
+	if tile_data == null:
+		return false
+
+	# Check if already occupied (centralized check via TileCustomData)
+	if tile_data.is_occupied():
+		return false
+
+	# Terrain validation - must be land
+	if not world_gen.is_land_tile(_tile):
+		return false
+
+	# Mountain check - only mines allowed on mountains
+	#TODO: come back to this for other building types that may be allowed on mountains.. maybe all of them
+	if tile_data.biome == WorldGen.TileCategory.MOUNTAIN:
+		if _building_type != Term.BuildingType.METAL_MINE and _building_type != Term.BuildingType.GOLD_MINE:
+			return false
+
+	return true
+
+
+## Filter candidate tiles to return only those that are buildable
+## Useful for LocationFinder and building placement validation
+func get_buildable_tiles(_candidates: Array[Vector2i], _building_type: Term.BuildingType = Term.BuildingType.NONE) -> Array[Vector2i]:
+	var buildable: Array[Vector2i] = []
+
+	for tile: Vector2i in _candidates:
+		if is_tile_buildable(tile, _building_type):
+			buildable.append(tile)
+
+	return buildable
+
+
+## Check if all tiles in a footprint are buildable for a given building type
+func can_build_at(_tiles: Array[Vector2i], _building_type: Term.BuildingType = Term.BuildingType.NONE) -> bool:
+	for tile: Vector2i in _tiles:
+		if not is_tile_buildable(tile, _building_type):
+			return false
+	return true
 
 #endregion
 

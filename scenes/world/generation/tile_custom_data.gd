@@ -28,6 +28,10 @@ var is_river : bool = false
 var has_ocean_access  : bool = false
 var is_river_enriched : bool = false
 
+# -- Occupancy
+## Reference to the Building occupying this tile (null if not occupied)
+var occupied_by: Building = null
+
 
 func _set_biome(_biome: WorldGen.TileCategory) -> void:
 	biome = _biome
@@ -100,8 +104,24 @@ func get_movement_modifier_by_unit_type(_unit_type:Term.UnitType) -> int:
 		return movement_modifiers[Term.UnitMovement.OTHER]
 
 
+## Check if this tile is occupied by a building
+func is_occupied() -> bool:
+	return occupied_by != null
+
+
+## Set occupancy for this tile
+func set_occupied(_building: Building) -> void:
+	occupied_by = _building
+
+
+## Clear occupancy for this tile
+func clear_occupied() -> void:
+	occupied_by = null
+
+
 #region GAME PERSISTENCE
 func on_save_data() -> Dictionary:
+	# Note: We don't save occupied_by reference as it will be rebuilt from BuildingManager on load
 	return {
 		"biome"             : biome,
 		"is_fog_of_war"     : is_fog_of_war,

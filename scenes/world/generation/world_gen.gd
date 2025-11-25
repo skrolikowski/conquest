@@ -2,6 +2,8 @@
 extends Node2D
 class_name WorldGen
 
+const LocationFinder: GDScript = preload("res://scenes/world/generation/location_finder.gd")
+
 signal map_loaded
 
 func _add_inspector_buttons() -> Array:
@@ -462,207 +464,54 @@ func get_random_height_range_tile(_min_height: float, _max_height: float) -> Vec
 	return select_tiles[randi() % select_tiles.size()]
 
 
-func _validate_center_building_footprint(_tile: Vector2i) -> bool:
+## Validates that a 2x2 CenterBuilding can fit at the given tile position.
+## CenterBuilding occupies 2x2 tiles, so we need to check the tile and 3 neighbors.
+## Checks: bounds, land tiles, not mountains, not occupied.
+# func validate_center_building_footprint(_tile: Vector2i) -> bool:
+# 	# Check the 3 adjacent tiles needed for 2x2 footprint
+# 	# Assuming 2x2 means: tile, tile + (1,0), tile + (0,1), tile + (1,1)
+# 	var footprint_tiles: Array[Vector2i] = [
+# 		_tile + Vector2i(0, 0),  # Top-left
+# 		_tile + Vector2i(1, 0),  # Right
+# 		_tile + Vector2i(0, 1),  # Down
+# 		_tile + Vector2i(1, 1),  # Diagonal
+# 	]
+
+# 	for footprint_tile: Vector2i in footprint_tiles:
+# 		# Check bounds
+# 		if footprint_tile.x < 0 or footprint_tile.y < 0 or footprint_tile.x >= tile_cols or footprint_tile.y >= tile_rows:
+# 			return false
+
+# 		# Check if tile data exists
+# 		if not tile_custom_data.has(footprint_tile):
+# 			return false
+
+# 		var tile_data: TileCustomData = tile_custom_data[footprint_tile]
+
+# 		# Check if occupied
+# 		if tile_data.is_occupied():
+# 			return false
+
+# 		# Check if land
+# 		if not is_land_tile(footprint_tile):
+# 			return false
+
+# 		# Check if not mountain (can't build on mountains)
+# 		if tile_data.biome == TileCategory.MOUNTAIN:
+# 			return false
+
+# 	return true
+
+
+func get_optimal_colony_location(_level: int = 1) -> Vector2i:
 	"""
-	Validates that a 2x2 CenterBuilding can fit at the given tile position.
-	CenterBuilding occupies 2x2 tiles, so we need to check the tile and 3 neighbors.
+	Finds an optimal location for founding a colony.
+	Delegates to LocationFinder for the actual logic.
+
+	@deprecated: Use LocationFinder directly for more control
 	"""
-	# # Check the base tile
-	# if not is_land_tile(_tile):
-	# 	return false
-
-	# Check the 3 adjacent tiles needed for 2x2 footprint
-	# Assuming 2x2 means: tile, tile + (1,0), tile + (0,1), tile + (1,1)
-	var footprint_tiles: Array[Vector2i] = [
-		_tile + Vector2i(0, 0),  # Top-left
-		_tile + Vector2i(1, 0),  # Right
-		_tile + Vector2i(0, 1),  # Down
-		_tile + Vector2i(1, 1),  # Diagonal
-	]
-
-	for footprint_tile: Vector2i in footprint_tiles:
-		# Check bounds
-		if footprint_tile.x < 0 or footprint_tile.y < 0 or footprint_tile.x >= tile_cols or footprint_tile.y >= tile_rows:
-			return false
-
-		# Check if land
-		if not is_land_tile(footprint_tile):
-			return false
-
-		# Check if not mountain (can't build on mountains)
-		if tile_custom_data.has(footprint_tile):
-			if tile_custom_data[footprint_tile].biome == TileCategory.MOUNTAIN:
-				return false
-
-	return true
-
-
-func _validate_build_radius_land(_tile: Vector2i, _build_radius_pixels: float) -> bool:
-	"""
-	Validates that sufficient buildable land exists within the build_radius.
-	Requires at least 50% of tiles within radius to be buildable land.
-	"""
-	var tile_pos: Vector2 = get_map_to_local_position(_tile)
-	var tiles_in_radius: Array[Vector2i] = get_tiles_in_radius(tile_pos, _build_radius_pixels)
-
-	var land_count: int = 0
-	var total_count: int = tiles_in_radius.size()
-
-	if total_count == 0:
-		return false
-
-	for radius_tile: Vector2i in tiles_in_radius:
-		if not tile_custom_data.has(radius_tile):
-			continue
-
-		# Count as buildable if it's land and not a mountain
-		if is_land_tile(radius_tile):
-			var tile_data: TileCustomData = tile_custom_data[radius_tile]
-			if tile_data.biome != TileCategory.MOUNTAIN:
-				land_count += 1
-
-	# Require at least 50% buildable land within radius
-	var land_ratio: float = float(land_count) / float(total_count)
-	return land_ratio >= 0.5
-
-
-func get_optimal_colony_location() -> Vector2i:
-	"""
-	Finds an optimal location for founding a colony based on:
-	1. MUST BE LAND (hard requirement)
-	2. CenterBuilding 2x2 footprint must fit on land
-	3. Sufficient buildable land within build_radius
-	4. Ocean/River access for trade (highest priority)
-	5. Terrain modifiers for balanced resources (medium priority)
-	6. Biome bonuses (lower priority)
-	"""
-	var candidate_tiles: Array[Vector2i] = []
-	var best_score: float = 0.0
-	var best_tile: Vector2i = Vector2i.ZERO
-
-	# Get build_radius from level 1 center building (in tiles)
-	var build_radius: int = GameData.get_building_stat(Term.BuildingType.CENTER, 1).build_radius
-	var build_radius_pixels: float = build_radius * Preload.C.TILE_SIZE.x
-
-	# First pass: Find land tiles adjacent to shore/ocean for trade access
-	# Shore tiles are water, so we need to check their land neighbors
-	for shore_tile: Vector2i in get_shore_tiles():
-		# Check if this shore tile has ocean access
-		var shore_has_ocean_access: bool = false
-		if has_ocean_access_tile(shore_tile) or is_ocean_tile(shore_tile):
-			shore_has_ocean_access = true
-
-		if not shore_has_ocean_access:
-			continue
-
-		# Check all neighbors of this shore tile for valid land positions
-		for neighbor: Vector2i in get_land_layer().get_surrounding_cells(shore_tile):
-			# CRITICAL: Must be land tile
-			if not is_land_tile(neighbor):
-				continue
-
-			# Skip if already added
-			if candidate_tiles.has(neighbor):
-				continue
-
-			# Validate 2x2 CenterBuilding footprint fits on land
-			if not _validate_center_building_footprint(neighbor):
-				continue
-
-			# Validate sufficient buildable land within build_radius
-			if not _validate_build_radius_land(neighbor, build_radius_pixels):
-				continue
-
-			candidate_tiles.append(neighbor)
-
-	# Fallback: Find any land tiles with valid footprint if no ocean access tiles found
-	if candidate_tiles.is_empty():
-		print("Warning: No shore tiles with ocean access found, searching all land tiles")
-		for tile: Vector2i in get_land_tiles():
-			if not _validate_center_building_footprint(tile):
-				continue
-			if not _validate_build_radius_land(tile, build_radius_pixels):
-				continue
-			candidate_tiles.append(tile)
-
-	if candidate_tiles.is_empty():
-		push_error("Could not find any valid colony location with 2x2 footprint")
-		return get_random_starting_tile()
-
-	# Score each candidate
-	for tile: Vector2i in candidate_tiles:
-		var tile_data: TileCustomData = tile_custom_data[tile]
-
-		# Skip mountains (can't build farms)
-		if tile_data.biome == TileCategory.MOUNTAIN:
-			continue
-
-		var score: float = 0.0
-
-		# 1. Ocean/River access (TOP PRIORITY for trade)
-		if has_ocean_access_tile(tile):
-			score += 200.0  # Highest priority
-
-		# Check for direct ocean neighbors
-		var ocean_neighbors: int = 0
-		for neighbor: Vector2i in get_water_layer().get_surrounding_cells(tile):
-			if is_ocean_tile(neighbor):
-				ocean_neighbors += 1
-		score += ocean_neighbors * 50.0
-
-		# 2. River bonus (major advantage for trade + resources)
-		if tile_data.is_river or is_river_tile(tile):
-			score += 150.0
-
-		# Check for river neighbors
-		var river_neighbors: int = 0
-		for neighbor: Vector2i in get_land_layer().get_surrounding_cells(tile):
-			if is_river_tile(neighbor):
-				river_neighbors += 1
-		score += river_neighbors * 40.0
-
-		# 3. Terrain production modifiers (important for resources)
-		var farm_modifier: int = tile_data.terrain_modifiers[Term.IndustryType.FARM]
-		var mine_modifier: int = tile_data.terrain_modifiers[Term.IndustryType.MINE]
-		var mill_modifier: int = tile_data.terrain_modifiers[Term.IndustryType.MILL]
-
-		# Weight farm higher (food is critical)
-		score += farm_modifier * 1.5
-		score += mine_modifier * 1.0
-		score += mill_modifier * 1.0
-
-		# Bonus for balanced resources (avoid over-specialization)
-		var min_modifier: int = mini(farm_modifier, mini(mine_modifier, mill_modifier))
-		var max_modifier: int = maxi(farm_modifier, maxi(mine_modifier, mill_modifier))
-		if max_modifier - min_modifier < 50:  # Fairly balanced
-			score += 60.0
-
-		# 4. Biome bonuses (lower priority)
-		match tile_data.biome:
-			TileCategory.GRASS:
-				score += 30.0  # Good for farms
-			TileCategory.SWAMP:
-				score += 10.0  # Mixed
-			TileCategory.FOREST:
-				score += 20.0  # Good for mills
-			TileCategory.MOUNTAIN:
-				score += 0.0   # Skip (handled above)
-
-		# 5. Shore access bonus (already filtered)
-		if tile_data.is_shore:
-			score += 30.0
-
-		# Track best
-		if score > best_score:
-			best_score = score
-			best_tile = tile
-
-	if best_tile == Vector2i.ZERO:
-		push_error("Could not find optimal colony location, using fallback")
-		return get_random_starting_tile()
-
-	print("Found optimal colony location at %s with score %.1f" % [best_tile, best_score])
-	return best_tile
+	var location_finder: LocationFinder = LocationFinder.new(self)
+	return location_finder.find_optimal_colony_location(_level)
 
 
 #endregion

@@ -29,7 +29,7 @@ func _ready() -> void:
 
 	# Get scenario from command line args or use default
 	var args: PackedStringArray = OS.get_cmdline_args()
-	var scenario_id: String = "01"  # Default to fresh start
+	var scenario_id: String = "02"  # Default to fresh start
 
 	for arg: String in args:
 		if arg.begins_with("--scenario="):
@@ -133,6 +133,7 @@ func _test_scenario_02() -> Vector2:
 		# - 1 Metal Mine: wood 4
 		# Total: 24 wood (starting 40 - 24 = 16 remaining)
 
+		# await _create_and_place_building(colony, Term.BuildingType.DOCK)
 		# await _create_and_place_building(colony, Term.BuildingType.DOCK, Vector2i(1, 0))
 		# await _create_and_place_building(colony, Term.BuildingType.FARM, Vector2i(2, 0))
 		# await _create_and_place_building(colony, Term.BuildingType.FARM, Vector2i(3, 0))
@@ -215,11 +216,11 @@ func _test_scenario_03() -> Vector2:
 		colony.bank.add_resources(Transaction.new().set_resource(Term.ResourceType.METAL, 80))
 
 		# Build various buildings
-		await _create_and_place_building(colony, Term.BuildingType.FARM, Vector2i(2, 0))
-		await _create_and_place_building(colony, Term.BuildingType.FARM, Vector2i(3, 0))
-		await _create_and_place_building(colony, Term.BuildingType.MILL, Vector2i(0, 2))
-		await _create_and_place_building(colony, Term.BuildingType.HOUSING, Vector2i(1, 2))
-		await _create_and_place_building(colony, Term.BuildingType.CHURCH, Vector2i(-1, 0))
+		# await _create_and_place_building(colony, Term.BuildingType.FARM, Vector2i(2, 0))
+		# await _create_and_place_building(colony, Term.BuildingType.FARM, Vector2i(3, 0))
+		# await _create_and_place_building(colony, Term.BuildingType.MILL, Vector2i(0, 2))
+		# await _create_and_place_building(colony, Term.BuildingType.HOUSING, Vector2i(1, 2))
+		# await _create_and_place_building(colony, Term.BuildingType.CHURCH, Vector2i(-1, 0))
 
 		# Refresh
 		colony.placement_controller._refresh_build_tiles()
@@ -244,8 +245,8 @@ func _test_scenario_04() -> Vector2:
 	var tile1: Vector2i = world_gen.get_optimal_colony_location()
 	var colony1: CenterBuilding = await _create_colony_at(tile1, 1, 300)
 	if colony1:
-		await _create_and_place_building(colony1, Term.BuildingType.FARM, Vector2i(2, 0))
-		await _create_and_place_building(colony1, Term.BuildingType.DOCK, Vector2i(1, 0))
+		# await _create_and_place_building(colony1, Term.BuildingType.FARM, Vector2i(2, 0))
+		# await _create_and_place_building(colony1, Term.BuildingType.DOCK, Vector2i(1, 0))
 		camera_focus = colony1.position
 
 	# Find a different location for colony 2 (search in a different direction)
@@ -254,11 +255,11 @@ func _test_scenario_04() -> Vector2:
 
 	# Colony 2: Developed (Level 2 settler: 300 people, 60 wood, 200 gold, 20 crops, 20 metal)
 	var colony2: CenterBuilding = await _create_colony_at(tile2, 2, 600)
-	if colony2:
-		await _create_and_place_building(colony2, Term.BuildingType.FARM, Vector2i(2, 0))
-		await _create_and_place_building(colony2, Term.BuildingType.MILL, Vector2i(0, 2))
-		await _create_and_place_building(colony2, Term.BuildingType.HOUSING, Vector2i(1, 2))
-		await _create_and_place_building(colony2, Term.BuildingType.FORT, Vector2i(-2, 0))
+	# if colony2:
+	# 	await _create_and_place_building(colony2, Term.BuildingType.FARM, Vector2i(2, 0))
+	# 	await _create_and_place_building(colony2, Term.BuildingType.MILL, Vector2i(0, 2))
+	# 	await _create_and_place_building(colony2, Term.BuildingType.HOUSING, Vector2i(1, 2))
+	# 	await _create_and_place_building(colony2, Term.BuildingType.FORT, Vector2i(-2, 0))
 
 	# Find location for colony 3
 	var tile3: Vector2i = _find_next_colony_location(tile1, 25)
@@ -287,10 +288,10 @@ func _test_scenario_05() -> Vector2:
 	var colony: CenterBuilding = await _create_colony_at(optimal_tile, 2, 800)
 	if colony:
 		# Build military infrastructure
-		await _create_and_place_building(colony, Term.BuildingType.FORT, Vector2i(3, 0))
-		await _create_and_place_building(colony, Term.BuildingType.WAR_COLLEGE, Vector2i(0, 3))
-		await _create_and_place_building(colony, Term.BuildingType.FARM, Vector2i(2, 0))
-		await _create_and_place_building(colony, Term.BuildingType.FARM, Vector2i(2, 1))
+		# await _create_and_place_building(colony, Term.BuildingType.FORT, Vector2i(3, 0))
+		# await _create_and_place_building(colony, Term.BuildingType.WAR_COLLEGE, Vector2i(0, 3))
+		# await _create_and_place_building(colony, Term.BuildingType.FARM, Vector2i(2, 0))
+		# await _create_and_place_building(colony, Term.BuildingType.FARM, Vector2i(2, 1))
 
 		# Add military units to colony
 		var leader: UnitStats = UnitStats.New_Unit(Term.UnitType.LEADER, 1)
@@ -329,19 +330,19 @@ func _test_scenario_06() -> Vector2:
 	var tile1: Vector2i = world_gen.get_optimal_colony_location()
 	var colony1: CenterBuilding = await _create_colony_at(tile1, 2, 500)
 	if colony1:
-		await _create_and_place_building(colony1, Term.BuildingType.COMMERCE, Vector2i(2, 0))
-		await _create_and_place_building(colony1, Term.BuildingType.DOCK, Vector2i(1, 0))
-		await _create_and_place_building(colony1, Term.BuildingType.TAVERN, Vector2i(0, 2))
+		# await _create_and_place_building(colony1, Term.BuildingType.COMMERCE, Vector2i(2, 0))
+		# await _create_and_place_building(colony1, Term.BuildingType.DOCK, Vector2i(1, 0))
+		# await _create_and_place_building(colony1, Term.BuildingType.TAVERN, Vector2i(0, 2))
 		camera_focus = colony1.position
 
 	# Colony 2: Production colony
 	var tile2: Vector2i = tile1 + Vector2i(25, 5)
-	var colony2: CenterBuilding = await _create_colony_at(tile2, 2, 400)
-	if colony2:
-		await _create_and_place_building(colony2, Term.BuildingType.FARM, Vector2i(2, 0))
-		await _create_and_place_building(colony2, Term.BuildingType.FARM, Vector2i(3, 0))
-		await _create_and_place_building(colony2, Term.BuildingType.MILL, Vector2i(0, 2))
-		await _create_and_place_building(colony2, Term.BuildingType.METAL_MINE, Vector2i(1, 2))
+	# var colony2: CenterBuilding = await _create_colony_at(tile2, 2, 400)
+	# if colony2:
+		# await _create_and_place_building(colony2, Term.BuildingType.FARM, Vector2i(2, 0))
+		# await _create_and_place_building(colony2, Term.BuildingType.FARM, Vector2i(3, 0))
+		# await _create_and_place_building(colony2, Term.BuildingType.MILL, Vector2i(0, 2))
+		# await _create_and_place_building(colony2, Term.BuildingType.METAL_MINE, Vector2i(1, 2))
 
 	print("\n💰 Trade Scenario Created:")
 	print("  Hub Colony: Commerce + Tavern + Dock")
@@ -400,7 +401,8 @@ func _create_colony_at(tile: Vector2i, settler_level: int, population_override: 
 
 
 ## Create and place a building at a specific offset from colony
-func _create_and_place_building(colony: CenterBuilding, building_type: Term.BuildingType, tile_offset: Vector2i) -> void:
+func _create_and_place_building(colony: CenterBuilding, building_type: Term.BuildingType) -> void:
+	var world_gen: WorldGen = Def.get_world_map()
 	# Create the building
 	var building_scene: PackedScene = PreloadsRef.get_building_scene(building_type)
 	var building: Building = building_scene.instantiate() as Building
@@ -409,8 +411,7 @@ func _create_and_place_building(colony: CenterBuilding, building_type: Term.Buil
 	building.player = player
 
 	# Calculate position
-	var colony_tile: Vector2i = colony.get_tile()
-	var target_tile: Vector2i = colony_tile + tile_offset
+	var target_tile: Vector2i = LocationFinder.find_optimal_dock_location(world_gen, colony.placement_controller.build_tiles)
 	var target_pos: Vector2 = Def.get_world_tile_map().map_to_local(target_tile)
 
 	# Position the building
@@ -420,7 +421,7 @@ func _create_and_place_building(colony: CenterBuilding, building_type: Term.Buil
 
 	# Add to colony
 	colony.bm.add_building(building)
-	colony.bm.add_occupied_tiles(building.get_tiles())
+	colony.bm.add_occupied_tiles(building.get_tiles(), building)
 
 	# Set building state to ACTIVE
 	building.building_state = Term.BuildingState.ACTIVE

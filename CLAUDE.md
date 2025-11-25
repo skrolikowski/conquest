@@ -132,7 +132,7 @@ The game uses Godot autoloads (singletons) for global state and shared resources
 ### 3. Map & World Generation System
 
 #### **WorldGen** - Procedural Map Generation
-- **Location**: `scenes/map/world_gen.gd`
+- **Location**: `scenes/world/generation/world_gen.gd`
 - **Parent**: `scenes/world_manager.tscn`
 - **Uses**: Gaea noise generation addon for terrain
 - **Responsibilities**:
@@ -154,6 +154,32 @@ The game uses Godot autoloads (singletons) for global state and shared resources
   - `artifact_modifier`: Special tile modifiers
 - **Signals**: `map_loaded` - emitted when map generation complete
 - **Game Persistence**: Implements `on_save_data()` / `on_load_data()`
+
+#### **LocationFinder** - Optimal Building Placement
+- **Location**: `scenes/world/generation/location_finder.gd`
+- **Type**: RefCounted (utility class)
+- **Responsibilities**:
+  - Find optimal locations for colony centers
+  - Find optimal locations for specific building types (farms, mines, mills, docks)
+  - Score potential locations based on terrain modifiers and biome bonuses
+  - Apply weighted randomness to avoid always picking the same location
+- **Key Methods**:
+  - `find_optimal_colony_location()`: Find best colony location with ocean access
+  - `find_optimal_farm_location()`: Find high farm modifier tiles
+  - `find_optimal_mine_location()`: Find high mine modifier tiles (mountains OK)
+  - `find_optimal_mill_location()`: Find high mill modifier tiles (rivers preferred)
+  - `find_optimal_dock_location()`: Find shore/river tiles with ocean access
+- **Randomization Strategy**:
+  - Scores all candidates
+  - Sorts by score (highest first)
+  - Selects randomly from top 20-30% using weighted probability
+  - Higher scores have higher probability, but not guaranteed
+- **Colony Location Requirements**:
+  1. Colony center on **land tile** (not shore/water)
+  2. 2x2 footprint fits on land
+  3. At least 50% buildable land within build_radius
+  4. At least one shore/river tile in build_radius for dock
+  5. Balanced terrain modifiers preferred
 
 #### **TileMap Structure**
 - **Land Layer**: Main terrain tilemap

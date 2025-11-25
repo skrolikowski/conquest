@@ -171,7 +171,7 @@ func confirm_placement() -> void:
 		colony.bm.remove_building(building)
 	else:
 		# Valid placement - finalize
-		colony.bm.add_occupied_tiles(building.get_tiles())
+		colony.bm.add_occupied_tiles(building.get_tiles(), building)
 		colony.purchase_building(building)
 
 		# Set timer to disallow selection temporarily

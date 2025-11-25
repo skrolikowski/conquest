@@ -41,5 +41,8 @@ func get_tile_info(tile: Vector2i) -> Dictionary:
 	if world_gen:
 		info["height"] = world_gen.get_tile_height(tile)
 		info["modifiers"] = world_gen.get_terrain_modifier_by_industry_type(tile)
+		
+		if world_gen.tile_custom_data.has(tile):
+			info["tile_data"] = world_gen.tile_custom_data.get(tile)
 
 	return info
