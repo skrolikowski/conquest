@@ -425,6 +425,24 @@ func update_tile_focus(tile_info: Dictionary) -> void:
 	if tile_info.has("height"):
 		tile_status.append(str(snapped(tile_info["height"], 0.01)))
 
+	# TileData
+	if tile_info.has("tile_data"):
+		var tile_data:TileCustomData = tile_info["tile_data"]
+		# tile_status.append("Biome: " + Preload.TR.biome_to_name(tile_data.biome))
+		# if tile_data.is_water:
+		# 	tile_status.append("Water Tile")
+		# else:
+		# 	tile_status.append("Land Tile")
+		if tile_data.is_shore:
+			tile_status.append("Shore")
+		elif tile_data.is_ocean:
+			tile_status.append("Ocean")
+		elif tile_data.is_river:
+			tile_status.append("River")
+			
+		if tile_data.has_ocean_access:
+			tile_status.append("(OA)")
+
 	# Industry modifiers
 	if tile_info.has("modifiers") and tile_info["modifiers"].size() > 0:
 		var mod_data: Dictionary = tile_info["modifiers"]
