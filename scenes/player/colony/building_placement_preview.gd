@@ -11,15 +11,9 @@
 extends Node2D
 class_name BuildingPlacementPreview
 
-
-## The building being placed (null when no placement active)
-var building: Building = null
-
-## The target tile position for placement
-var target_tile: Vector2i = Vector2i.ZERO
-
-## Dictionary of valid build tiles: Vector2i -> TileData
-var build_tiles: Dictionary = {}
+var building    : Building = null   # => (null when no placement active)
+var target_tile : Vector2i = Vector2i.ZERO
+var build_tiles : Dictionary = {}   # => Vector2i -> TileData
 
 
 ## Set the building to preview at the specified tile

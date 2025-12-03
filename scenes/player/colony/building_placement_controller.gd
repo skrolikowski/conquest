@@ -11,26 +11,14 @@
 extends Area2D
 class_name BuildingPlacementController
 
-# const BuildingPlacementWorkflow: GDScript = preload("res://scenes/player/colony/building_placement_workflow.gd")
-# const BuildingPlacementPreview: GDScript = preload("res://scenes/player/colony/building_placement_preview.gd")
+@onready var ghost_timer : Timer = $GhostTimer as Timer
 
+@export var colony : CenterBuilding
 
-@onready var ghost_timer: Timer = $GhostTimer as Timer
-
-## Reference to the colony center building
-@export var colony: CenterBuilding
-
-## Placement workflow state machine
-var workflow: BuildingPlacementWorkflow = BuildingPlacementWorkflow.new()
-
-## Visual preview handler
-var placement_preview: BuildingPlacementPreview = BuildingPlacementPreview.new()
-
-## Dictionary of valid build tiles: Vector2i -> TileData
-var build_tiles: Dictionary = {}
-
-## World manager reference
-var world_manager: WorldManager
+var workflow          : BuildingPlacementWorkflow = BuildingPlacementWorkflow.new()
+var placement_preview : BuildingPlacementPreview = BuildingPlacementPreview.new()
+var build_tiles       : Dictionary = {} # => Vector2i -> TileData
+var world_manager     : WorldManager
 
 
 func _ready() -> void:
@@ -44,8 +32,8 @@ func _ready() -> void:
 
 #region EVENT HANDLERS
 
-func _on_cursor_updated() -> void:
-	_refresh_placing_position()
+func _on_cursor_updated(mouse_pos: Vector2) -> void:
+	_refresh_placing_position(mouse_pos)
 
 #endregion
 
@@ -78,7 +66,7 @@ func start_building_placement(building: Building) -> void:
 
 
 ## Update building position based on cursor
-func _refresh_placing_position() -> void:
+func _refresh_placing_position(mouse_pos: Vector2) -> void:
 	if not workflow.is_placing():
 		return
 
@@ -86,7 +74,7 @@ func _refresh_placing_position() -> void:
 		return
 
 	var tile_map_layer: TileMapLayer = Def.get_world_tile_map()
-	var map_tile: Vector2i = tile_map_layer.local_to_map(get_global_mouse_position())
+	var map_tile: Vector2i = tile_map_layer.local_to_map(mouse_pos)
 
 	if workflow.context.target_tile != map_tile:
 		_update_building_position(map_tile)
